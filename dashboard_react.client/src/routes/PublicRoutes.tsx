@@ -4,11 +4,11 @@ import { nameRoutes } from "../config/contants";
 export const PublicRoutes: RouteObject[] = [
   {
     index: true,
-    lazy: () => import("../pages/DashboardPage"),
+    lazy: () => import("../pages/public/DashboardPage"),
   },
   {
     path: nameRoutes.calendar,
-    lazy: () => import("../pages/CalendarPage"),
+    lazy: () => import("../pages/public/CalendarPage"),
   },
   {
     path: nameRoutes.login,

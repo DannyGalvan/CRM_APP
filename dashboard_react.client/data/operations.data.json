@@ -131,7 +131,7 @@
   "Name": "Listar productos",
   "Description": "Listado de productos existentes",
   "Icon": "bi bi-card-checklist",
-  "Path": "/Products",
+  "Path": "/Product",
   "ModuleId": {
     "$oid": "662c50ca76b562e864266a6f"
   },

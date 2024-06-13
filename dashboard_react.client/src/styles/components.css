@@ -4,10 +4,10 @@ main {
 
 @keyframes loading {
   0% {
-    opacity: 30%;
+    opacity: 10%;
   }
   100% {
-    opacity: 90%;
+    opacity: 100%;
   }
 }
 
@@ -87,7 +87,7 @@ main {
 
 .loading {
   animation-name: loading;
-  animation-duration: 0.5s;
+  animation-duration: 0.4s;
   animation-iteration-count: infinite;
   animation-direction: alternate-reverse;
   animation-fill-mode: forwards;

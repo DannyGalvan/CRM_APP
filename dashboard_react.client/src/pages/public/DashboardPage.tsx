@@ -1,12 +1,12 @@
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import { Suspense, lazy } from "react";
-import { Grid } from "../components/grid/Grid";
-import { LoadingComponent } from "../components/spinner/LoadingComponent";
-import { chartdata } from "../util/chartData";
-import { dataFormatter } from "../util/converted";
+import { Grid } from "../../components/grid/Grid";
+import { LoadingComponent } from "../../components/spinner/LoadingComponent";
+import { chartdata } from "../../util/chartData";
+import { dataFormatter } from "../../util/converted";
 
 const ProtectedPublic = lazy(
-  () => import("../routes/middlewares/ProtectedPublic"),
+  () => import("../../routes/middlewares/ProtectedPublic"),
 );
 const LineChart = lazy(() =>
   import("@tremor/react").then((module) => ({ default: module.LineChart })),
@@ -26,7 +26,7 @@ export function Component() {
             </CardHeader>
             <CardBody>
               <p className="text-center text-4xl">
-                ${" "}
+                Q{" "}
                 {chartdata
                   .reduce((acc, item) => acc + item["Ventas 2023"], 0)
                   .toFixed(2)}
@@ -39,7 +39,7 @@ export function Component() {
             </CardHeader>
             <CardBody>
               <p className="text-center text-4xl">
-                ${" "}
+                Q{" "}
                 {chartdata
                   .reduce((acc, item) => acc + item["Ventas 2024"], 0)
                   .toFixed(2)}
@@ -54,7 +54,7 @@ export function Component() {
             </CardHeader>
             <CardBody>
               <p className="text-center text-4xl">
-                ${" "}
+                Q{" "}
                 {(
                   chartdata.reduce(
                     (acc, item) => acc + item["Ventas 2023"],

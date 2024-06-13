@@ -91,8 +91,8 @@ export const Sidebar = () => {
           <img
             src={URL_LOGO}
             className={`${
-              !open ? "w-100 height-10" : "w-33 height-24"
-            } rounded-xl`}
+              !open ? "w-100 height-10" : "w-25 height-24"
+            } rounded-xl `}
             alt=""
           />
         </Link>

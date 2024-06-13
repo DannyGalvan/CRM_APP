@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { AuthProvider } from "./context/AuthContext";
 
 const ErrorBoundary = lazy(() => import("./pages/error/ErrorBoundary"));
-const LoadingPage = lazy(() => import("./pages/LoadingPage"));
+const LoadingPage = lazy(() => import("./pages/public/LoadingPage"));
 const AppRoutes = lazy(() => import("./routes/AppRoutes"));
 
 const queryClient = new QueryClient({

@@ -14,16 +14,16 @@ import timeGridPlugin from "@fullcalendar/timegrid"; // a plugin!
 import { useCallback, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "react-toastify";
-import { CalendarSidebar } from "../components/layout/CalendarSidebar";
-import { ModalCalendar } from "../components/modals/ModalCalendar";
-import { api } from "../config/axios/interceptors";
-import { useDates } from "../hooks/useDates";
-import { useToggle } from "../hooks/useToggle";
-import Protected from "../routes/middlewares/Protected";
-import { partialUpdateEvent } from "../services/eventService";
-import "../styles/calendar.css";
-import { ApiError } from "../util/errors";
-import { NotFound } from "./error/NotFound";
+import { CalendarSidebar } from "../../components/layout/CalendarSidebar";
+import { ModalCalendar } from "../../components/modals/ModalCalendar";
+import { api } from "../../config/axios/interceptors";
+import { useDates } from "../../hooks/useDates";
+import { useToggle } from "../../hooks/useToggle";
+import Protected from "../../routes/middlewares/Protected";
+import { partialUpdateEvent } from "../../services/eventService";
+import "../../styles/calendar.css";
+import { ApiError } from "../../util/errors";
+import { NotFound } from "../error/NotFound";
 
 export function Component() {
   const [weekendsVisible, setWeekendsVisible] = useState(

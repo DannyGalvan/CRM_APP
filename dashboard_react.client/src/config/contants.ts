@@ -2,7 +2,7 @@ import { InitialAuth } from "../types/InitialAuth";
 
 export const URL_FETCH_EVENTS = "/api/event"
 
-export const URL_LOGO = "/vite.svg"
+export const URL_LOGO = "/OIG3.jpeg"
 
 export const URL_API = "/api"
 

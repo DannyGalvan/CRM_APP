@@ -1,5 +1,5 @@
-import { Col } from "../components/grid/Col";
-import { URL_LOGO } from "../config/contants";
+import { Col } from "../../components/grid/Col";
+import { URL_LOGO } from "../../config/contants";
 
 const LoadingPage = () => {
   return (

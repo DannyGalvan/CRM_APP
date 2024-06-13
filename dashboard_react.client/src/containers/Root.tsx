@@ -1,6 +1,6 @@
 import { Outlet, useNavigation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import LoadingPage from "../pages/LoadingPage";
+import LoadingPage from "../pages/public/LoadingPage";
 import { Layout } from "./Layout";
 import { LayoutLogin } from "./LayoutLogin";
 

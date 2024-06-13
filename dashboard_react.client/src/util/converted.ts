@@ -16,7 +16,7 @@ export const toCamelCase = (inputString: string) => {
 };
 
 export const dataFormatter = (number: number) =>
-  `$${Intl.NumberFormat("en").format(number).toString()}`;
+  `Q${Intl.NumberFormat("en").format(number).toString()}`;
 
 export const toAllOperations = (operations: Authorizations[]) => {
   const allOperations: Operations[] = [];

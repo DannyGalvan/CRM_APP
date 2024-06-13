@@ -1,25 +1,25 @@
 import { Button } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import { Col } from "@tremor/react";
 import { useEffect } from "react";
 import { TableColumn } from "react-data-table-component";
 import { Icon } from "../../components/Icons/Icon";
-import { CustomerForm } from "../../components/forms/CustomerForm";
+import { ProductForm } from "../../components/forms/ProductForm";
+import { Col } from "../../components/grid/Col";
 import { CatalogueActionMenu } from "../../components/menu/CatalogueActionMenu";
 import { TableRoot } from "../../components/table/TableRoot";
 import { Drawer } from "../../containers/Drawer";
 import { DrawerProvider } from "../../context/DrawerContext";
-import { useCustomer } from "../../hooks/useCustomer";
+import { useProducts } from "../../hooks/useProducts";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
 import { useToggle } from "../../hooks/useToggle";
-import { getCustomers } from "../../services/customerService";
-import { useCustomerStore } from "../../store/useCustomerStore";
+import { getProducts } from "../../services/productService";
+import { useProductStore } from "../../store/useProductStore";
 import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
-import { CustomerResponse } from "../../types/CustomerResponse";
+import { ProductResponse } from "../../types/ProductResponse";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
-import { initialCustomer } from "./CustomerCreatePage";
+import { initialProduct } from "./CreateProductPage";
 
 const columns: TableColumn<any>[] = [
   {
@@ -31,91 +31,60 @@ const columns: TableColumn<any>[] = [
     omit: true,
   },
   {
-    id: "firstName",
+    id: "name",
     name: "Nombre",
-    selector: (data) => data.firstName,
-    sortable: true,
-    maxWidth: "150px",
-    omit: false,
-  },
-  {
-    id: "secondName",
-    name: "Segundo Nombre",
-    selector: (data) => data.secondName,
+    selector: (data) => data.name,
     sortable: true,
     wrap: true,
-    omit: true,
-  },
-  {
-    id: "firstLastName",
-    name: "Apellido",
-    selector: (data) => data.firstLastName,
-    sortable: true,
-    maxWidth: "130px",
-  },
-  {
-    id: "secondLastName",
-    name: "Segundo Apellido",
-    selector: (data) => data.secondLastName,
-    sortable: true,
-    maxWidth: "160px",
-    omit: true,
-  },
-  {
-    id: "address",
-    name: "Direccion",
-    selector: (data) => data.address,
-    sortable: true,
-    maxWidth: "160px",
     omit: false,
   },
   {
-    id: "phone",
-    name: "Telefono",
-    selector: (data) => data.firstPhone,
+    id: "description",
+    name: "Descripcion",
+    selector: (data) => data.description,
     sortable: true,
-    maxWidth: "155px",
+    wrap: true,
     omit: false,
   },
   {
-    id: "secondPhone",
-    name: "Telefono 2",
-    selector: (data) => data.secondPhone,
+    id: "family",
+    name: "Familia",
+    selector: (data) => data.family?.name,
     sortable: true,
-    maxWidth: "155px",
-    omit: true,
-  },
-  {
-    id: "department",
-    name: "Departamento",
-    selector: (data) => data.department.name,
-    sortable: true,
-    maxWidth: "155px",
+    wrap: true,
     omit: false,
   },
   {
-    id: "municipality",
-    name: "Municipio",
-    selector: (data) => data.municipality.name,
+    id: "cost",
+    name: "Costo",
+    selector: (data) => data.cost.toFixed(2),
     sortable: true,
-    maxWidth: "155px",
+    wrap: true,
     omit: false,
   },
   {
-    id: "zone",
-    name: "Zona",
-    selector: (data) => data.zone.name,
+    id: "salePrice",
+    name: "Precio de Venta",
+    selector: (data) => data.salePrice.toFixed(2),
     sortable: true,
-    maxWidth: "125px",
+    wrap: true,
     omit: false,
   },
   {
-    id: "colony_condominium",
-    name: "Colonia/Condominio",
-    selector: (data) => data.colony_Condominium,
+    id: "stock",
+    name: "Stock",
+    selector: (data) => data.stock,
     sortable: true,
-    maxWidth: "160px",
-    omit: true,
+    wrap: true,
+    omit: false,
+  },
+  {
+    id: "state",
+    name: "Estado",
+    selector: (data) => (data.state == 1 ? "Activo" : "Inactivo"),
+    sortable: true,
+    wrap: true,
+    omit: false,
   },
   {
     id: "createdAt",
@@ -137,41 +106,41 @@ const columns: TableColumn<any>[] = [
     id: "actions",
     name: "Acciones",
     cell: (data) => {
-      return <CatalogueActionMenu data={data} useStore={useCustomerStore} />;
+      return <CatalogueActionMenu data={data} useStore={useProductStore} />;
     },
     wrap: true,
   },
 ];
 
-export const CustomerPage = () => {
+export const ProductPage = () => {
   const { open, toggle } = useToggle();
   const { open: openUpdate, toggle: toggleUpdate } = useToggle();
   const { reRender, render } = useRetraseRender();
-  const { customer, add } = useCustomerStore();
-  const { create, update } = useCustomer();
+  const { create, update } = useProducts();
+  const { product, add } = useProductStore();
 
   const { data, error, isFetching, isLoading } = useQuery<
-    ApiResponse<CustomerResponse[]>,
+    ApiResponse<ProductResponse[]>,
     ApiError | undefined
   >({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
+    queryKey: ["products"],
+    queryFn: getProducts,
   });
-
-  useEffect(() => {
-    reRender();
-  }, []);
 
   if (error) {
     return <NotFound Message={error.message} Number={error.statusCode} />;
   }
+
+  useEffect(() => {
+    reRender();
+  }, []);
 
   return (
     <DrawerProvider setOpenUpdate={toggleUpdate}>
       <div className="mt-20 md:mt-0">
         <Col className="mt-5 flex justify-end">
           <Button color={"secondary"} onClick={toggle}>
-            <Icon name={"bi bi-person-plus"} /> Crear Cliente
+            <Icon name={"bi bi-bag-plus"} /> Crear Producto
           </Button>
         </Col>
         <TableRoot
@@ -179,23 +148,24 @@ export const CustomerPage = () => {
           data={data?.data ?? []}
           hasFilters={true}
           pending={isLoading || isFetching}
-          text="de los clientes"
+          text="de los productos"
           styles={compactGrid}
-          title={"Clientes"}
+          title={"Productos"}
           width={false}
         />
         {render && (
           <Drawer
             isOpen={open}
             setIsOpen={toggle}
-            title={`Crear Cliente`}
+            title={`Crear Producto`}
             size="2xl"
           >
             <div className="p-5">
-              <CustomerForm
-                initialForm={initialCustomer}
+              <ProductForm
+                initialForm={initialProduct}
                 sendForm={create}
                 text="Crear"
+                reboot
               />
             </div>
           </Drawer>
@@ -211,8 +181,8 @@ export const CustomerPage = () => {
             size="2xl"
           >
             <div className="p-5">
-              <CustomerForm
-                initialForm={customer!}
+              <ProductForm
+                initialForm={product!}
                 sendForm={update}
                 text="Editar"
               />
