@@ -1,0 +1,336 @@
+[{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a7e"
+  },
+  "Name": "Crear cliente",
+  "Description": "Creación de nuevo cliente",
+  "Icon": "bi bi-person-plus",
+  "Path": "/Customer/Create",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a6e"
+  },
+  "IsVisible": true,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a7f"
+  },
+  "Name": "Actualizar cliente",
+  "Description": "Actualización de cliente",
+  "Icon": "",
+  "Path": "/Customer/Update",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a6e"
+  },
+  "IsVisible": false,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a80"
+  },
+  "Name": "Listar clientes",
+  "Description": "Listado de clientes existentes",
+  "Icon": "bi bi-person-lines-fill",
+  "Path": "/Customer",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a6e"
+  },
+  "IsVisible": true,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a81"
+  },
+  "Name": "Actualizar cliente parcialmente",
+  "Description": "Actualización de cliente",
+  "Icon": "",
+  "Path": "/User/Patch",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a6e"
+  },
+  "IsVisible": false,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a82"
+  },
+  "Name": "Crear Producto",
+  "Description": "Creación de nuevo producto",
+  "Icon": "bi bi-bag-plus",
+  "Path": "/Product/Create",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a6f"
+  },
+  "IsVisible": true,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a83"
+  },
+  "Name": "Actualizar producto",
+  "Description": "Actualización de producto",
+  "Icon": "",
+  "Path": "/Product/Update",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a6f"
+  },
+  "IsVisible": false,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a84"
+  },
+  "Name": "Listar productos",
+  "Description": "Listado de productos existentes",
+  "Icon": "bi bi-card-checklist",
+  "Path": "/Products",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a6f"
+  },
+  "IsVisible": true,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a85"
+  },
+  "Name": "Actualizacion parcial de productos",
+  "Description": "Actualizacion parcial de productos",
+  "Icon": "",
+  "Path": "/Product/Patch",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a6f"
+  },
+  "IsVisible": false,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a86"
+  },
+  "Name": "Crear Tabla",
+  "Description": "Creacion de nuevas tablas en bd",
+  "Icon": "bi bi-file-earmark-plus",
+  "Path": "/Collection/Create",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a70"
+  },
+  "IsVisible": true,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a87"
+  },
+  "Name": "Actualizar Tabla",
+  "Description": "actualizacion de tablas en bd",
+  "Icon": "",
+  "Path": "/Collection/Update",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a70"
+  },
+  "IsVisible": false,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a88"
+  },
+  "Name": "Actualizar parcial tabla",
+  "Description": "actualizacion parcial de tablas en bd",
+  "Icon": "",
+  "Path": "/Collection/Patch",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a70"
+  },
+  "IsVisible": false,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a89"
+  },
+  "Name": "Listar tablas",
+  "Description": "Lista tablas en bd",
+  "Icon": "bi bi-files",
+  "Path": "/Collection",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a70"
+  },
+  "IsVisible": true,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a8a"
+  },
+  "Name": "Crear Catalogo",
+  "Description": "Creacion de nuevos catalogos",
+  "Icon": "bi bi-journal-plus",
+  "Path": "/Catalogue/Create",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a71"
+  },
+  "IsVisible": true,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a8b"
+  },
+  "Name": "Actualizar catalogo",
+  "Description": "Actualizacion de catalogos",
+  "Icon": "",
+  "Path": "/Catalogue/Update",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a71"
+  },
+  "IsVisible": false,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a8c"
+  },
+  "Name": "Actualizar parcial Catalogo",
+  "Description": "Actualizacion parcial de catalogos",
+  "Icon": "",
+  "Path": "/Catalogue/Patch",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a71"
+  },
+  "IsVisible": false,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+},
+{
+  "_id": {
+    "$oid": "662c54dd76b562e864266a8d"
+  },
+  "Name": "Listar catalogos",
+  "Description": "Lista de catalogos",
+  "Icon": "bi bi-journal-arrow-down",
+  "Path": "/Catalogue",
+  "ModuleId": {
+    "$oid": "662c50ca76b562e864266a71"
+  },
+  "IsVisible": true,
+  "CreatedAt": {
+    "$date": "2024-04-27T00:49:15.230Z"
+  },
+  "UpdatedAt": null,
+  "CreatedBy": {
+    "$oid": "662754d99f4e1bf2407306ba"
+  },
+  "UpdatedBy": null
+}]

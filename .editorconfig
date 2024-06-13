@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# ASP0015: Suggest using IHeaderDictionary properties
+dotnet_diagnostic.ASP0015.severity = error

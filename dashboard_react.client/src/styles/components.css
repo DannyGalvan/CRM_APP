@@ -1,0 +1,148 @@
+main {
+  view-transition-name: main;
+}
+
+@keyframes loading {
+  0% {
+    opacity: 30%;
+  }
+  100% {
+    opacity: 90%;
+  }
+}
+
+@keyframes mover {
+  0% {
+    top: 0px;
+  }
+  100% {
+    top: -50px;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(30px);
+  }
+}
+
+@keyframes slide-to-left {
+  to {
+    transform: translateX(-30px);
+  }
+}
+
+::view-transition-old(main) {
+  animation: fade-out 150ms cubic-bezier(0.4, 0, 1, 1) both,
+             slide-to-left 500ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+::view-transition-new(main) {
+  animation: fade-in 300ms cubic-bezier(0, 0, 0.2, 1) 40ms both,
+             slide-from-right 800ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Keyframes for fade-out and fade-in animations */
+@keyframes fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Keyframes for slide-to-left and slide-from-right animations */
+@keyframes slide-to-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes slide-from-right {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(0); }
+}
+
+.intermitent {
+  position: relative;
+  animation-name: mover;
+  animation-duration: 0.8s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate-reverse;
+  animation-fill-mode: forwards;
+}
+
+.loading {
+  animation-name: loading;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate-reverse;
+  animation-fill-mode: forwards;
+}
+
+.dashboard-item .icon-dashboard svg {
+  font-size: 70px;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  transition: -webkit-transform 0.3s linear;
+  transition: transform 0.3s linear;
+  transition: transform 0.3s linear, -webkit-transform 0.3s linear;
+}
+
+.dashboard-item .icon-dashboard svg:hover {
+  scale: 1.1;
+}
+
+.link {
+  @apply p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-bold;
+}
+
+.active {
+  @apply text-blue-600 bg-black;
+}
+
+.input-form {
+  @apply w-full border;
+}
+
+.input-form-internal {
+  @apply mt-2 rounded-md bg-sky-100 px-4 focus:border-sky-500 focus:bg-white focus:outline-none;
+}
+
+.input-form-login {
+  @apply mt-2 rounded-3xl bg-sky-100 px-4 focus:border-sky-500 focus:bg-white focus:outline-none;
+}
+
+.btn {
+  @apply px-3 py-1 rounded-2xl text-center no-underline align-middle border-2 duration-300 disabled:opacity-50;
+}
+
+.btn-primary {
+  @apply text-white bg-indigo-800 border-indigo-900 hover:bg-indigo-600 hover:border-indigo-600 disabled:opacity-50;
+}
+
+.btn-success {
+  @apply text-white bg-green-500 border-green-500 hover:bg-green-600 hover:border-green-600 disabled:opacity-50;
+}
+
+.btn-danger {
+  @apply text-white bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600 disabled:opacity-50;
+}
+
+.page-view {
+  @apply  min-h-[83vh];
+}

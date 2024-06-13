@@ -1,0 +1,11 @@
+@Dashboard_React.Server_HostAddress = http://localhost:5250
+
+POST {{Dashboard_React.Server_HostAddress}}/Auth/
+Accept: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
