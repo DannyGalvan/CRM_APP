@@ -2,6 +2,7 @@ import { CatalogueForm } from "../../components/forms/CatalogueForm";
 import { Col } from "../../components/grid/Col";
 import { CollectionSelect } from "../../components/select/CollectionSelect";
 import { useCatalogues } from "../../hooks/useCatalogues";
+import Protected from "../../routes/middlewares/Protected";
 
 export const initialCatalogue: CatalogueRequest = {
   name: "",
@@ -21,7 +22,8 @@ export const CreateCataloguePage = () => {
   } = useCatalogues();
 
   return (
-    <div className="page-view container flex flex-col flex-wrap items-center justify-center">
+    <Protected>
+      <div className="page-view container flex flex-col flex-wrap items-center justify-center">
       <Col md={6}>
         <Col md={12}>
           <CollectionSelect
@@ -39,5 +41,6 @@ export const CreateCataloguePage = () => {
         />
       </Col>
     </div>
+    </Protected>
   );
 };

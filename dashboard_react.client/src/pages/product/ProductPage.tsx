@@ -12,6 +12,7 @@ import { DrawerProvider } from "../../context/DrawerContext";
 import { useProducts } from "../../hooks/useProducts";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
 import { useToggle } from "../../hooks/useToggle";
+import Protected from "../../routes/middlewares/Protected";
 import { getProducts } from "../../services/productService";
 import { useProductStore } from "../../store/useProductStore";
 import { compactGrid } from "../../theme/tableTheme";
@@ -136,7 +137,8 @@ export const ProductPage = () => {
   }, []);
 
   return (
-    <DrawerProvider setOpenUpdate={toggleUpdate}>
+   <Protected>
+     <DrawerProvider setOpenUpdate={toggleUpdate}>
       <div className="mt-20 md:mt-0">
         <Col className="mt-5 flex justify-end">
           <Button color={"secondary"} onClick={toggle}>
@@ -191,5 +193,6 @@ export const ProductPage = () => {
         )}
       </div>
     </DrawerProvider>
+   </Protected>
   );
 };

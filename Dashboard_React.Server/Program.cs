@@ -14,13 +14,10 @@ using Business.Services;
 using AutoMapper;
 using Business.Mappers;
 using MongoDB.Driver;
-using Microsoft.EntityFrameworkCore;
 using Entities.Models;
 using MongoDB.Bson;
 using Entities.Request;
 using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Entities.Interfaces;
 using Humanizer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -174,45 +171,54 @@ builder.Services.AddMemoryCache();
 var app = builder.Build();
 
 // Create a sa User if not exists to start the application
-using (var scope = app.Services.CreateScope())
+if (app.Environment.IsDevelopment())
 {
-    var services = scope.ServiceProvider;
-
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        string emailManager = "pruebas.test29111999@gmail.com";
+        var services = scope.ServiceProvider;
 
-        var dbContext = services.GetRequiredService<CRMContext>();
-
-        string collectionName = typeof(User).Name.Pluralize();
-
-        IMongoCollection<User> Users = dbContext.Database.GetCollection<User>(collectionName);
-
-        User? manager = Users.Find(u => u.Email == emailManager).FirstOrDefault();
-
-        if (manager == null)
+        try
         {
-            Users.InsertOne(new User
+            string emailManager = "pruebas.test29111999@gmail.com";
+
+            var dbContext = services.GetRequiredService<CRMContext>();
+
+            string collectionName = typeof(User).Name.Pluralize();
+
+            IMongoCollection<User> Users = dbContext.Database.GetCollection<User>(collectionName);
+
+            User? manager = Users.Find(u => u.Email == emailManager).FirstOrDefault();
+
+            if (manager == null)
             {
-                Id = ObjectId.Parse("662754d99f4e1bf2407306ba"),
-                Email = emailManager,
-                Password = "$2b$10$00.zgcXUrvbb45xlDS2Y5eXkMb.Ktx/XcQDOyMAbJv2CxWnD2Wpp.",
-                Name = "Systema",
-                LastName = "Admin",
-                UserName = "MANAGER",
-                Number = "51995142",
-                Active = true,
-                Confirm = true,
-                Database = "Dashboard_Data",
-                ConnectionString = "mongodb://CRM_DATA:crm_data_8955@localhost:27017",
-                CreatedBy = ObjectId.Parse("662754d99f4e1bf2407306ba"),
-            });
-        }        
+                Users.InsertOne(new User
+                {
+                    Id = ObjectId.Parse("662754d99f4e1bf2407306ba"),
+                    Email = emailManager,
+                    Password = "$2b$10$00.zgcXUrvbb45xlDS2Y5eXkMb.Ktx/XcQDOyMAbJv2CxWnD2Wpp.",
+                    Name = "Systema",
+                    LastName = "Admin",
+                    UserName = "MANAGER",
+                    Number = "51995142",
+                    Active = true,
+                    Confirm = true,
+                    Database = "Dashboard_Data",
+                    ConnectionString = "mongodb://CRM_DATA:crm_data_8955@localhost:27017",
+                    CreatedBy = ObjectId.Parse("662754d99f4e1bf2407306ba"),
+                });
+            }
+
+            Console.WriteLine("Aplicacion Iniciada en Desarrollo con Exito!!!");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error al crear SA: {ex.Message}");
+        }
     }
-    catch (Exception ex)
-    {
-        throw new Exception($"Error al crear SA: {ex.Message}");
-    }
+}
+else
+{
+    Console.WriteLine("Aplicacion Iniciada en Produccion con Exito!!!");
 }
 
 
@@ -224,6 +230,8 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.UseDefaultFiles();
     app.UseStaticFiles();
     app.MapFallbackToFile("/index.html");

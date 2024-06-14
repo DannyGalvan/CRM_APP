@@ -1,6 +1,7 @@
 import { CustomerForm } from "../../components/forms/CustomerForm";
 import { Col } from "../../components/grid/Col";
 import { useCustomer } from "../../hooks/useCustomer";
+import Protected from "../../routes/middlewares/Protected";
 
 export const initialCustomer: CustomerRequest = {
   firstName: "",
@@ -22,7 +23,8 @@ export const CustomerCreatePage = () => {
   const { create } = useCustomer();
 
   return (
-    <div className="page-view container flex flex-col flex-wrap items-center justify-center">
+    <Protected>
+      <div className="page-view container flex flex-col flex-wrap items-center justify-center">
       <Col md={8}>
         <CustomerForm
           initialForm={initialCustomer}
@@ -32,5 +34,6 @@ export const CustomerCreatePage = () => {
         />
       </Col>
     </div>
+    </Protected>
   );
 };

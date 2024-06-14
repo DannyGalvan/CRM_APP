@@ -12,8 +12,8 @@ namespace Business.Mappers
         {
             // mapper de eventos
             CreateMap<EventRequest, Event>()
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Start!.Value.ToUniversalTime()))
-                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.End!.Value.ToUniversalTime()))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Start!.Value))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.End!.Value))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Id) ? ObjectId.Parse(src.Id) : ObjectId.Empty))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.CreatedBy) ? ObjectId.Parse(src.CreatedBy) : ObjectId.Empty))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.UpdatedBy) ? ObjectId.Parse(src.UpdatedBy) : ObjectId.Empty));

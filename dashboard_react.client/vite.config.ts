@@ -53,7 +53,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [plugin(), compression()],
-  base: "http://18.216.54.80", // url of the server
+  base: "http://3.16.70.85", // url of the server
   envPrefix: "VITE_", // optional
   resolve: {
     alias: {

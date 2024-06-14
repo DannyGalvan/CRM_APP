@@ -12,6 +12,7 @@ import { DrawerProvider } from "../../context/DrawerContext";
 import { useCustomer } from "../../hooks/useCustomer";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
 import { useToggle } from "../../hooks/useToggle";
+import Protected from "../../routes/middlewares/Protected";
 import { getCustomers } from "../../services/customerService";
 import { useCustomerStore } from "../../store/useCustomerStore";
 import { compactGrid } from "../../theme/tableTheme";
@@ -167,7 +168,8 @@ export const CustomerPage = () => {
   }
 
   return (
-    <DrawerProvider setOpenUpdate={toggleUpdate}>
+   <Protected>
+       <DrawerProvider setOpenUpdate={toggleUpdate}>
       <div className="mt-20 md:mt-0">
         <Col className="mt-5 flex justify-end">
           <Button color={"secondary"} onClick={toggle}>
@@ -221,5 +223,6 @@ export const CustomerPage = () => {
         )}
       </div>
     </DrawerProvider>
+   </Protected>
   );
 };

@@ -49,6 +49,7 @@ Entities/bin
 Entities/obj
 Dashboard_React.Server/bin
 Dashboard_React.Server/obj
+dashboard_React.client/data
 **/appsettings.development.json
 **/appsettings.production.json
 

@@ -1,6 +1,7 @@
 import { ProductForm } from "../../components/forms/ProductForm";
 import { Col } from "../../components/grid/Col";
 import { useProducts } from "../../hooks/useProducts";
+import Protected from "../../routes/middlewares/Protected";
 import { ProductRequest } from "../../types/ProductRequest";
 
 export const initialProduct: ProductRequest = {
@@ -16,7 +17,8 @@ export const CreateProductPage = () => {
   const { create } = useProducts();
 
   return (
-    <div className="page-view container flex flex-col flex-wrap items-center justify-center">
+   <Protected>
+     <div className="page-view container flex flex-col flex-wrap items-center justify-center">
       <Col md={8}>
         <ProductForm
           initialForm={initialProduct}
@@ -26,5 +28,6 @@ export const CreateProductPage = () => {
         />
       </Col>
     </div>
+   </Protected>
   );
 };

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Col } from "../../components/grid/Col";
 import { Row } from "../../components/grid/Row";
+import { nameRoutes } from "../../config/contants";
 import { useAuth } from "../../hooks/useAuth";
 
 interface NotFoundProps {
@@ -20,13 +21,13 @@ export const NotFound = ({ Message, Number }: NotFoundProps) => {
       setText("Regresar");
     } else if (Number === "500" || Number === "401") {
       logout();
-      navigate("/auth");
+      navigate(nameRoutes.login);
     }
   }, [Number]);
 
   const handleClick = () => {
     if (Number === "404") {
-      isLoggedIn ? navigate(-1) : navigate("/auth");
+      isLoggedIn ? navigate(-1) : navigate(nameRoutes.login);
     } else if (Number === "403") {
       navigate(-3);
     } 

@@ -126,14 +126,14 @@ export const CustomerForm = ({
             className="px-2"
             isInvalid={!!errors?.address}
             isRequired
-          />
+          />         
           <CatalogueSearch
-            querykey="Zones"
-            entity="Zona"
-            errorMessage={errors?.zoneId}
+            querykey="Departments"
+            entity="Departamento"
+            errorMessage={errors?.departmentId}
             setFormValue={handleChange}
-            name="zoneId"
-            defaultValue={customer?.zone?.name}
+            name="departmentId"
+            defaultValue={customer?.department?.name}
           />
           <CatalogueSearch
             querykey="Municipalities"
@@ -143,14 +143,14 @@ export const CustomerForm = ({
             name="municipalityId"
             defaultValue={customer?.municipality?.name}
           />
-          <CatalogueSearch
-            querykey="Departments"
-            entity="Departamento"
-            errorMessage={errors?.departmentId}
+           <CatalogueSearch
+            querykey="Zones"
+            entity="Zona"
+            errorMessage={errors?.zoneId}
             setFormValue={handleChange}
-            name="departmentId"
-            defaultValue={customer?.department?.name}
-          />
+            name="zoneId"
+            defaultValue={customer?.zone?.name}
+          />          
           <Row>
             <Col md={6} sm={12}>
               <Input

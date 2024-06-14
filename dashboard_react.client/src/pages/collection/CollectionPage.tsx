@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { TableColumn } from "react-data-table-component";
 import { TableRoot } from "../../components/table/TableRoot";
+import Protected from "../../routes/middlewares/Protected";
 import { getCollections } from "../../services/collectionService";
 import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
@@ -81,7 +82,8 @@ export const CollectionPage = () => {
   }
 
   return (
-    <div>
+   <Protected>
+     <div className="mt-20 md:mt-0">
       <TableRoot
         columns={columns}
         data={data?.data ?? []}
@@ -93,5 +95,6 @@ export const CollectionPage = () => {
         width={false}
       />
     </div>
+   </Protected>
   );
 };
