@@ -6,6 +6,7 @@ import fs from "fs";
 import path from "path";
 import { defineConfig } from "vite";
 import compression from "vite-plugin-compression";
+import { VitePWA } from "vite-plugin-pwa";
 
 const baseFolder =
   process.env.APPDATA !== undefined && process.env.APPDATA !== ""
@@ -52,7 +53,16 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [plugin(), compression()],
+  plugins: [
+    plugin(),
+    compression(),
+    VitePWA({
+      registerType: "autoUpdate",
+      devOptions: {
+        enabled: true,
+      },
+    }),
+  ],
   base: "http://3.16.70.85", // url of the server
   envPrefix: "VITE_", // optional
   resolve: {
