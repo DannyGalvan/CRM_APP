@@ -15,8 +15,9 @@ using Microsoft.OpenApi.Models;
 using Humanizer;
 using Entities.Interfaces;
 using BC = BCrypt.Net;
+using AutoMapper.EquivalencyExpression;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Obtain the environment current (Development, Production, etc.)
 string environment = builder.Environment.EnvironmentName;
@@ -118,7 +119,8 @@ builder.Services.AddControllers()
 //Add AutoMapper
 builder.Services.AddAutoMapper(options =>
 {
-    options.AddProfile<MappingProfile>();
+    options.AddProfile(new MappingProfile(builder.Environment));
+    options.AddCollectionMappers();
 });
 
 //Add the HttpContextAccessor

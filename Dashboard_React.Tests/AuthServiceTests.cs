@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
 using Business.Services;
+using Business.Validations.Auth;
+using Entidades.Request;
 using Entities.Configurations;
 using Entities.Interfaces;
 using Entities.Models;
 using Entities.Request;
+using FluentValidation;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Moq;
@@ -17,6 +20,10 @@ namespace Dashboard_React.Tests
         private readonly Mock<ICRMContext> _mockContext;
         private readonly Mock<ISendMail> _mockSendMail;
         private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<LoginValidations> _mockLoginValidations;
+        private readonly Mock<IValidator<ChangePasswordRequest>> _mockChangePasswordValidations;
+        private readonly Mock<IValidator<ResetPasswordRequest>> _mockResetPasswordValidator;
+        private readonly Mock<IValidator<RecoveryPasswordRequest>> _mockRecoveryPasswordValidator;
 
         public AuthServiceTests()
         {
@@ -24,6 +31,10 @@ namespace Dashboard_React.Tests
             _mockSendMail = new Mock<ISendMail>();
             _mockMapper = new Mock<IMapper>();
             _mockContext = new Mock<ICRMContext>();
+            _mockLoginValidations = new Mock<LoginValidations>();
+            _mockChangePasswordValidations = new Mock<IValidator<ChangePasswordRequest>>();
+            _mockResetPasswordValidator = new Mock<IValidator<ResetPasswordRequest>>();
+            _mockRecoveryPasswordValidator = new Mock<IValidator<RecoveryPasswordRequest>>();
 
             _mockAppSettings.Setup(a => a.Value).Returns(new AppSettings
             {
@@ -31,7 +42,19 @@ namespace Dashboard_React.Tests
                 TokenExpirationHrs = 1,
                 NotBefore = 0,
                 UrlClient = "http://localhost"
-            });              
+            });
+
+            _mockLoginValidations.Setup(v => v.Validate(It.IsAny<ValidationContext<LoginRequest>>()))
+                .Returns(new FluentValidation.Results.ValidationResult());
+
+            _mockChangePasswordValidations.Setup(v => v.Validate(It.IsAny<ValidationContext<ChangePasswordRequest>>()))
+                .Returns(new FluentValidation.Results.ValidationResult());
+
+            _mockResetPasswordValidator.Setup(v => v.Validate(It.IsAny<ValidationContext<ResetPasswordRequest>>()))
+                .Returns(new FluentValidation.Results.ValidationResult());
+
+            _mockRecoveryPasswordValidator.Setup(v => v.Validate(It.IsAny<ValidationContext<RecoveryPasswordRequest>>()))
+                .Returns(new FluentValidation.Results.ValidationResult());
         }
 
         [Fact]
@@ -56,7 +79,14 @@ namespace Dashboard_React.Tests
             _mockContext.Setup(ctx => ctx.Database.GetCollection<User>(It.IsAny<string>(), It.IsAny<MongoCollectionSettings>()))
                 .Returns(userCollectionMock.Object);
 
-            IAuthService _authService = new AuthService(_mockAppSettings.Object, _mockContext.Object, _mockSendMail.Object, _mockMapper.Object);
+            AuthService _authService = new (_mockContext.Object,
+                                            _mockAppSettings.Object,
+                                            _mockSendMail.Object,
+                                            _mockMapper.Object,
+                                            _mockLoginValidations.Object,
+                                            _mockChangePasswordValidations.Object,
+                                            _mockResetPasswordValidator.Object,
+                                            _mockRecoveryPasswordValidator.Object);
             // Act
             var result = _authService.Auth(loginRequest);
 
