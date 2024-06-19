@@ -2,33 +2,33 @@
 using Entities.Request;
 using FluentValidation;
 using BC = BCrypt.Net;
-using Entities.Context;
 using MongoDB.Bson;
 using Entities.Models;
 using MongoDB.Driver;
 using Humanizer;
+using Entities.Interfaces;
 
 namespace Business.Validations.Auth
 {
     public class ResetPasswordValidations : AbstractValidator<ResetPasswordRequest>
     {
-        private readonly CRMContext _bd;
-        public ResetPasswordValidations(CRMContext bd)
+        private readonly ICRMContext _bd;
+        public ResetPasswordValidations(ICRMContext bd)
         {
             _bd = bd;
 
             RuleFor(u => u.IdUser)
                .NotEmpty()
                .WithMessage("Debes proporcionar el Id del usuario")
-               .Must(u => UserExists(u!.Value))
+               .Must(UserExists)
                .WithMessage("El usuario no existe");
             RuleFor(u => u.Password)
                 .NotEmpty()
                 .WithMessage("Debes proporcionar una contraseña")
                 .MinimumLength(8)
                 .WithMessage("La contraseña debe contener al menos 8 caracteres")
-                .Matches("^(?=.*[A-Z])(?=.*\\d).+$")
-                .WithMessage("La contraseña debe contener al menos una letra mayúscula un número");
+                .Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,25}$")
+                .WithMessage("La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial, y tener entre 8 y 25 caracteres");
             RuleFor(u => u.ConfirmPassword)
                 .NotEmpty()
                 .WithMessage("Debes confirmar la contraseña")
@@ -40,7 +40,9 @@ namespace Business.Validations.Auth
 
                 IMongoCollection<User> Users = _bd.Database.GetCollection<User>(nameCollection);
 
-                Users? user = Users.Find(x => x.Id.Equals(model.IdUser!.Value)).FirstOrDefault();
+                ObjectId id = ObjectId.Parse(model.IdUser);
+
+                Users? user = Users.Find(x => x.Id.Equals(id)).FirstOrDefault();
 
                 if (user != null)
                 {
@@ -48,7 +50,6 @@ namespace Business.Validations.Auth
                     {
                         context.AddFailure("Password", $"La contraseña Actual no puede ser igual a la anterior");
                     }
-
                 }
                 else
                 {
@@ -57,13 +58,15 @@ namespace Business.Validations.Auth
             });
         }
 
-        private bool UserExists(ObjectId id)
+        private bool UserExists(string id)
         {
             string nameCollection = typeof(User).Name.Pluralize();
 
             IMongoCollection<User> Users = _bd.Database.GetCollection<User>(nameCollection);
 
-            return Users.Find(u => u.Id == id).FirstOrDefault() != null;
+            ObjectId id1 = ObjectId.Parse(id);
+
+            return Users.Find(u => u.Id == id1).FirstOrDefault() != null;
         }
 
     }

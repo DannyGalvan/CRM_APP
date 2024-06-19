@@ -89,7 +89,7 @@ const columns: TableColumn<any>[] = [
   {
     id: "department",
     name: "Departamento",
-    selector: (data) => data.department.name,
+    selector: (data) => data?.department?.name,
     sortable: true,
     maxWidth: "155px",
     omit: false,
@@ -97,7 +97,7 @@ const columns: TableColumn<any>[] = [
   {
     id: "municipality",
     name: "Municipio",
-    selector: (data) => data.municipality.name,
+    selector: (data) => data?.municipality?.name,
     sortable: true,
     maxWidth: "155px",
     omit: false,
@@ -105,7 +105,7 @@ const columns: TableColumn<any>[] = [
   {
     id: "zone",
     name: "Zona",
-    selector: (data) => data.zone.name,
+    selector: (data) => data?.zone?.name,
     sortable: true,
     maxWidth: "125px",
     omit: false,

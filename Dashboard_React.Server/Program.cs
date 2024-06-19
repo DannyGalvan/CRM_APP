@@ -1,4 +1,3 @@
-using Entities.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc;
@@ -8,17 +7,14 @@ using ValidationFailure = FluentValidation.Results.ValidationFailure;
 using System.Text.Json;
 using Entities.Response;
 using Entities.Configurations;
-using Business.Interfaces;
-using Business.Repository;
-using Business.Services;
-using AutoMapper;
 using Business.Mappers;
 using MongoDB.Driver;
 using Entities.Models;
 using MongoDB.Bson;
-using Entities.Request;
 using Microsoft.OpenApi.Models;
 using Humanizer;
+using Entities.Interfaces;
+using BC = BCrypt.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,10 +36,6 @@ AppSettings appSettingsConfig = appSettingsSection.Get<AppSettings>()!;
 MongoConnection mongoConnection = mongoConnectionSection.Get<MongoConnection>()!;
 builder.Services.Configure<AppSettings>(appSettingsSection);
 builder.Services.Configure<MongoConnection>(mongoConnectionSection);
-
-//Add the DbContexts
-builder.Services.AddScoped<CRMContext>();
-builder.Services.AddScoped<MongoContext>();
 
 //Add JWT
 builder.Services.AddAuthentication(d =>
@@ -93,8 +85,6 @@ builder.Services.AddAuthentication(d =>
            };
        });
 
-builder.Services.AddHttpContextAccessor();
-
 //Add FluentValidation to response errors of the controllers
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
@@ -125,24 +115,26 @@ builder.Services.AddControllers()
         };
     });
 
-//mappping profiles
-var mapperConfig = new MapperConfiguration(mc =>
+//Add AutoMapper
+builder.Services.AddAutoMapper(options =>
 {
-    mc.AddProfile(new MappingProfile());  
+    options.AddProfile<MappingProfile>();
 });
 
-IMapper mapper = mapperConfig.CreateMapper();
+//Add the HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
-//services injected
-builder.Services.AddSingleton(mapper);
-builder.Services.AddScoped<ISendMail, SendEmail>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICalendarEventService, CalendarEventService>();
-builder.Services.AddScoped<IEntityService<Customer, CustomerRequest, ObjectId>, EntityService<Customer, CustomerRequest, ObjectId>>();  
-builder.Services.AddScoped<IEntityService<Product, ProductRequest, ObjectId>, EntityService<Product, ProductRequest, ObjectId>>();
-builder.Services.AddScoped<IEntityService<Collection, CollectionRequest, ObjectId>, EntityService<Collection, CollectionRequest, ObjectId>>();
-builder.Services.AddScoped<ICatalogueService, CatalogueService>();
+//Add the DbContexts
+builder.Services.AddContextGroup();
 
+//Add services injected
+builder.Services.AddServicesGroup();
+
+//Add validations injected
+builder.Services.AddValidationsGroup();
+
+//Add the Cache in memory
+builder.Services.AddMemoryCache();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -166,8 +158,6 @@ builder.Services.AddSwaggerGen(options => {
     });
 });
 
-builder.Services.AddMemoryCache();
-
 var app = builder.Build();
 
 // Create a sa User if not exists to start the application
@@ -181,7 +171,7 @@ if (app.Environment.IsDevelopment())
         {
             string emailManager = "pruebas.test29111999@gmail.com";
 
-            var dbContext = services.GetRequiredService<CRMContext>();
+            var dbContext = services.GetRequiredService<ICRMContext>();
 
             string collectionName = typeof(User).Name.Pluralize();
 
@@ -195,7 +185,7 @@ if (app.Environment.IsDevelopment())
                 {
                     Id = ObjectId.Parse("662754d99f4e1bf2407306ba"),
                     Email = emailManager,
-                    Password = "$2b$10$00.zgcXUrvbb45xlDS2Y5eXkMb.Ktx/XcQDOyMAbJv2CxWnD2Wpp.",
+                    Password = BC.BCrypt.HashPassword("Broiler-Charbroil4"),
                     Name = "Systema",
                     LastName = "Admin",
                     UserName = "MANAGER",
@@ -220,7 +210,6 @@ else
 {
     Console.WriteLine("Aplicacion Iniciada en Produccion con Exito!!!");
 }
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -10,31 +10,16 @@ namespace Business.Util
             foreach (PropertyInfo property in typeof(T).GetProperties())
             {
                 object? existingValue = property.GetValue(existingEntity);
-                object? updatedValue = property?.GetValue(updatedEntity);               
+                object? updatedValue = property?.GetValue(updatedEntity);
+
+                if (property?.Name == "CreatedBy" || property?.Name == "CreatedAt" || property?.Name == "Id")
+                {
+                    continue;
+                }
 
                 if (updatedValue != null && property!.CanWrite)
                 {
-                    if (updatedValue is ObjectId updatedObjectId && existingValue is ObjectId existingObjectId )
-                    {
-                        if (updatedObjectId == ObjectId.Empty)
-                        {
-                            continue;
-                        }
-
-                        property.SetValue(existingEntity, updatedObjectId);
-                    }
-                    else if (updatedValue is DateTime updatedDateTime && existingValue is DateTime existingDateTime)
-                    {
-                        // Aquí puedes agregar cualquier lógica adicional específica para DateTime si es necesario
-                        updatedDateTime = updatedDateTime.ToUniversalTime();
-
-                        property.SetValue(existingEntity, updatedDateTime);
-                    }
-                    else if (updatedValue is not DateTime)
-                    {
-                        // Para cualquier otro tipo que no sea DateTime
-                        property.SetValue(existingEntity, updatedValue);
-                    }
+                    property.SetValue(existingEntity, updatedValue);
                 }
             }
         }

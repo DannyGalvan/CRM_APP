@@ -5,6 +5,7 @@ using Entities.Models;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation.Results;
+using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -15,10 +16,11 @@ namespace Dashboard_React.Server.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CollectionController(IEntityService<Collection, CollectionRequest, ObjectId> collectionService, IMapper mapper) : ControllerBase
+    [AllArgsConstructor]
+    public partial class CollectionController : ControllerBase
     {
-        private readonly IEntityService<Collection, CollectionRequest, ObjectId> _collectionService = collectionService;
-        private readonly IMapper _mapper = mapper;
+        private readonly IEntityService<Collection, CollectionRequest, ObjectId> _collectionService;
+        private readonly IMapper _mapper;
 
         [HttpGet]
         public IActionResult GetAll(string? filters)
@@ -84,7 +86,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Create(CollectionRequest model)
         {
             model.CreatedBy = GetUserId();
-            var response = _collectionService.Create(model, new CreateCollectionValidator());
+            var response = _collectionService.Create(model);
             if (response.Success)
             {
                 Response<ProductResponse> successResponse = new()
@@ -114,7 +116,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Update(CollectionRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _collectionService.Update(model, new UpdateCollectionValidator());
+            var response = _collectionService.Update(model);
             if (response.Success)
             {
                 Response<ProductResponse> successResponse = new()
@@ -144,7 +146,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult PartialUpdate(CollectionRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _collectionService.PartialUpdate(model, new PartialUpdateCollectionValidator());
+            var response = _collectionService.PartialUpdate(model);
             if (response.Success)
             {
                 Response<ProductResponse> successResponse = new()

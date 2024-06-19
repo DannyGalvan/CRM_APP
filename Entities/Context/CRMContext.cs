@@ -1,4 +1,5 @@
 ﻿using Entities.Configurations;
+using Entities.Interfaces;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -6,7 +7,7 @@ using MongoDB.Driver.Core.Events;
 
 namespace Entities.Context
 {
-    public class CRMContext 
+    public class CRMContext : ICRMContext
     {
         public IMongoDatabase Database { get; private set; }
 

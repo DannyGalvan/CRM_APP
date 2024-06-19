@@ -1,5 +1,5 @@
 ﻿using Entidades.Request;
-using Entities.Context;
+using Entities.Interfaces;
 using Entities.Models;
 using FluentValidation;
 using Humanizer;
@@ -9,8 +9,8 @@ namespace Business.Validations.Auth
 {
     public class RecoveryPasswordValidations : AbstractValidator<RecoveryPasswordRequest>
     {
-        private readonly CRMContext _bd;
-        public RecoveryPasswordValidations(CRMContext bd)
+        private readonly ICRMContext _bd;
+        public RecoveryPasswordValidations(ICRMContext bd)
         {
             _bd = bd;
 

@@ -3,6 +3,7 @@ using Entidades.Request;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation.Results;
+using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -12,9 +13,10 @@ namespace CardReader.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthService authService) : ControllerBase
+    [AllArgsConstructor]
+    public partial class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService = authService;
+        private readonly IAuthService _authService;
 
         [AllowAnonymous]
         [HttpPost]
@@ -89,7 +91,7 @@ namespace CardReader.Controllers
         [HttpPost("ResetPassword")]
         public ActionResult PostResetPassword([FromBody] ResetPasswordRequest model) 
         {
-            model.IdUser = GetUserId();
+            model.IdUser = GetUserId().ToString();
             Response<string, List<ValidationFailure>> response = _authService.ResetPassword(model);
 
             if (response.Success)

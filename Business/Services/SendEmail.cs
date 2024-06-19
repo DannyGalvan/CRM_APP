@@ -1,32 +1,36 @@
 ﻿using Business.Interfaces;
 using Entities.Configurations;
+using Lombok.NET;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 
 namespace Business.Repository
 {
-    public class SendEmail(IOptions<AppSettings> appSettings) : ISendMail
+    [AllArgsConstructor]
+    public partial class SendEmail : ISendMail
     {
-        private readonly AppSettings _appSettings = appSettings.Value;
+        private readonly IOptions<AppSettings> _appSettings;
 
         public bool Send(string correo, string asunto, string mensaje)
         {
             bool resultado;
             try
             {
+                AppSettings appSettings = _appSettings.Value;
+
                 MailMessage mail = new();
                 mail.To.Add(correo);
-                mail.From = new MailAddress(_appSettings.Email);
+                mail.From = new MailAddress(appSettings.Email);
                 mail.Subject = asunto;
                 mail.Body = mensaje;
                 mail.IsBodyHtml = true;
 
                 var smtp = new SmtpClient()
                 {
-                    Credentials = new NetworkCredential(_appSettings.Email, _appSettings.Password),
-                    Host = _appSettings.Host,
-                    Port = _appSettings.Port,
+                    Credentials = new NetworkCredential(appSettings.Email, appSettings.Password),
+                    Host = appSettings.Host,
+                    Port = appSettings.Port,
                     EnableSsl = true,
                 };
 

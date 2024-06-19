@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Business.Validations.Product;
 using Entities.Models;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation.Results;
+using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -15,10 +15,11 @@ namespace Dashboard_React.Server.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class ProductController(IEntityService<Product, ProductRequest, ObjectId> productService, IMapper mapper) : ControllerBase
+    [AllArgsConstructor]
+    public partial class ProductController : ControllerBase
     {
-        private readonly IEntityService<Product, ProductRequest, ObjectId> _productService = productService;
-        private readonly IMapper _mapper = mapper;
+        private readonly IEntityService<Product, ProductRequest, ObjectId> _productService;
+        private readonly IMapper _mapper;
 
         [HttpGet]
         public IActionResult GetAll(string? filters)
@@ -84,7 +85,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Create(ProductRequest model)
         {
             model.CreatedBy = GetUserId();
-            var response = _productService.Create(model, new CreateProductValidator());
+            var response = _productService.Create(model);
             if (response.Success)
             {
                 Response<ProductResponse> successResponse = new()
@@ -114,7 +115,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Update(ProductRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _productService.Update(model, new UpdateProductValidator());
+            var response = _productService.Update(model);
             if (response.Success)
             {
                 Response<ProductResponse> successResponse = new()
@@ -144,7 +145,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult PartialUpdate(ProductRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _productService.PartialUpdate(model, new PartialUpdateProductValidator());
+            var response = _productService.PartialUpdate(model);
             if (response.Success)
             {
                 Response<ProductResponse> successResponse = new()

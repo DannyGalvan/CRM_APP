@@ -1,4 +1,5 @@
 ﻿using Entities.Configurations;
+using Entities.Interfaces;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
@@ -9,13 +10,13 @@ using System.Security.Claims;
 
 namespace Entities.Context
 {
-    public class MongoContext
+    public class MongoContext : IMongoContext
     {
-        private readonly CRMContext _crmContext;
+        private readonly ICRMContext _crmContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMemoryCache _cache;
         public IMongoDatabase Database { get; private set; }
-        public MongoContext(IHttpContextAccessor httpContextAccessor, CRMContext cRMContext, IMemoryCache memoryCache) {
+        public MongoContext(IHttpContextAccessor httpContextAccessor, ICRMContext cRMContext, IMemoryCache memoryCache) {
             _crmContext = cRMContext;
             _httpContextAccessor = httpContextAccessor;
             _cache = memoryCache;

@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Business.Validations.Catalog;
 using Entities.Models;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation.Results;
+using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using MongoDB.Driver;
 using System.Security.Claims;
 
 namespace Dashboard_React.Server.Controllers
@@ -16,10 +15,11 @@ namespace Dashboard_React.Server.Controllers
     [Authorize]
     [Route("api/{catalogue}")]
     [ApiController]
-    public class CatalogueController(ICatalogueService service, IMapper mapper) : ControllerBase
+    [AllArgsConstructor]
+    public partial class CatalogueController : ControllerBase
     {
-        private readonly ICatalogueService _service = service;
-        private readonly IMapper _mapper = mapper;
+        private readonly ICatalogueService _service;
+        private readonly IMapper _mapper;
 
         [HttpGet]
         public IActionResult GetAll(string catalogue, [FromQuery] string? filters)
@@ -84,7 +84,8 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Create(string catalogue, [FromBody] CatalogueRequest request)
         {
             request.CreatedBy = GetUserId();
-            var response = _service.Create(request, new CreateCatalogValidator(), catalogue);
+            var response = _service.Create(request, catalogue);
+
             if (response.Success)
             {
                 Response<CatalogueResponse> successResponse = new()
@@ -113,7 +114,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Update(string catalogue, [FromBody] CatalogueRequest request)
         {
             request.UpdatedBy = GetUserId();
-            var response = _service.Update(request, new UpdateCatalogValidator(), catalogue);
+            var response = _service.Update(request, catalogue);
             if (response.Success)
             {
                 Response<CatalogueResponse> successResponse = new()
@@ -142,7 +143,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Patch(string catalogue, [FromBody] CatalogueRequest request)
         {
             request.UpdatedBy = GetUserId();
-            var response = _service.PartialUpdate(request, new PartialUpdateCatalogValidator(), catalogue);
+            var response = _service.PartialUpdate(request, catalogue);
             if (response.Success)
             {
                 Response<CatalogueResponse> successResponse = new()

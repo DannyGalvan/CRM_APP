@@ -1,32 +1,41 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Entities.Context;
 using Entities.Interfaces;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation;
 using FluentValidation.Results;
 using Humanizer;
+using Lombok.NET;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Business.Services
 {
-    public class EntityService<TEntity, TRequest, TId>(MongoContext context, IMapper mapper) : IEntityService<TEntity, TRequest, TId>
+    [AllArgsConstructor]
+    public partial class EntityService<TEntity, TRequest, TId> : IEntityService<TEntity, TRequest, TId>
         where TEntity : class, IEntity<TId>
     {
-        private readonly MongoContext _context = context;
-        private readonly IMapper _mapper = mapper;
+        private readonly IMongoContext _context;
+        private readonly IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
         private static readonly string[] separator = [" AND "];
         private static readonly string[] separatorArray = [" OR "];
 
-        public Response<TEntity, List<ValidationFailure>> Create(TRequest model, AbstractValidator<TRequest> validator)
+        private IValidator<TRequest> GetValidator(string key)
+        {
+            return _serviceProvider.GetRequiredKeyedService<IValidator<TRequest>>(key);
+        }
+
+        public Response<TEntity, List<ValidationFailure>> Create(TRequest model)
         {
             Response<TEntity, List<ValidationFailure>> response = new();
 
             try
             {
-                var results = validator.Validate(model);
+
+                var results = GetValidator("Create").Validate(model);
 
                 if (!results.IsValid)
                 {
@@ -203,13 +212,13 @@ namespace Business.Services
             }
         }
 
-        public Response<TEntity, List<ValidationFailure>> PartialUpdate(TRequest model, AbstractValidator<TRequest> validator)
+        public Response<TEntity, List<ValidationFailure>> PartialUpdate(TRequest model)
         {
             Response<TEntity, List<ValidationFailure>> response = new();
 
             try
             {
-                var results = validator.Validate(model);
+                var results = GetValidator("PartialUpdate").Validate(model);
 
                 if (!results.IsValid)
                 {
@@ -266,13 +275,13 @@ namespace Business.Services
             }
         }
 
-        public Response<TEntity, List<ValidationFailure>> Update(TRequest model, AbstractValidator<TRequest> validator)
+        public Response<TEntity, List<ValidationFailure>> Update(TRequest model)
         {
             Response<TEntity, List<ValidationFailure>> response = new();
 
             try
             {
-                var results = validator.Validate(model);
+                var results = GetValidator("Update").Validate(model);
 
                 if (!results.IsValid)
                 {
@@ -304,13 +313,15 @@ namespace Business.Services
 
                 DateTime createdAt = entityExist.CreatedAt;
 
+                Util.Util.UpdateProperties(entityExist, entity);
+
                 entity.UpdatedAt = DateTime.Now.ToUniversalTime();
                 entity.CreatedAt = createdAt;
 
-                database.ReplaceOne(e => e.Id!.Equals(entity.Id), entity);
+                database.ReplaceOne(e => e.Id!.Equals(entity.Id), entityExist);
 
                 response.Errors = null;
-                response.Data = entity;
+                response.Data = entityExist;
                 response.Success = true;
                 response.Message = $"Entity {typeof(TEntity).Name} updated successfully";
                 return response;

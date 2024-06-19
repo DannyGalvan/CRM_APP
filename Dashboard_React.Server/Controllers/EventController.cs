@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Business.Validations.Event;
 using Entities.Models;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation.Results;
+using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -15,10 +15,11 @@ namespace Dashboard_React.Server.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class EventController(ICalendarEventService eventService, IMapper mapper) : ControllerBase
+    [AllArgsConstructor]
+    public partial class EventController : ControllerBase
     {
-        private readonly ICalendarEventService _eventService = eventService;
-        private readonly IMapper _mapper = mapper;
+        private readonly ICalendarEventService _eventService;
+        private readonly IMapper _mapper;
 
         [HttpGet]
         public IActionResult GetAllEventsByUser(DateTime? start, DateTime? end)
@@ -37,7 +38,7 @@ namespace Dashboard_React.Server.Controllers
         {
             model.UserId = GetUserId();
             model.CreatedBy = GetUserId().ToString();
-            var response = _eventService.Create(model, new CreateEventValidator());
+            var response = _eventService.Create(model);
             if (response.Success)
             {
                 Response<EventResponse> successResponse = new()
@@ -68,7 +69,7 @@ namespace Dashboard_React.Server.Controllers
         {
             model.UserId = GetUserId();
             model.UpdatedBy = GetUserId().ToString();
-            var response = _eventService.Update(model, new UpdateEventValidator());
+            var response = _eventService.Update(model);
             if (response.Success)
             {
                 Response<EventResponse> successResponse = new()
@@ -99,7 +100,7 @@ namespace Dashboard_React.Server.Controllers
         {
             model.UserId = GetUserId();
             model.UpdatedBy = GetUserId().ToString();
-            var response = _eventService.PartialUpdate(model, new PartialUpdateEventValidator());
+            var response = _eventService.PartialUpdate(model);
             if (response.Success)
             {
                 Response<EventResponse> successResponse = new()

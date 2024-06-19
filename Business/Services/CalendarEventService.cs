@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Entities.Configurations;
-using Entities.Context;
+using Entities.Interfaces;
 using Entities.Models;
 using Entities.Request;
 using Humanizer;
@@ -10,13 +9,9 @@ using MongoDB.Driver;
 
 namespace Business.Services
 {
-    public class CalendarEventService : EntityService<Event, EventRequest, ObjectId>, ICalendarEventService
+    public partial class CalendarEventService(IMapper mapper, IMongoContext mongo, IServiceProvider serviceProvider) : EntityService<Event, EventRequest, ObjectId>(mongo, mapper, serviceProvider), ICalendarEventService
     {
-        private readonly MongoContext _mongo;
-        public CalendarEventService(IMapper mapper, MongoContext mongo) : base(mongo, mapper)
-        {
-            _mongo = mongo;
-        }
+        private readonly IMongoContext _mongo = mongo;
 
         public List<Event> GetAllEventsByUser(ObjectId userId, DateTime start, DateTime end)
         {

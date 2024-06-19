@@ -1,6 +1,4 @@
-﻿using Business.Validations.Auth;
-using Business.Interfaces;
-using Entities.Context;
+﻿using Business.Interfaces;
 using Entities.Request;
 using Entities.Configurations;
 using Entities.Models;
@@ -19,24 +17,30 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using Humanizer;
 using AutoMapper;
+using Entities.Interfaces;
+using FluentValidation;
+using Lombok.NET;
 
 namespace Business.Services
 {
-    public class AuthService(IOptions<AppSettings> appSettings, CRMContext bd, ISendMail mail, IMapper mapper) : IAuthService
+    [AllArgsConstructor]
+    public partial class AuthService : IAuthService
     {
-        private readonly CRMContext _bd = bd;
-        private readonly AppSettings _appSettings = appSettings.Value;
-        private readonly ISendMail _mail = mail;
-        private readonly IMapper _mapper = mapper;
+        private readonly ICRMContext _bd;
+        private readonly IOptions<AppSettings> _appSettings;
+        private readonly ISendMail _mail;
+        private readonly IMapper _mapper;
+        private readonly IValidator<LoginRequest> _loginValidations;
+        private readonly IValidator<ChangePasswordRequest> _changePasswordValidations;
+        private readonly IValidator<ResetPasswordRequest> _resetPasswordValidator;
+        private readonly IValidator<RecoveryPasswordRequest> _recoveryPasswordValidator;
 
         public Response<AuthResponse, List<ValidationFailure>> Auth(LoginRequest model)
         {
             Response<AuthResponse, List<ValidationFailure>> userResponse = new();
             try
             {
-                var validator = new LoginValidations(_bd);
-
-                ValidationResult results = validator.Validate(model);
+                ValidationResult results = _loginValidations.Validate(model);
 
                 if (!results.IsValid)
                 {
@@ -52,12 +56,12 @@ namespace Business.Services
 
                 IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
 
-                User? oUser = Users.Find(u => u.UserName == model.UserName && u.Active == true).FirstOrDefault();
+                User? oUser = Users.Find(u => u.UserName == model.UserName.ToUpper()).FirstOrDefault();
 
                 if (oUser == null)
                 {
                     userResponse.Success = false;
-                    userResponse.Message = "Usuario y/o Contraseña invalidos";
+                    userResponse.Message = "Usuario y/o contraseña invalidos";
                     userResponse.Data = null;
                     userResponse.Errors = results.Errors;
 
@@ -67,7 +71,7 @@ namespace Business.Services
                 if (!BC.BCrypt.Verify(model.Password, oUser.Password))
                 {
                     userResponse.Success = false;
-                    userResponse.Message = "Usuario y/o Contraseña invalidos";
+                    userResponse.Message = "Usuario y/o contraseña invalidos";
                     userResponse.Data = null;
                     userResponse.Errors = results.Errors;
 
@@ -115,8 +119,7 @@ namespace Business.Services
 
             Response<string, List<ValidationFailure>> response = new();
 
-            var validator = new ChangePasswordValidations();
-            ValidationResult results = validator.Validate(model);
+            ValidationResult results =  _changePasswordValidations.Validate(model);
 
             if (!results.IsValid)
             {
@@ -180,8 +183,7 @@ namespace Business.Services
 
             try
             {
-                var validator = new ResetPasswordValidations(_bd);
-                ValidationResult results = validator.Validate(model);
+                ValidationResult results = _resetPasswordValidator.Validate(model);
 
                 if (!results.IsValid)
                 {
@@ -197,11 +199,13 @@ namespace Business.Services
 
                 IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
 
-                User oUser = Users.Find(u => u.Id == model.IdUser!.Value).FirstOrDefault();
+                ObjectId id = ObjectId.Parse(model.IdUser);
+
+                User oUser = Users.Find(u => u.Id == id).FirstOrDefault();
 
                 string encrypt = BC.BCrypt.HashPassword(model.Password);
 
-                var saveChanges = Users.UpdateOne(u => u.Id == model.IdUser, Builders<User>.Update.Set(u => u.Password, encrypt).Set(u => u.RecoveryToken, "").Set(u => u.Reset, false));
+                var saveChanges = Users.UpdateOne(u => u.Id == id, Builders<User>.Update.Set(u => u.Password, encrypt).Set(u => u.RecoveryToken, "").Set(u => u.Reset, false));
 
                 if (saveChanges.MatchedCount == 0)
                 {
@@ -273,8 +277,7 @@ namespace Business.Services
         {
             Response<string, List<ValidationFailure>> response = new();
 
-            var validator = new RecoveryPasswordValidations(_bd);
-            ValidationResult results = validator.Validate(model);
+            ValidationResult results = _recoveryPasswordValidator.Validate(model);
 
             if (!results.IsValid)
             {
@@ -311,7 +314,7 @@ namespace Business.Services
             }
 
             const string affair = "Solicitud De Cambio de Contraseña";
-            var link = $"{_appSettings.UrlClient}/RecoveryPassword?token={token}";
+            var link = $"{_appSettings.Value.UrlClient}/RecoveryPassword?token={token}";
             var messageMail =
                 $"<h3>Ingese al siguiente link para cambiar su contraseña!</h3></br><a href='{link}'>Cambiar Contraseña</a>";
 
@@ -337,8 +340,9 @@ namespace Business.Services
 
         private string GetToken(User user)
         {
+            AppSettings appSettings = _appSettings.Value;
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var claims = new List<Claim>()
                              {
                                  new (ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -355,8 +359,8 @@ namespace Business.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims.ToArray()),
-                NotBefore = DateTime.UtcNow.AddMinutes(_appSettings.NotBefore),
-                Expires = DateTime.UtcNow.AddHours(_appSettings.TokenExpirationHrs),
+                NotBefore = DateTime.UtcNow.AddMinutes(appSettings.NotBefore),
+                Expires = DateTime.UtcNow.AddHours(appSettings.TokenExpirationHrs),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

@@ -1,25 +1,35 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
 using Entities.Context;
+using Entities.Interfaces;
 using Entities.Models;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation;
 using FluentValidation.Results;
 using Humanizer;
+using Lombok.NET;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Business.Services
 {
-    public class CatalogueService(MongoContext mongo, IMapper mapper) : ICatalogueService
+    [AllArgsConstructor]
+    public partial class CatalogueService : ICatalogueService
     {
-        private readonly MongoContext _mongo = mongo;
-        private readonly IMapper _mapper = mapper;
+        private readonly IMongoContext _mongo;
+        private readonly IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
         private static readonly string[] separator = [" AND "];
         private static readonly string[] separatorArray = [" OR "];
 
-        public Response<Catalogue, List<ValidationFailure>> Create(CatalogueRequest model, AbstractValidator<CatalogueRequest> validator, string bd)
+        private IValidator<CatalogueRequest> GetValidator(string key)
+        {
+            return _serviceProvider.GetRequiredKeyedService<IValidator<CatalogueRequest>>(key);
+        }
+
+        public Response<Catalogue, List<ValidationFailure>> Create(CatalogueRequest model, string bd)
         {
             Response<Catalogue, List<ValidationFailure>> response = new();
 
@@ -51,7 +61,7 @@ namespace Business.Services
                     return response;
                 }
 
-                var results = validator.Validate(model);
+                var results = GetValidator("Create").Validate(model);
 
                 if (!results.IsValid)
                 {
@@ -110,9 +120,7 @@ namespace Business.Services
                     return response;
                 }               
 
-                IMongoCollection<Catalogue> collection = _mongo.Database.GetCollection<Catalogue>(bd);
-
-                
+                IMongoCollection<Catalogue> collection = _mongo.Database.GetCollection<Catalogue>(bd);                
 
                 List<Catalogue> searchResult = collection.Find(TranslateToMongoFilter(filter)).ToList();
 
@@ -178,7 +186,7 @@ namespace Business.Services
             }
         }
 
-        public Response<Catalogue, List<ValidationFailure>> PartialUpdate(CatalogueRequest model, AbstractValidator<CatalogueRequest> validator, string bd)
+        public Response<Catalogue, List<ValidationFailure>> PartialUpdate(CatalogueRequest model, string bd)
         {
             Response<Catalogue, List<ValidationFailure>> response = new();
 
@@ -210,7 +218,7 @@ namespace Business.Services
                     return response;
                 }
 
-                var results = validator.Validate(model);
+                var results = GetValidator("PartialUpdate").Validate(model);
 
                 if (!results.IsValid)
                 {
@@ -264,7 +272,7 @@ namespace Business.Services
             }
         }
 
-        public Response<Catalogue, List<ValidationFailure>> Update(CatalogueRequest model, AbstractValidator<CatalogueRequest> validator, string bd)
+        public Response<Catalogue, List<ValidationFailure>> Update(CatalogueRequest model, string bd)
         {
             Response<Catalogue, List<ValidationFailure>> response = new();
 
@@ -296,7 +304,7 @@ namespace Business.Services
                     return response;
                 }
 
-                var results = validator.Validate(model);
+                var results = GetValidator("Update").Validate(model);
 
                 if (!results.IsValid)
                 {
@@ -331,10 +339,10 @@ namespace Business.Services
                 entityExist.UpdatedAt = DateTime.Now.ToUniversalTime();
                 entityExist.CreatedAt = createdAt;
 
-                collection.ReplaceOne(c => c.Id == catalogue.Id, catalogue);
+                collection.ReplaceOne(c => c.Id == catalogue.Id, entityExist);
 
                 response.Errors = null;
-                response.Data = catalogue;
+                response.Data = entityExist;
                 response.Success = true;
                 response.Message = $"Catalogue {bd} updated successfully";
 

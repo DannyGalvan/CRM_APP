@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Business.Validations.Customer;
 using Entities.Models;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation.Results;
+using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -15,10 +15,11 @@ namespace Dashboard_React.Server.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController(IEntityService<Customer, CustomerRequest, ObjectId> customerService, IMapper mapper) : ControllerBase
+    [AllArgsConstructor]
+    public partial class CustomerController : ControllerBase
     {
-        private readonly IEntityService<Customer, CustomerRequest, ObjectId> _customerService = customerService;
-        private readonly IMapper _mapper = mapper;
+        private readonly IEntityService<Customer, CustomerRequest, ObjectId> _customerService;
+        private readonly IMapper _mapper;
 
         [HttpGet] 
         public IActionResult GetAll(string? filters)
@@ -84,7 +85,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Create(CustomerRequest model)
         {
             model.CreatedBy = GetUserId();
-            var response = _customerService.Create(model, new CreateCustomerValidator());
+            var response = _customerService.Create(model);
             if (response.Success)
             {
                 Response<CustomerResponse> successResponse = new()
@@ -114,7 +115,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult Update(CustomerRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _customerService.Update(model,new UpdateCustomerValidator());
+            var response = _customerService.Update(model);
             if (response.Success)
             {
                 Response<CustomerResponse> successResponse = new()
@@ -144,7 +145,7 @@ namespace Dashboard_React.Server.Controllers
         public IActionResult PartialUpdate(CustomerRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _customerService.PartialUpdate(model, new PartialUpdateCustomerValidator());
+            var response = _customerService.PartialUpdate(model);
             if (response.Success)
             {
                 Response<CustomerResponse> successResponse = new()
