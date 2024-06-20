@@ -50,6 +50,8 @@ Entities/obj
 Dashboard_React.Server/bin
 Dashboard_React.Server/obj
 dashboard_React.client/data
+dashboard_React.client/dev-dist
+dashboard_React.client/dist
 **/appsettings.development.json
 **/appsettings.production.json
 

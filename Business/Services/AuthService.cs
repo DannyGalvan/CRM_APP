@@ -20,6 +20,7 @@ using AutoMapper;
 using Entities.Interfaces;
 using FluentValidation;
 using Lombok.NET;
+using Microsoft.Extensions.Logging;
 
 namespace Business.Services
 {
@@ -34,6 +35,7 @@ namespace Business.Services
         private readonly IValidator<ChangePasswordRequest> _changePasswordValidations;
         private readonly IValidator<ResetPasswordRequest> _resetPasswordValidator;
         private readonly IValidator<RecoveryPasswordRequest> _recoveryPasswordValidator;
+        private readonly ILogger<AuthService> _logger;
 
         public Response<AuthResponse, List<ValidationFailure>> Auth(LoginRequest model)
         {
@@ -56,7 +58,7 @@ namespace Business.Services
 
                 IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
 
-                User? oUser = Users.Find(u => u.UserName == model.UserName.ToUpper()).FirstOrDefault();
+                User? oUser = Users.Find(u => u.UserName.Equals(model.UserName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
 
                 if (oUser == null)
                 {
@@ -109,8 +111,9 @@ namespace Business.Services
                 userResponse.Data = null;
                 userResponse.Errors = [new("Exception", ex.Message)];
 
-                return userResponse;
+                _logger.LogError(ex, "Error al autenticar usuario path: /api/Auth");
 
+                return userResponse;
             }
         }
 
@@ -119,61 +122,76 @@ namespace Business.Services
 
             Response<string, List<ValidationFailure>> response = new();
 
-            ValidationResult results =  _changePasswordValidations.Validate(model);
-
-            if (!results.IsValid)
+            try
             {
-                response.Success = false;
-                response.Message = "Error al hacer la solicitud";
-                response.Data = "";
+                ValidationResult results = _changePasswordValidations.Validate(model);
+
+                if (!results.IsValid)
+                {
+                    response.Success = false;
+                    response.Message = "Error al hacer la solicitud";
+                    response.Data = "";
+                    response.Errors = results.Errors;
+
+                    return response;
+                }
+
+                string collectionName = typeof(User).Name.Pluralize();
+
+                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
+
+                User? oUser = Users.Find(u => u.RecoveryToken == model.Token).FirstOrDefault();
+
+                if (oUser == null || model.Password != model.ConfirmPassword)
+                {
+                    response.Success = false;
+                    response.Message = "Las Contraseñas no coinciden";
+                    response.Data = "";
+                    response.Errors = results.Errors;
+                    return response;
+                }
+
+                if (BC.BCrypt.Verify(model.Password, oUser.Password))
+                {
+                    response.Success = false;
+                    response.Message = "La nueva contraseña debe ser distinta a la contraseña anterior";
+                    response.Data = "";
+                    response.Errors = results.Errors;
+                    return response;
+                }
+
+                string encrypt = BC.BCrypt.HashPassword(model.Password);
+
+                var saveChanges = Users.UpdateOne(u => u.Id == oUser.Id, Builders<User>.Update.Set(u => u.Password, encrypt).Set(u => u.RecoveryToken, ""));
+
+                if (saveChanges.ModifiedCount == 0)
+                {
+                    response.Success = false;
+                    response.Message = "Hubo un Error en el Cambio de Contraseña";
+                    response.Data = "";
+                    response.Errors = results.Errors;
+                    return response;
+                }
+
+                response.Success = true;
+                response.Message = "Cambio de Contraseña Exitoso";
+                response.Data = $"tu nueva contraseña es: {model.Password}";
                 response.Errors = results.Errors;
+
 
                 return response;
             }
-
-            string collectionName = typeof(User).Name.Pluralize();
-
-            IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
-
-            User? oUser = Users.Find(u => u.RecoveryToken == model.Token).FirstOrDefault();
-
-            if (oUser == null || model.Password != model.ConfirmPassword)
-            {
+            catch (Exception ex)
+            {              
                 response.Success = false;
-                response.Message = "Las Contraseñas no coinciden";
+                response.Message = $"Error al hacer la solicitud {ex.Message}";
                 response.Data = "";
-                response.Errors = results.Errors;
+                response.Errors = [new("Exception", ex.Message)];
+
+                _logger.LogError(ex, "Error al cambiar la contraseña path: /api/Auth/ChangePassword");
+
                 return response;
             }
-
-            if (BC.BCrypt.Verify(model.Password, oUser.Password))
-            {
-                response.Success = false;
-                response.Message = "La nueva contraseña debe ser distinta a la contraseña anterior";
-                response.Data = "";
-                response.Errors = results.Errors;
-                return response;
-            }
-
-            string encrypt = BC.BCrypt.HashPassword(model.Password);
-
-            var saveChanges = Users.UpdateOne(u => u.Id == oUser.Id, Builders<User>.Update.Set(u => u.Password, encrypt).Set(u => u.RecoveryToken, ""));
-
-            if (saveChanges.ModifiedCount == 0)
-            {
-                response.Success = false;
-                response.Message = "Hubo un Error en el Cambio de Contraseña";
-                response.Data = "";
-                response.Errors = results.Errors;
-                return response;
-            }
-
-            response.Success = true;
-            response.Message = "Cambio de Contraseña Exitoso";
-            response.Data = $"tu nueva contraseña es: {model.Password}";
-            response.Errors = results.Errors;
-
-            return response;
         }
 
         public Response<string, List<ValidationFailure>> ResetPassword(ResetPasswordRequest model)
@@ -223,11 +241,12 @@ namespace Business.Services
             }
             catch (Exception ex)
             {
-
                 response.Success = false;
                 response.Message = $"Error al hacer la solicitud {ex.Message}";
                 response.Data = "";
                 response.Errors = [new("Exception", ex.Message)];
+
+                _logger.LogError(ex, "Error al reestablecer la contraseña path: /api/Auth/ResetPassword");
             }
 
             return response;
@@ -238,112 +257,141 @@ namespace Business.Services
 
             Response<string> response = new();
 
-            string collectionName = typeof(User).Name.Pluralize();
-
-            IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
-
-            var oUser = Users.Find(u => u.RecoveryToken == token).FirstOrDefault();
-
-            if (oUser == null)
+            try
             {
-                response.Success = false;
-                response.Message = "Su Token ya ha Expirado";
+                string collectionName = typeof(User).Name.Pluralize();
+
+                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
+
+                var oUser = Users.Find(u => u.RecoveryToken == token).FirstOrDefault();
+
+                if (oUser == null)
+                {
+                    response.Success = false;
+                    response.Message = "Su Token ya ha Expirado";
+                    response.Data = token;
+                    return response;
+                }
+
+                DateTime? dateToken = !string.IsNullOrEmpty(oUser.DateToken)
+                                         ? DateTime.ParseExact(oUser.DateToken, "yyyy-MM-dd mm:ss:f", CultureInfo.InvariantCulture)
+                                         : null;
+
+                var currentDate = DateTime.Now;
+
+                if (dateToken != null && currentDate.CompareTo(dateToken) >= 0)
+                {
+                    response.Success = false;
+                    response.Message = "Tu Token ya ha Expirado";
+                    response.Data = token;
+                    return response;
+                }
+
+                response.Success = true;
+                response.Message = "Token Válido";
                 response.Data = token;
+
                 return response;
             }
-
-            DateTime? dateToken = !string.IsNullOrEmpty(oUser.DateToken)
-                                     ? DateTime.ParseExact(oUser.DateToken, "yyyy-MM-dd mm:ss:f", CultureInfo.InvariantCulture)
-                                     : null;
-
-            var currentDate = DateTime.Now;
-
-            if (dateToken != null && currentDate.CompareTo(dateToken) >= 0)
+            catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = "Tu Token ya ha Expirado";
+                response.Message = "Error al verificar token";
                 response.Data = token;
+
+                _logger.LogError(ex, "Error al verificar token path: api/Auth/Token/[token]");
+
                 return response;
             }
-
-            response.Success = true;
-            response.Message = "Token Válido";
-            response.Data = token;
-
-            return response;
         }
 
         public Response<string, List<ValidationFailure>> RecoveryPassword(RecoveryPasswordRequest model)
         {
             Response<string, List<ValidationFailure>> response = new();
 
-            ValidationResult results = _recoveryPasswordValidator.Validate(model);
-
-            if (!results.IsValid)
+            try
             {
-                response.Success = false;
-                response.Message = "Error al hacer la solicitud";
-                response.Data = "";
+                ValidationResult results = _recoveryPasswordValidator.Validate(model);
+
+                if (!results.IsValid)
+                {
+                    response.Success = false;
+                    response.Message = "Error al hacer la solicitud";
+                    response.Data = "";
+                    response.Errors = results.Errors;
+
+                    return response;
+                }
+
+                string collectionName = typeof(User).Name.Pluralize();
+
+                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
+
+                User oUser = Users.Find(u => u.Email == model.Email).FirstOrDefault();
+
+                string token = BC.BCrypt.HashPassword(Guid.NewGuid().ToString());
+
+                oUser.RecoveryToken = token;
+                oUser.Reset = true;
+                oUser.DateToken = DateTime.Now.ToString("yyyy-MM-dd mm:ss:f");
+
+                var saveChanges = Users.UpdateOne(u => u.Id == oUser.Id, Builders<User>.Update.Set(u => u.RecoveryToken, token).Set(u => u.Reset, true).Set(u => u.DateToken, oUser.DateToken));
+
+                if (saveChanges.ModifiedCount == 0)
+                {
+                    response.Success = false;
+                    response.Message = "Error al intentar recuperar contraseña";
+                    response.Data = "";
+                    response.Errors = results.Errors;
+
+                    return response;
+                }
+
+                const string affair = "Solicitud De Cambio de Contraseña";
+                var link = $"{_appSettings.Value.UrlClient}/RecoveryPassword?token={token}";
+                var messageMail =
+                    $"<h3>Ingese al siguiente link para cambiar su contraseña!</h3></br><a href='{link}'>Cambiar Contraseña</a>";
+
+                var sendMail = _mail.Send(model.Email, affair, messageMail);
+
+                if (!sendMail)
+                {
+                    response.Success = false;
+                    response.Message = "Error al Enviar Correo";
+                    response.Data = "";
+                    response.Errors = results.Errors;
+
+                    return response;
+                }
+
+                response.Success = true;
+                response.Message = "Correo Enviado Con Exito";
+                response.Data = link;
                 response.Errors = results.Errors;
 
                 return response;
             }
-
-            string collectionName = typeof(User).Name.Pluralize();
-
-            IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
-
-            User oUser = Users.Find(u => u.Email == model.Email).FirstOrDefault();
-
-            string token = BC.BCrypt.HashPassword(Guid.NewGuid().ToString());
-
-            oUser.RecoveryToken = token;
-            oUser.Reset = true;
-            oUser.DateToken = DateTime.Now.ToString("yyyy-MM-dd mm:ss:f");
-
-            var saveChanges = Users.UpdateOne(u => u.Id == oUser.Id, Builders<User>.Update.Set(u => u.RecoveryToken, token).Set(u => u.Reset, true).Set(u => u.DateToken, oUser.DateToken));
-
-            if (saveChanges.ModifiedCount == 0)
+            catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = "Error al intentar recuperar contraseña";
+                response.Message = $"Error al hacer la solicitud {ex.Message}";
                 response.Data = "";
-                response.Errors = results.Errors;
+                response.Errors = [new("Exception", ex.Message)];
+
+                _logger.LogError(ex, "Error al recuperar contraseña path: /api/Auth/RecoveryPassword");
 
                 return response;
             }
-
-            const string affair = "Solicitud De Cambio de Contraseña";
-            var link = $"{_appSettings.Value.UrlClient}/RecoveryPassword?token={token}";
-            var messageMail =
-                $"<h3>Ingese al siguiente link para cambiar su contraseña!</h3></br><a href='{link}'>Cambiar Contraseña</a>";
-
-            var sendMail = _mail.Send(model.Email, affair, messageMail);
-
-            if (!sendMail)
-            {
-                response.Success = false;
-                response.Message = "Error al Enviar Correo";
-                response.Data = "";
-                response.Errors = results.Errors;
-
-                return response;
-            }
-
-            response.Success = true;
-            response.Message = "Correo Enviado Con Exito";
-            response.Data = link;
-            response.Errors = results.Errors;
-
-            return response;
         }
 
         private string GetToken(User user)
         {
-            AppSettings appSettings = _appSettings.Value;
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var claims = new List<Claim>()
+            try
+            {
+                AppSettings appSettings = _appSettings.Value;
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+                var claims = new List<Claim>()
                              {
                                  new (ClaimTypes.NameIdentifier, user.Id.ToString()),
                                  new (ClaimTypes.Email, user.Email),
@@ -351,22 +399,30 @@ namespace Business.Services
                                  new (ClaimTypes.Hash, Guid.NewGuid().ToString()),
                              };
 
-            if (user != null && user.UserOperations.Count != 0)
-            {
-                claims.AddRange(user.UserOperations.Select(item => new Claim(ClaimTypes.Role, item.OperationId.ToString())));
+                if (user != null && user.UserOperations.Count != 0)
+                {
+                    claims.AddRange(user.UserOperations.Select(item => new Claim(ClaimTypes.Role, item.OperationId.ToString())));
+                }
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims.ToArray()),
+                    NotBefore = DateTime.UtcNow.AddMinutes(appSettings.NotBefore),
+                    Expires = DateTime.UtcNow.AddHours(appSettings.TokenExpirationHrs),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                return tokenHandler.WriteToken(token);
             }
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+            catch (Exception ex)
             {
-                Subject = new ClaimsIdentity(claims.ToArray()),
-                NotBefore = DateTime.UtcNow.AddMinutes(appSettings.NotBefore),
-                Expires = DateTime.UtcNow.AddHours(appSettings.TokenExpirationHrs),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+                _logger.LogError(ex, "Error al Generar el jwt");
 
-            return tokenHandler.WriteToken(token);
+                return string.Empty;
+            }
         }
 
         private AuthorizationsResponse GetAuthorizations(User user)

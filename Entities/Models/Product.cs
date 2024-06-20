@@ -1,5 +1,6 @@
 ﻿using Entities.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Entities.Models
 {
@@ -19,5 +20,6 @@ namespace Entities.Models
         public ObjectId? UpdatedBy { get; set; }
 
         public virtual Catalogue? Family { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; } = new List<OrderDetail>();
     }
 }

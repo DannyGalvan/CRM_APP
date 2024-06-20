@@ -4,14 +4,16 @@ using Entities.Interfaces;
 using Entities.Models;
 using Entities.Request;
 using Humanizer;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Business.Services
 {
-    public partial class CalendarEventService(IMapper mapper, IMongoContext mongo, IServiceProvider serviceProvider) : EntityService<Event, EventRequest, ObjectId>(mongo, mapper, serviceProvider), ICalendarEventService
+    public partial class CalendarEventService(IMapper mapper, IMongoContext mongo, IServiceProvider serviceProvider, ILogger<CalendarEventService> logger) : EntityService<Event, EventRequest, ObjectId>(mongo, mapper, serviceProvider, logger), ICalendarEventService
     {
         private readonly IMongoContext _mongo = mongo;
+        private readonly ILogger<CalendarEventService> _logger = logger;
 
         public List<Event> GetAllEventsByUser(ObjectId userId, DateTime start, DateTime end)
         {
@@ -35,8 +37,9 @@ namespace Business.Services
 
                 return events;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al obtener los eventos del usuario {userId}", userId);
 
                 return events;
             }

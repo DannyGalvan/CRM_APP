@@ -3,6 +3,7 @@ using Business.Validations.Catalog;
 using Business.Validations.Collection;
 using Business.Validations.Customer;
 using Business.Validations.Event;
+using Business.Validations.Order;
 using Business.Validations.Product;
 using Entidades.Request;
 using Entities.Request;
@@ -38,6 +39,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddKeyedScoped<IValidator<EventRequest>, CreateEventValidator>("Create");
             services.AddKeyedScoped<IValidator<EventRequest>, UpdateEventValidator>("Update");
             services.AddKeyedScoped<IValidator<EventRequest>, PartialUpdateEventValidator>("PartialUpdate");
+            //Validaciones de Ordenes
+            services.AddKeyedScoped<IValidator<OrderRequest>, CreateOrderValidator>("Create");
+            services.AddKeyedScoped<IValidator<OrderRequest>, UpdateOrderValidator>("Update");
+            services.AddKeyedScoped<IValidator<OrderRequest>, PartialupdateOrderValidator>("PartialUpdate");
 
             return services;
         }

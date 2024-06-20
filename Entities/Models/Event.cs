@@ -1,5 +1,6 @@
 ﻿using Entities.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Entities.Models
 {
@@ -18,6 +19,7 @@ namespace Entities.Models
         public ObjectId CreatedBy { get; set; }
         public ObjectId? UpdatedBy { get; set; }
 
+        [BsonIgnore]
         public virtual User? User { get; set; }
         
     }

@@ -16,6 +16,8 @@ using Humanizer;
 using Entities.Interfaces;
 using BC = BCrypt.Net;
 using AutoMapper.EquivalencyExpression;
+using Serilog;
+using Serilog.Extensions.Logging;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -116,6 +118,23 @@ builder.Services.AddControllers()
         };
     });
 
+//Add Serilog.Sink.MongoDB to log in MongoDB
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConfiguration(configuration.GetSection("Logging"));
+    UserMongoConnection conn = new()
+    {
+        ConnectionString = $"{mongoConnection.BaseURL}{mongoConnection.User}:{mongoConnection.Password}@{mongoConnection.Server}:{mongoConnection.Port}",
+        Database = mongoConnection.Database
+    };
+
+    var log = new LoggerConfiguration()
+        .WriteTo.MongoDBBson($"{conn.ConnectionString}/{conn.Database}")
+        .CreateLogger();
+
+    loggingBuilder.AddProvider(new SerilogLoggerProvider(log));
+});
+
 //Add AutoMapper
 builder.Services.AddAutoMapper(options =>
 {
@@ -163,54 +182,55 @@ builder.Services.AddSwaggerGen(options => {
 var app = builder.Build();
 
 // Create a sa User if not exists to start the application
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+ILogger<Program>? _logger = services.GetRequiredService<ILogger<Program>>();
+
 if (app.Environment.IsDevelopment())
 {
-    using (var scope = app.Services.CreateScope())
+    try
     {
-        var services = scope.ServiceProvider;
+        string emailManager = "pruebas.test29111999@gmail.com";
 
-        try
+        var dbContext = services.GetRequiredService<ICRMContext>();
+
+        string collectionName = typeof(User).Name.Pluralize();
+
+        IMongoCollection<User> Users = dbContext.Database.GetCollection<User>(collectionName);
+
+        User? manager = Users.Find(u => u.Email == emailManager).FirstOrDefault();
+
+        if (manager == null)
         {
-            string emailManager = "pruebas.test29111999@gmail.com";
-
-            var dbContext = services.GetRequiredService<ICRMContext>();
-
-            string collectionName = typeof(User).Name.Pluralize();
-
-            IMongoCollection<User> Users = dbContext.Database.GetCollection<User>(collectionName);
-
-            User? manager = Users.Find(u => u.Email == emailManager).FirstOrDefault();
-
-            if (manager == null)
+            Users.InsertOne(new User
             {
-                Users.InsertOne(new User
-                {
-                    Id = ObjectId.Parse("662754d99f4e1bf2407306ba"),
-                    Email = emailManager,
-                    Password = BC.BCrypt.HashPassword("Broiler-Charbroil4"),
-                    Name = "Systema",
-                    LastName = "Admin",
-                    UserName = "MANAGER",
-                    Number = "51995142",
-                    Active = true,
-                    Confirm = true,
-                    Database = "Dashboard_Data",
-                    ConnectionString = "mongodb://CRM_DATA:crm_data_8955@localhost:27017",
-                    CreatedBy = ObjectId.Parse("662754d99f4e1bf2407306ba"),
-                });
-            }
+                Id = ObjectId.Parse("662754d99f4e1bf2407306ba"),
+                Email = emailManager,
+                Password = BC.BCrypt.HashPassword("Broiler-Charbroil4"),
+                Name = "Systema",
+                LastName = "Admin",
+                UserName = "MANAGER",
+                Number = "51995142",
+                Active = true,
+                Confirm = true,
+                Database = "Dashboard_Data",
+                ConnectionString = "mongodb://CRM_DATA:crm_data_8955@localhost:27017",
+                CreatedBy = ObjectId.Parse("662754d99f4e1bf2407306ba"),
+            });
+        }
 
-            Console.WriteLine("Aplicacion Iniciada en Desarrollo con Exito!!!");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error al crear SA: {ex.Message}");
-        }
+        _logger.LogInformation("Aplicacion Iniciada en Desarrollo con Exito!!!");
+    }
+    catch (Exception ex)
+    {
+        _logger.LogCritical(ex, "Error al crear SA: {mensaje}", ex.Message);
+
+        throw new Exception($"Error al crear SA: {ex.Message}");
     }
 }
 else
 {
-    Console.WriteLine("Aplicacion Iniciada en Produccion con Exito!!!");
+    _logger.LogInformation("Aplicacion Iniciada en Produccion con Exito!!!");
 }
 
 // Configure the HTTP request pipeline.
@@ -227,6 +247,19 @@ else
     app.UseStaticFiles();
     app.MapFallbackToFile("/index.html");
 }
+
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        _logger.LogCritical(ex, "Error en la aplicacion: {mensaje}", ex.Message);
+        throw;
+    }
+});
 
 app.UseHttpsRedirection();
 

@@ -23,6 +23,7 @@ namespace Entities.Models
         public ObjectId CreatedBy { get; set; }
         public ObjectId? UpdatedBy { get; set; }
 
+
         public virtual Catalogue? Department { get; set; }
         public virtual Catalogue? Municipality { get; set; }
         public virtual Catalogue? Zone { get; set; }

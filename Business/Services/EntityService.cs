@@ -8,6 +8,7 @@ using FluentValidation.Results;
 using Humanizer;
 using Lombok.NET;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -20,6 +21,7 @@ namespace Business.Services
         private readonly IMongoContext _context;
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<EntityService<TEntity, TRequest, TId>> _logger;
         private static readonly string[] separator = [" AND "];
         private static readonly string[] separatorArray = [" OR "];
 
@@ -31,6 +33,8 @@ namespace Business.Services
         public Response<TEntity, List<ValidationFailure>> Create(TRequest model)
         {
             Response<TEntity, List<ValidationFailure>> response = new();
+
+            string userId = "";
 
             try
             {
@@ -49,6 +53,8 @@ namespace Business.Services
 
 
                 TEntity entity = _mapper.Map<TEntity>(model);
+
+                userId = entity.CreatedBy.ToString();
 
                 entity.CreatedAt = DateTime.Now.ToUniversalTime();
                 entity.UpdatedAt = null;
@@ -73,6 +79,8 @@ namespace Business.Services
                 response.Message = ex.Message;
                 response.Errors = [new ValidationFailure("Id", ex.Message)];
                 response.Data = null;
+
+                _logger.LogError(ex, "Error al crear {entity} : usuario {user} : {message}", typeof(TEntity).Name, userId, ex.Message);
 
                 return response;
             }
@@ -144,6 +152,8 @@ namespace Business.Services
                 response.Errors = [new ValidationFailure("Id", ex.Message)];
                 response.Data = null;
 
+                _logger.LogError(ex, "Error al obtener {entity} : {message}", typeof(TEntity).Name, ex.Message);
+
                 return response;
             }
         }
@@ -208,6 +218,8 @@ namespace Business.Services
                 response.Errors = [new ValidationFailure("Id", ex.Message)];
                 response.Data = null;
 
+                _logger.LogError(ex, "Error al obtener {entity} : {message}", typeof(TEntity).Name, ex.Message);
+
                 return response;
             }
         }
@@ -215,6 +227,8 @@ namespace Business.Services
         public Response<TEntity, List<ValidationFailure>> PartialUpdate(TRequest model)
         {
             Response<TEntity, List<ValidationFailure>> response = new();
+
+            string userId = "";
 
             try
             {
@@ -248,6 +262,8 @@ namespace Business.Services
                     return response;
                 }
 
+                userId = entityExist.CreatedBy.ToString();
+
                 DateTime createdAt = entityExist.CreatedAt;
 
                 Util.Util.UpdateProperties(entityExist, entityConvert);
@@ -271,6 +287,8 @@ namespace Business.Services
                 response.Errors = [new ValidationFailure("Id", ex.Message)];
                 response.Data = null;
 
+                _logger.LogError(ex, "Error al actualizar parcial {entity} : usuario {user} : {message}", typeof(TEntity).Name, userId, ex.Message);
+
                 return response;
             }
         }
@@ -278,6 +296,8 @@ namespace Business.Services
         public Response<TEntity, List<ValidationFailure>> Update(TRequest model)
         {
             Response<TEntity, List<ValidationFailure>> response = new();
+
+            string userId = "";
 
             try
             {
@@ -311,6 +331,8 @@ namespace Business.Services
                     return response;
                 }
 
+                userId = entityExist.CreatedBy.ToString();
+
                 DateTime createdAt = entityExist.CreatedAt;
 
                 Util.Util.UpdateProperties(entityExist, entity);
@@ -332,6 +354,8 @@ namespace Business.Services
                 response.Message = ex.Message;
                 response.Errors = [new ValidationFailure("Id", ex.Message)];
                 response.Data = null;
+
+                _logger.LogError(ex, "Error al actualizar {entity} : usuario {user} : {message}", typeof(TEntity).Name, userId, ex.Message);
 
                 return response;
             }

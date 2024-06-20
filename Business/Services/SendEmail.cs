@@ -1,6 +1,7 @@
 ﻿using Business.Interfaces;
 using Entities.Configurations;
 using Lombok.NET;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
@@ -11,6 +12,7 @@ namespace Business.Repository
     public partial class SendEmail : ISendMail
     {
         private readonly IOptions<AppSettings> _appSettings;
+        private readonly ILogger<SendEmail> _logger;
 
         public bool Send(string correo, string asunto, string mensaje)
         {
@@ -38,9 +40,11 @@ namespace Business.Repository
                 resultado = true;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado = false;
+
+                _logger.LogError(ex, "Error al enviar correo");
             }
 
             return resultado;

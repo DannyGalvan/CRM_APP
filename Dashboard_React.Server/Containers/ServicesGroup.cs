@@ -18,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEntityService<Customer, CustomerRequest, ObjectId>, EntityService<Customer, CustomerRequest, ObjectId>>();
             services.AddScoped<IEntityService<Product, ProductRequest, ObjectId>, EntityService<Product, ProductRequest, ObjectId>>();
             services.AddScoped<IEntityService<Collection, CollectionRequest, ObjectId>, EntityService<Collection, CollectionRequest, ObjectId>>();
+            services.AddScoped<IEntityService<Order, OrderRequest, ObjectId>, EntityService<Order, OrderRequest, ObjectId>>();
             services.AddScoped<ICatalogueService, CatalogueService>();
 
             return services;

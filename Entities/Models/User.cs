@@ -1,5 +1,6 @@
 ﻿using Entities.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Entities.Models
 {
@@ -24,8 +25,9 @@ namespace Entities.Models
         public ObjectId CreatedBy { get; set; }
         public ObjectId? UpdatedBy { get; set; }
 
-
+        [BsonIgnore]
         public virtual ICollection<UserOperation> UserOperations { get; set; } = new List<UserOperation>();
+        [BsonIgnore]
         public virtual ICollection<Event> Events { get; set; } = new List<Event>();
     }
 }

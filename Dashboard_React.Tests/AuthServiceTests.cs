@@ -8,6 +8,7 @@ using Entities.Interfaces;
 using Entities.Models;
 using Entities.Request;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Moq;
@@ -24,6 +25,7 @@ namespace Dashboard_React.Tests
         private readonly Mock<IValidator<ChangePasswordRequest>> _mockChangePasswordValidations;
         private readonly Mock<IValidator<ResetPasswordRequest>> _mockResetPasswordValidator;
         private readonly Mock<IValidator<RecoveryPasswordRequest>> _mockRecoveryPasswordValidator;
+        private readonly Mock<ILogger<AuthService>> _mockLogger;
 
         public AuthServiceTests()
         {
@@ -35,6 +37,7 @@ namespace Dashboard_React.Tests
             _mockChangePasswordValidations = new Mock<IValidator<ChangePasswordRequest>>();
             _mockResetPasswordValidator = new Mock<IValidator<ResetPasswordRequest>>();
             _mockRecoveryPasswordValidator = new Mock<IValidator<RecoveryPasswordRequest>>();
+            _mockLogger = new Mock<ILogger<AuthService>>();
 
             _mockAppSettings.Setup(a => a.Value).Returns(new AppSettings
             {
@@ -86,7 +89,9 @@ namespace Dashboard_React.Tests
                                             _mockLoginValidations.Object,
                                             _mockChangePasswordValidations.Object,
                                             _mockResetPasswordValidator.Object,
-                                            _mockRecoveryPasswordValidator.Object);
+                                            _mockRecoveryPasswordValidator.Object,
+                                            _mockLogger.Object
+                                            );
             // Act
             var result = _authService.Auth(loginRequest);
 

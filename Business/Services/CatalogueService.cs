@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Entities.Context;
 using Entities.Interfaces;
 using Entities.Models;
 using Entities.Request;
@@ -10,6 +9,7 @@ using FluentValidation.Results;
 using Humanizer;
 using Lombok.NET;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -21,6 +21,7 @@ namespace Business.Services
         private readonly IMongoContext _mongo;
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<CatalogueService> _logger;
         private static readonly string[] separator = [" AND "];
         private static readonly string[] separatorArray = [" OR "];
 
@@ -94,6 +95,8 @@ namespace Business.Services
                 response.Errors = null;
                 response.Data = null;
 
+                _logger.LogError(ex, "Error al crear catalogo {bd} : usuario {usuario} : {mensaje}", bd, model.CreatedBy, ex.Message);
+
                 return response;
             }
         }
@@ -138,6 +141,8 @@ namespace Business.Services
                 response.Errors = null;
                 response.Data = null;
 
+                _logger.LogError(ex, "Error al obtener catalogos {bd} : {mensaje}", bd, ex.Message);
+
                 return response;
             }
         }
@@ -181,6 +186,8 @@ namespace Business.Services
                 response.Message = ex.Message;
                 response.Errors = null;
                 response.Data = null;
+
+                _logger.LogError(ex, "Error al obtener catalogo {bd} : {mensaje}", bd, ex.Message);
 
                 return response;
             }
@@ -268,6 +275,8 @@ namespace Business.Services
                 response.Errors = null;
                 response.Data = null;
 
+                _logger.LogError(ex, "Error al actualizar catalogo {bd} : usuario {usuario} : {mensaje}", bd, model.UpdatedBy, ex.Message);
+
                 return response;
             }
         }
@@ -354,6 +363,8 @@ namespace Business.Services
                 response.Message = ex.Message;
                 response.Errors = null;
                 response.Data = null;
+
+                _logger.LogError(ex, "Error al actualizar catalogo {bd} : usuario {user} :  {mensaje}", bd, model.UpdatedBy, ex.Message);
 
                 return response;
             }

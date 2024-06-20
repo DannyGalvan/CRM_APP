@@ -2,6 +2,7 @@
 
 using Entities.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Entities.Models
 {
@@ -21,6 +22,7 @@ namespace Entities.Models
         public ObjectId? UpdatedBy { get; set; }
 
         public virtual Module? Module { get; set; }
+        [BsonIgnore]
         public virtual ICollection<UserOperation> UserOperations { get; } = new List<UserOperation>();
     }
 }
