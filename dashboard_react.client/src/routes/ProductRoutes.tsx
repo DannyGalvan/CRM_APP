@@ -6,15 +6,10 @@ import { ProductPage } from "../pages/product/ProductPage";
 export const ProductRoutes: RouteObject[] = [
   {
     path: nameRoutes.product,
-    children: [
-      {
-        index: true,
-        element: <ProductPage />,
-      },
-      {
-        path: nameRoutes.create,
-        element: <CreateProductPage />,
-      },
-    ],
+    element: <ProductPage />,
   },
+  {
+    path: `${nameRoutes.product}/${nameRoutes.create}`,
+    element: <CreateProductPage />,
+  }
 ];

@@ -1,24 +1,29 @@
 import { RouteObject } from "react-router-dom";
 import { nameRoutes } from "../config/contants";
 import { NotFound } from "../pages/error/NotFound";
+import Protected from "./middlewares/Protected";
 
 export const ErrorRoutes: RouteObject[] = [
   {
     path: nameRoutes.forbidden,
     element: (
-      <NotFound
-        Message="No tienes autorizacion para ver este contenido, contacta con el administrador"
-        Number="403"
-      />
+      <Protected>
+        <NotFound
+          Message="No tienes autorizacion para ver este contenido, contacta con el administrador"
+          Number="403"
+        />
+      </Protected>
     ),
   },
   {
     path: nameRoutes.unauthorized,
     element: (
-      <NotFound
-        Message="Tu sesión ha expirado, por favor inicia sesión nuevamente"
-        Number="401"
-      />
+      <Protected>
+        <NotFound
+          Message="Tu sesión ha expirado, por favor inicia sesión nuevamente"
+          Number="401"
+        />
+      </Protected>
     ),
   },
   {
@@ -27,6 +32,10 @@ export const ErrorRoutes: RouteObject[] = [
   },
   {
     path: nameRoutes.notFound,
-    element: <NotFound Message="La página que buscas no existe" Number="404" />,
+    element: (
+      <Protected>
+        <NotFound Message="La página que buscas no existe" Number="404" />
+      </Protected>
+    ),
   },
 ];

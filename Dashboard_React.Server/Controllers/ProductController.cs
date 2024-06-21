@@ -12,7 +12,7 @@ using System.Security.Claims;
 
 namespace Dashboard_React.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize]
     [ApiController]
     [AllArgsConstructor]
@@ -22,6 +22,7 @@ namespace Dashboard_React.Server.Controllers
         private readonly IMapper _mapper;
 
         [HttpGet]
+        [Authorize(Policy = "Product.List")]
         public IActionResult GetAll(string? filters)
         {
             var response = _productService.GetAll(filters);
@@ -52,6 +53,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "Product.List")]
         public IActionResult GetById(string id)
         {
             var response = _productService.GetById(ObjectId.Parse(id));
@@ -82,6 +84,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Product.Create")]
         public IActionResult Create(ProductRequest model)
         {
             model.CreatedBy = GetUserId();
@@ -112,6 +115,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "Product.Update")]
         public IActionResult Update(ProductRequest model)
         {
             model.UpdatedBy = GetUserId();
@@ -142,6 +146,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Policy = "Product.Patch")]
         public IActionResult PartialUpdate(ProductRequest model)
         {
             model.UpdatedBy = GetUserId();

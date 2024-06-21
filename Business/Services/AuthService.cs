@@ -397,11 +397,13 @@ namespace Business.Services
                                  new (ClaimTypes.Email, user.Email),
                                  new (ClaimTypes.Name, user.UserName),
                                  new (ClaimTypes.Hash, Guid.NewGuid().ToString()),
+                                 new (ClaimTypes.AuthorizationDecision, "some-value"),
+                                 new (ClaimTypes.AuthorizationDecision, "another-value"),
                              };
 
                 if (user != null && user.UserOperations.Count != 0)
                 {
-                    claims.AddRange(user.UserOperations.Select(item => new Claim(ClaimTypes.Role, item.OperationId.ToString())));
+                    claims.AddRange(user.UserOperations.Select(item => new Claim(ClaimTypes.AuthorizationDecision, item.OperationId.ToString())));
                 }
 
                 var tokenDescriptor = new SecurityTokenDescriptor

@@ -6,15 +6,10 @@ import { CreateCataloguePage } from "../pages/catalogue/CreateCataloguePage";
 export const CatalogueRoutes: RouteObject[] = [
   {
     path: nameRoutes.catalogue,
-    children: [
-      {
-        index: true,
-        element: <CataloguePage />,
-      },
-      {
-        path: nameRoutes.create,
-        element: <CreateCataloguePage />,
-      },
-    ],
+    element: <CataloguePage />,
   },
+  {
+    path: `${nameRoutes.catalogue}/${nameRoutes.create}`,
+    element: <CreateCataloguePage />,
+  }
 ];

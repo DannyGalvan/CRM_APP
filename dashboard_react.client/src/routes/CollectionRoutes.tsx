@@ -6,15 +6,10 @@ import { CreateCollectionPage } from "../pages/collection/CreateCollectionPage";
 export const CollectionRoutes: RouteObject[] = [
   {
     path: nameRoutes.collection,
-    children: [
-      {
-        index: true,
-        element: <CollectionPage />,
-      },
-      {
-        path: nameRoutes.create,
-        element: <CreateCollectionPage />,
-      },
-    ],
+    element: <CollectionPage />,
   },
+  {
+    path: `${nameRoutes.collection}/${nameRoutes.create}`,
+    element: <CreateCollectionPage />,
+  }
 ];

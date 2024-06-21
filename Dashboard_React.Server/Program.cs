@@ -18,6 +18,11 @@ using BC = BCrypt.Net;
 using AutoMapper.EquivalencyExpression;
 using Serilog;
 using Serilog.Extensions.Logging;
+using System.Security.Claims;
+using Entities.Context;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
+using Dashboard_React.Server.Filters;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +44,21 @@ AppSettings appSettingsConfig = appSettingsSection.Get<AppSettings>()!;
 MongoConnection mongoConnection = mongoConnectionSection.Get<MongoConnection>()!;
 builder.Services.Configure<AppSettings>(appSettingsSection);
 builder.Services.Configure<MongoConnection>(mongoConnectionSection);
+
+//Add the HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
+//Add the DbContexts
+builder.Services.AddContextGroup();
+
+//Add services injected
+builder.Services.AddServicesGroup();
+
+//Add validations injected
+builder.Services.AddValidationsGroup();
+
+//Add the Cache in memory
+builder.Services.AddMemoryCache();
 
 //Add JWT
 builder.Services.AddAuthentication(d =>
@@ -88,6 +108,47 @@ builder.Services.AddAuthentication(d =>
            };
        });
 
+builder.Services.AddAuthorization(options =>
+{
+    IOptions<MongoConnection> mongoConnectionOptions = new OptionsWrapper<MongoConnection>(mongoConnection);
+
+    ICRMContext bd = new CRMContext(mongoConnectionOptions);
+
+    IMongoCollection<Operation> Operations = bd.Database.GetCollection<Operation>(typeof(Operation).Name.Pluralize());
+
+    var operations = Operations.Find(FilterDefinition<Operation>.Empty).ToList();
+
+    foreach (Operation operation in operations)
+    {
+
+        if (operation.Policy.Contains("List") && operation.Policy != "Entity.List")
+        {
+            // Agrega una política personalizada que permita cualquiera de los claims
+            options.AddPolicy(operation.Policy, policy =>
+            {
+                policy.Requirements.Add(new MultipleClaimsRequirement(
+                [
+                    new KeyValuePair<string, string>(ClaimTypes.AuthorizationDecision, operation.Id.ToString()),
+                    new KeyValuePair<string, string>(ClaimTypes.AuthorizationDecision, "66752724aae39cd8b0acb936")
+                ]));
+            });
+        }
+        else
+        {
+            options.AddPolicy(operation.Policy, policy => policy.RequireClaim(claimType: ClaimTypes.AuthorizationDecision, operation.Id.ToString()));
+        }        
+    }
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, MultipleClaimsHandler>();
+
+//Add AutoMapper
+builder.Services.AddAutoMapper(options =>
+{
+    options.AddProfile(new MappingProfile(builder.Environment));
+    options.AddCollectionMappers();
+});
+
 //Add FluentValidation to response errors of the controllers
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
@@ -134,28 +195,6 @@ builder.Services.AddLogging(loggingBuilder =>
 
     loggingBuilder.AddProvider(new SerilogLoggerProvider(log));
 });
-
-//Add AutoMapper
-builder.Services.AddAutoMapper(options =>
-{
-    options.AddProfile(new MappingProfile(builder.Environment));
-    options.AddCollectionMappers();
-});
-
-//Add the HttpContextAccessor
-builder.Services.AddHttpContextAccessor();
-
-//Add the DbContexts
-builder.Services.AddContextGroup();
-
-//Add services injected
-builder.Services.AddServicesGroup();
-
-//Add validations injected
-builder.Services.AddValidationsGroup();
-
-//Add the Cache in memory
-builder.Services.AddMemoryCache();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

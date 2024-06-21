@@ -12,7 +12,7 @@ using System.Security.Claims;
 
 namespace Dashboard_React.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize]
     [ApiController]
     [AllArgsConstructor]

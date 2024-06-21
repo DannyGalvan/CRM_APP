@@ -5,13 +5,14 @@ using Entities.Request;
 using Entities.Response;
 using FluentValidation.Results;
 using Lombok.NET;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System.Security.Claims;
 
 namespace Dashboard_React.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     [AllArgsConstructor]
     public partial class OrderController : ControllerBase
@@ -20,6 +21,7 @@ namespace Dashboard_React.Server.Controllers
         private readonly IMapper _mapper;
 
         [HttpGet]
+        [Authorize(Policy = "Order.List")]
         public IActionResult GetAll(string? filters)
         {
             var response = _orderService.GetAll(filters);
@@ -50,6 +52,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "Order.List")]
         public IActionResult GetById(string id)
         {
             var response = _orderService.GetById(ObjectId.Parse(id));
@@ -80,6 +83,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Order.Create")]
         public IActionResult Create(OrderRequest request)
         {
             request.CreatedBy = GetUserId();
@@ -111,6 +115,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "Order.Update")]
         public IActionResult Update(OrderRequest request)
         {
             request.UpdatedBy = GetUserId();
@@ -142,6 +147,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Policy = "Order.Patch")]
         public IActionResult Patch(OrderRequest request)
         {
             request.UpdatedBy = GetUserId();

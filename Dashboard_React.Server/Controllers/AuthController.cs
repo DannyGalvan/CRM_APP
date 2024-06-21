@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace CardReader.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     [AllArgsConstructor]
     public partial class AuthController : ControllerBase

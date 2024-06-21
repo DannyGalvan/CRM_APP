@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Dashboard_React.Server.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     [AllArgsConstructor]
     public partial class CustomerController : ControllerBase
@@ -21,7 +21,8 @@ namespace Dashboard_React.Server.Controllers
         private readonly IEntityService<Customer, CustomerRequest, ObjectId> _customerService;
         private readonly IMapper _mapper;
 
-        [HttpGet] 
+        [HttpGet]
+        [Authorize(Policy = "Customer.List")]
         public IActionResult GetAll(string? filters)
         {
             var response = _customerService.GetAll(filters);
@@ -52,6 +53,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "Customer.List")]
         public IActionResult GetById(string id)
         {
             var response = _customerService.GetById(ObjectId.Parse(id));
@@ -82,6 +84,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Customer.Create")]
         public IActionResult Create(CustomerRequest model)
         {
             model.CreatedBy = GetUserId();
@@ -112,6 +115,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "Customer.Update")]
         public IActionResult Update(CustomerRequest model)
         {
             model.UpdatedBy = GetUserId();
@@ -142,6 +146,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Policy = "Customer.Patch")]
         public IActionResult PartialUpdate(CustomerRequest model)
         {
             model.UpdatedBy = GetUserId();

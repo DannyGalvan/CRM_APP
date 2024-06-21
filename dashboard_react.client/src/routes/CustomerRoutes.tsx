@@ -6,15 +6,10 @@ import { CustomerPage } from "../pages/customer/CustomerPage";
 export const CustomerRoutes: RouteObject[] = [
   {
     path: nameRoutes.customer,
-    children: [
-      {
-        index: true,
-        element: <CustomerPage />,
-      },
-      {
-        path: nameRoutes.create,
-        element: <CustomerCreatePage />,
-      },
-    ],
+    element: <CustomerPage />,
   },
+  {
+    path: `${nameRoutes.customer}/${nameRoutes.create}`,
+    element: <CustomerCreatePage />,
+  }
 ];

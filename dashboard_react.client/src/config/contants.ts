@@ -1,10 +1,10 @@
 import { InitialAuth } from "../types/InitialAuth";
 
-export const URL_FETCH_EVENTS = "/api/event"
+export const URL_FETCH_EVENTS = "/api/v1/event"
 
 export const URL_LOGO = "/OIG3.webp"
 
-export const URL_API = "/api"
+export const URL_API = "/api/v1"
 
 export const authInitialState : InitialAuth = {
   isLoggedIn: false,
@@ -31,6 +31,7 @@ export const nameRoutes = {
   customer: "/customer",
   catalogue: "/catalogue",
   product: "/product",
+  order: "/order",
   create: "create",
 };
 

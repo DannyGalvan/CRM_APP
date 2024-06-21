@@ -180,7 +180,6 @@ export const Sidebar = () => {
           <Icon
             name="bi bi-caret-left-fill"
             size={25}
-            color={open ? "white" : "yellow"}
           />
         </motion.div>
       </motion.div>

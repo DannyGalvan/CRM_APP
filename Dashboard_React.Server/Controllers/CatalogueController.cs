@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Dashboard_React.Server.Controllers
 {
     [Authorize]
-    [Route("api/{catalogue}")]
+    [Route("api/v1/{catalogue}")]
     [ApiController]
     [AllArgsConstructor]
     public partial class CatalogueController : ControllerBase
@@ -22,6 +22,7 @@ namespace Dashboard_React.Server.Controllers
         private readonly IMapper _mapper;
 
         [HttpGet]
+        [Authorize(Policy = "Catalogue.List")]
         public IActionResult GetAll(string catalogue, [FromQuery] string? filters)
         {
             Response<List<Catalogue>, List<ValidationFailure>> response;
@@ -53,6 +54,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "Catalogue.List")]
         public IActionResult GetById(string catalogue, string id)
         {
             var response = _service.GetById(ObjectId.Parse(id), catalogue);
@@ -81,6 +83,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Catalogue.Create")]
         public IActionResult Create(string catalogue, [FromBody] CatalogueRequest request)
         {
             request.CreatedBy = GetUserId();
@@ -111,6 +114,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "Catalogue.Update")]
         public IActionResult Update(string catalogue, [FromBody] CatalogueRequest request)
         {
             request.UpdatedBy = GetUserId();
@@ -140,6 +144,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Policy = "Catalogue.Patch")]
         public IActionResult Patch(string catalogue, [FromBody] CatalogueRequest request)
         {
             request.UpdatedBy = GetUserId();

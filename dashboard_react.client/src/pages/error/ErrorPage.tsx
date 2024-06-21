@@ -4,6 +4,7 @@ import { Col } from "../../components/grid/Col";
 import { Row } from "../../components/grid/Row";
 import { nameRoutes } from "../../config/contants";
 import { useAuth } from "../../hooks/useAuth";
+import Protected from "../../routes/middlewares/Protected";
 
 export function Component() {
   const navigate = useNavigate();
@@ -13,18 +14,18 @@ export function Component() {
   const [text, setText] = useState("Regresar");
 
   useEffect(() => {
-    if (state.statusCode === "404" || state.statusCode === "403") {
+    if (state?.statusCode === "404" || state?.statusCode === "403") {
       setText("Regresar");
-    } else if (state.statusCode === "500" || state.statusCode === "401") {
+    } else if (state?.statusCode === "500" || state?.statusCode === "401") {
       logout();
       navigate(nameRoutes.login);
     }
   }, [state]);
 
   const handleClick = () => {
-    if (state.statusCode === "404") {
+    if (state?.statusCode === "404") {
       isLoggedIn ? navigate(-1) : navigate(nameRoutes.login);
-    } else if (state.statusCode === "403") {
+    } else if (state?.statusCode === "403") {
       navigate(-3);
     } else {
       navigate(-1);
@@ -32,7 +33,8 @@ export function Component() {
   };
 
   return (
-    <div className="container mx-auto">
+    <Protected>
+      <div className="container mx-auto">
       <Row className="min-h-[80vh] items-center justify-center">
         <Col xs={12} className="text-center">
           <span className="block text-8xl font-bold">
@@ -48,6 +50,7 @@ export function Component() {
         </Col>
       </Row>
     </div>
+    </Protected>
   );
 }
 

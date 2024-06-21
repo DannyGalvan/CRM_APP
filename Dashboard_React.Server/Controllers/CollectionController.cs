@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Business.Validations.Collection;
 using Entities.Models;
 using Entities.Request;
 using Entities.Response;
@@ -14,7 +13,7 @@ using System.Security.Claims;
 namespace Dashboard_React.Server.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     [AllArgsConstructor]
     public partial class CollectionController : ControllerBase
@@ -23,6 +22,7 @@ namespace Dashboard_React.Server.Controllers
         private readonly IMapper _mapper;
 
         [HttpGet]
+        [Authorize(Policy = "Collection.List")]
         public IActionResult GetAll(string? filters)
         {
             var response = _collectionService.GetAll(filters);
@@ -53,6 +53,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "Collection.List")]
         public IActionResult GetById(string id)
         {
             var response = _collectionService.GetById(ObjectId.Parse(id));
@@ -83,6 +84,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Collection.Create")]
         public IActionResult Create(CollectionRequest model)
         {
             model.CreatedBy = GetUserId();
@@ -113,6 +115,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "Collection.Update")]
         public IActionResult Update(CollectionRequest model)
         {
             model.UpdatedBy = GetUserId();
@@ -143,6 +146,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Policy = "Collection.Patch")]
         public IActionResult PartialUpdate(CollectionRequest model)
         {
             model.UpdatedBy = GetUserId();
