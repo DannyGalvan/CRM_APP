@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { invalid_type_error, required_error } from "../../config/contants";
-//agregar validacion de si el allDay es true, no se debe enviar la hora
 
 export const eventSchema = z.object({
   allDay: z.boolean({ invalid_type_error, required_error }),

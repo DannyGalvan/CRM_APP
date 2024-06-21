@@ -12,6 +12,6 @@ namespace Entities.Response
         public decimal UnitPrice { get; set; }
         public decimal TotalLine { get; set; }
 
-        public virtual Product? Product { get; set; }
+        public virtual ProductResponse? Product { get; set; }
     }
 }
