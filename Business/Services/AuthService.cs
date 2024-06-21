@@ -397,8 +397,6 @@ namespace Business.Services
                                  new (ClaimTypes.Email, user.Email),
                                  new (ClaimTypes.Name, user.UserName),
                                  new (ClaimTypes.Hash, Guid.NewGuid().ToString()),
-                                 new (ClaimTypes.AuthorizationDecision, "some-value"),
-                                 new (ClaimTypes.AuthorizationDecision, "another-value"),
                              };
 
                 if (user != null && user.UserOperations.Count != 0)
