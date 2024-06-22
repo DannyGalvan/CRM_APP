@@ -40,6 +40,9 @@ IConfigurationRoot configuration = new ConfigurationBuilder()
 //Add the configuration to the builder
 IConfigurationSection appSettingsSection = configuration.GetSection("AppSettings");
 IConfigurationSection mongoConnectionSection = configuration.GetSection("MongoConnection");
+IConfigurationSection policySettingsSection = configuration.GetSection("PolicySettings");
+
+PolicySettings policySettings = policySettingsSection.Get<PolicySettings>()!;
 AppSettings appSettingsConfig = appSettingsSection.Get<AppSettings>()!;
 MongoConnection mongoConnection = mongoConnectionSection.Get<MongoConnection>()!;
 builder.Services.Configure<AppSettings>(appSettingsSection);
@@ -121,7 +124,7 @@ builder.Services.AddAuthorization(options =>
     foreach (Operation operation in operations)
     {
 
-        if (operation.Policy.Contains("List") && operation.Policy != "Entity.List")
+        if (operation.Policy.Contains(policySettings.ContainsList) && operation.Policy != policySettings.NotEqualList)
         {
             // Agrega una política personalizada que permita cualquiera de los claims
             options.AddPolicy(operation.Policy, policy =>
@@ -129,7 +132,7 @@ builder.Services.AddAuthorization(options =>
                 policy.Requirements.Add(new MultipleClaimsRequirement(
                 [
                     new KeyValuePair<string, string>(ClaimTypes.AuthorizationDecision, operation.Id.ToString()),
-                    new KeyValuePair<string, string>(ClaimTypes.AuthorizationDecision, "66752724aae39cd8b0acb936")
+                    new KeyValuePair<string, string>(ClaimTypes.AuthorizationDecision, policySettings.EqualValue)
                 ]));
             });
         }
