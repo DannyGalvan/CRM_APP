@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ModalType } from "../../hooks/useModalStrategies";
 import { getAllCatalogues } from "../../services/catalogueService";
+import { useModalCreateStore } from "../../store/useModalCreateStore";
 import { toCamelCase } from "../../util/converted";
 import { ApiError } from "../../util/errors";
 import { InputSearch } from "./InputSearch";
 
 interface CatalogueSearchProps {
-  querykey: string;
+  querykey: ModalType;
   entity: string;
   errorMessage?: string;
   setFormValue: (id: ChangeEvent<HTMLInputElement>) => void;
@@ -33,6 +35,7 @@ export const CatalogueSearch = ({
 }: CatalogueSearchProps) => {
   const navigate = useNavigate();
   const [search, setSearch] = useState<string>("");
+  const {open} = useModalCreateStore();
 
   const { data, isPending, error } = useQuery<any, ApiError>({
     queryKey: [querykey, "search", search],
@@ -87,6 +90,7 @@ export const CatalogueSearch = ({
         isForm={false}
         defaultValue={defaultValue}
         keyname={toCamelCase(keyName)}
+        createItemFn={()=>open(querykey, `Crear ${entity}`)}
       />
     </div>
   );

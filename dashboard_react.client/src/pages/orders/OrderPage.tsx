@@ -35,10 +35,17 @@ const columns: TableColumn<any>[] = [
   {
     id: "name",
     name: "Nombre",
-    selector: (data) =>
-      `${data?.customer?.firstName} ${data?.customer?.firstLastName}`,
+    selector: (data) => data?.customer?.fullName,
     omit: false,
     sortable: true,
+  },
+  {
+    id: "total",
+    name: "Total",
+    selector: (data) => data.total,
+    omit: false,
+    sortable: true,
+    maxWidth: "100px",
   },
   {
     id: "payment",

@@ -19,6 +19,7 @@ interface InputSearchProps {
   errorMessage?: string;
   label?: string;
   defaultValue?: string;
+  createItemFn?: () => void;
 }
 
 const SearchResults = React.memo(
@@ -30,6 +31,7 @@ const SearchResults = React.memo(
     keyid,
     inputSearch,
     setOpen,
+    createItemFn,
   }: any) => (
     <article className="absolute top-[4rem] z-50 flex w-full flex-col rounded-xl border border-gray-400 bg-white p-5 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
       <IoClose
@@ -59,7 +61,7 @@ const SearchResults = React.memo(
           ))}
         </ul>
       )}
-      <p className="cursor-pointer text-center font-bold text-cyan-500 hover:text-cyan-900">
+      <p className="cursor-pointer text-center font-bold text-cyan-500 hover:text-cyan-900" onClick={createItemFn}>
         ➕ Crear un nuevo item
       </p>
     </article>
@@ -80,6 +82,7 @@ export const InputSearch = ({
   errorMessage,
   label,
   defaultValue,
+  createItemFn,
 }: InputSearchProps) => {
   const [open, setOpen] = useState(false);
 
@@ -141,6 +144,7 @@ export const InputSearch = ({
             keyid={keyid}
             inputSearch={inputSearch}
             setOpen={setOpen}
+            createItemFn={createItemFn}
           />
         )}
       </div>

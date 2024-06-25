@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Footer } from "../components/layout/Footer";
+import { ModalCreateItem } from "../components/modals/ModalCreateItem";
 import { Sidebar } from "./Sidebar";
 
 interface LayoutProps {
@@ -18,6 +19,7 @@ export const Layout = ({ children }: LayoutProps) => {
           {children}
         </main>
         <Footer />
+        <ModalCreateItem />
       </div>
     </div>
   );
