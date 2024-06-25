@@ -181,6 +181,7 @@ export const CataloguePage = () => {
                   initialForm={initialCatalogue}
                   sendForm={createCatalog}
                   text="Crear"
+                  reboot
                 />
               </div>
             </Drawer>

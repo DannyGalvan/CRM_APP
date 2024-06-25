@@ -9,17 +9,17 @@ export interface OrderResponse {
   paymentTypeId: string;
   orderStateId: string;
   total: number;
-  orderDetails: OrderDetalResponse[];
-  createdAt: string;
-  updatedAt?: string;
-  createdBy: string;
-  updatedBy?: string;
+  orderDetails: OrderDetailResponse[];
+  createdAt: string | null;
+  updatedAt?: string | null;
+  createdBy: string | null;
+  updatedBy?: string | null;
   customer: CustomerResponse;
   paymentType: CatalogueResponse;
   orderState: CatalogueResponse;
 }
 
-export interface OrderDetalResponse {
+export interface OrderDetailResponse {
   numberLine: number;
   productId: string;
   productName: string;
@@ -27,4 +27,21 @@ export interface OrderDetalResponse {
   unitPrice: number;
   totalLine: number;
   product: ProductResponse;
+}
+
+export interface OrderDetailLine {
+  id: string;
+  numberLine: number;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  totalLine: number;
+}
+
+export interface OrderDetailLineRequest {
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
 }

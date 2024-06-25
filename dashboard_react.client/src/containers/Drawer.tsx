@@ -5,7 +5,7 @@ interface DrawerProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   title: React.ReactNode | string;
-  size: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
+  size: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
 }
 
 export const Drawer = ({ children, isOpen, setIsOpen, title, size = "md" } : DrawerProps) => {

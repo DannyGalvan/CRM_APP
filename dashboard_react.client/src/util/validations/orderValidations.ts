@@ -8,7 +8,7 @@ export const orderSchema = z.object({
     .refine((data) => data.trim() !== "", {
       message: "El cliente no puede estar vacio",
     }),
-  paymentId: z
+  paymentTypeId: z
     .string({ invalid_type_error, required_error })
     .refine((data) => data.trim() !== "", {
       message: "El metodo de pago no puede estar vacio",
@@ -18,7 +18,7 @@ export const orderSchema = z.object({
     .refine((data) => data.trim() !== "", {
       message: "El estado de la orden no puede estar vacio",
     }),
-  products: z.array(
+  orderDetails: z.array(
     z.object({
       numberLine: z.number({ invalid_type_error, required_error }).positive({
         message: "El numero de linea debe ser positivo",
@@ -43,6 +43,6 @@ export const orderSchema = z.object({
           message: "El precio unitario debe ser positivo",
         })
         .min(0, { message: "El precio unitario debe ser mayor a 0" }),
-    }),
+    }).optional(),
   ),
 });

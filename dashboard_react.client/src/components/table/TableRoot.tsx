@@ -61,9 +61,12 @@ export const TableRoot = ({
     setCols(cols);
   }, []);
 
-  const selectedField = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    setField(columns[e.target.value as any]);
-  }, [columns]);
+  const selectedField = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setField(columns[e.target.value as any]);
+    },
+    [columns],
+  );
 
   const memoizedColumns = useMemo(() => cols, [cols]);
   const memoizedData = useMemo(() => filteredData, [filteredData]);

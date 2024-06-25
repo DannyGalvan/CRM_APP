@@ -21,6 +21,7 @@ interface CatalogueFormProps {
     catalogue: CatalogueRequest,
   ) => Promise<ApiResponse<CatalogueResponse | ValidationFailure[]>>;
   text: string;
+  reboot?: boolean;
 }
 
 const validateCatalogue = (catalogue: CatalogueRequest) => {
@@ -39,6 +40,7 @@ export const CatalogueForm = ({
   initialForm,
   sendForm,
   text,
+  reboot,
 }: CatalogueFormProps) => {
   const {
     form,
@@ -52,6 +54,7 @@ export const CatalogueForm = ({
     initialForm ?? initialCatalogue,
     validateCatalogue,
     sendForm,
+    reboot,
   );
 
   const handleInputChange = useCallback(

@@ -29,16 +29,12 @@ export const TableSearch = ({
           draggable={true}
         >
           {columns.map((item, index) => (
-            <SelectItem
-              key={index}
-            >
-              {item.name}
-            </SelectItem>
+            <SelectItem key={index}>{item.name}</SelectItem>
           ))}
         </Select>
       </Col>
       <Col sm={12} md={6}>
-        <form className={"flex"}>
+        <article className={"flex"}>
           <Input
             label="Buscar..."
             name="search"
@@ -47,6 +43,12 @@ export const TableSearch = ({
             className={"py-4"}
             size="md"
             variant="bordered"
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                filterData();
+              }
+            }}
           />
           <Button
             color="primary"
@@ -61,7 +63,7 @@ export const TableSearch = ({
           >
             <Icon name="bi bi-search" />
           </Button>
-        </form>
+        </article>
       </Col>
     </Row>
   );

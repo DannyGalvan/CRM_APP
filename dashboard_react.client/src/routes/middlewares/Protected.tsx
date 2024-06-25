@@ -9,8 +9,6 @@ interface ProtectedProps {
 const Protected = ({ children }: ProtectedProps) => {
   const { isLoggedIn, redirect } = useAuth();
 
-  console.log({isLoggedIn, redirect});
-
   if (!isLoggedIn) {
     return <Navigate to={nameRoutes.login} />;
   }

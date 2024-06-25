@@ -42,7 +42,8 @@ namespace Business.Mappers
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.Department, opt => opt.Ignore())
                 .ForMember(dest => dest.Municipality, opt => opt.Ignore())
-                .ForMember(dest => dest.Zone, opt => opt.Ignore());
+                .ForMember(dest => dest.Zone, opt => opt.Ignore())
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.SecondName} {src.FirstLastName} {src.SecondLastName}"));
 
             CreateMap<Customer, CustomerResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
@@ -55,7 +56,8 @@ namespace Business.Mappers
                 .ForMember(dest => dest.Municipality, opt => opt.MapFrom(src => src.Municipality))
                 .ForMember(dest => dest.Zone, opt => opt.MapFrom(src => src.Zone))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
-                .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty));
+                .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
 
             // mapper de productos
             CreateMap<ProductRequest, Product>()

@@ -3,8 +3,18 @@ import { ApiResponse } from "../types/ApiResponse";
 import { CustomerResponse } from "../types/CustomerResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 
-export const getCustomers = async () => {
-  const response = await api.get<any, ApiResponse<CustomerResponse[]>,any>("/customer");
+export const getCustomers = async (filter?: string) => {
+  let response: ApiResponse<CustomerResponse[] | ValidationFailure[]>;
+
+  if (!filter) {
+    response = await api.get<any, ApiResponse<CustomerResponse[]>, any>(
+      "/customer",
+    );
+  } else {
+    response = await api.get<any, ApiResponse<CustomerResponse[]>, any>(
+      `/customer?filters=${filter}`,
+    );
+  }
 
   return response;
 };

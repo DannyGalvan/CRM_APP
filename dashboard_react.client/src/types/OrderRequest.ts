@@ -2,7 +2,7 @@
 export interface OrderRequest {
   id?: string;
   customerId: string;
-  paymentId: string;
+  paymentTypeId: string;
   orderStateId: string;
   orderDetails: OrderDetailRequest[];
 }

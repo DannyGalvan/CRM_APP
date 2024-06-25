@@ -38,6 +38,7 @@ export const CreateCataloguePage = () => {
           collectionError={collectionError}
           selectedCatalogue={selectedCatalogue}
           text="Crear"
+          reboot
         />
       </Col>
     </div>

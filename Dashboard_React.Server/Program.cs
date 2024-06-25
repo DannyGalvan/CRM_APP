@@ -10,19 +10,17 @@ using Entities.Configurations;
 using Business.Mappers;
 using MongoDB.Driver;
 using Entities.Models;
-using MongoDB.Bson;
 using Microsoft.OpenApi.Models;
 using Humanizer;
 using Entities.Interfaces;
-using BC = BCrypt.Net;
 using AutoMapper.EquivalencyExpression;
 using Serilog;
 using Serilog.Extensions.Logging;
 using System.Security.Claims;
 using Entities.Context;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authorization;
 using Dashboard_React.Server.Filters;
+using Dashboard_React.Server.Containers;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -138,12 +136,11 @@ builder.Services.AddAuthorization(options =>
         }
         else
         {
+            Console.WriteLine($"Policy: {operation.Policy}, id: {operation.Id.ToString()}");
             options.AddPolicy(operation.Policy, policy => policy.RequireClaim(claimType: ClaimTypes.AuthorizationDecision, operation.Id.ToString()));
         }        
     }
 });
-
-builder.Services.AddSingleton<IAuthorizationHandler, MultipleClaimsHandler>();
 
 //Add AutoMapper
 builder.Services.AddAutoMapper(options =>
@@ -221,59 +218,9 @@ builder.Services.AddSwaggerGen(options => {
     });
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-// Create a sa User if not exists to start the application
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-ILogger<Program>? _logger = services.GetRequiredService<ILogger<Program>>();
-
-if (app.Environment.IsDevelopment())
-{
-    try
-    {
-        string emailManager = "pruebas.test29111999@gmail.com";
-
-        var dbContext = services.GetRequiredService<ICRMContext>();
-
-        string collectionName = typeof(User).Name.Pluralize();
-
-        IMongoCollection<User> Users = dbContext.Database.GetCollection<User>(collectionName);
-
-        User? manager = Users.Find(u => u.Email == emailManager).FirstOrDefault();
-
-        if (manager == null)
-        {
-            Users.InsertOne(new User
-            {
-                Id = ObjectId.Parse("662754d99f4e1bf2407306ba"),
-                Email = emailManager,
-                Password = BC.BCrypt.HashPassword("Broiler-Charbroil4"),
-                Name = "Systema",
-                LastName = "Admin",
-                UserName = "MANAGER",
-                Number = "51995142",
-                Active = true,
-                Confirm = true,
-                Database = "Dashboard_Data",
-                ConnectionString = "mongodb://CRM_DATA:crm_data_8955@localhost:27017",
-                CreatedBy = ObjectId.Parse("662754d99f4e1bf2407306ba"),
-            });
-        }
-
-        _logger.LogInformation("Aplicacion Iniciada en Desarrollo con Exito!!!");
-    }
-    catch (Exception ex)
-    {
-        _logger.LogCritical(ex, "Error al crear SA: {mensaje}", ex.Message);
-
-        throw new Exception($"Error al crear SA: {ex.Message}");
-    }
-}
-else
-{
-    _logger.LogInformation("Aplicacion Iniciada en Produccion con Exito!!!");
-}
+Initializer.Run(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -289,19 +236,6 @@ else
     app.UseStaticFiles();
     app.MapFallbackToFile("/index.html");
 }
-
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        _logger.LogCritical(ex, "Error en la aplicacion: {mensaje}", ex.Message);
-        throw;
-    }
-});
 
 app.UseHttpsRedirection();
 

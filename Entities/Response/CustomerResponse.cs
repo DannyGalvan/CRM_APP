@@ -7,6 +7,7 @@
         public string SecondName { get; set; } = string.Empty;
         public string FirstLastName { get; set; } = string.Empty;
         public string SecondLastName { get; set; } = string.Empty;
+        public string FullName { get; set;} = string.Empty;
         public string FirstPhone { get; set; } = string.Empty;
         public string SecondPhone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;

@@ -1,20 +1,27 @@
 import { Button } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { Col } from "@tremor/react";
+import { useEffect } from "react";
 import { TableColumn } from "react-data-table-component";
 import { Icon } from "../../components/Icons/Icon";
-import { CatalogueActionMenu } from "../../components/menu/CatalogueActionMenu";
+import { OrderForm } from "../../components/forms/OrderForm";
+import { OrderActionMenu } from "../../components/menu/OrderActionMenu";
 import { TableRoot } from "../../components/table/TableRoot";
+import { Drawer } from "../../containers/Drawer";
 import { DrawerProvider } from "../../context/DrawerContext";
+import { useOrder } from "../../hooks/useOrder";
+import { useRetraseRender } from "../../hooks/useRetraseRender";
 import { useToggle } from "../../hooks/useToggle";
 import Protected from "../../routes/middlewares/Protected";
 import { getOrders } from "../../services/orderService";
+import { useOrderDetailStore } from "../../store/useOrderDetailStore";
 import { useOrderStore } from "../../store/useOrderStore";
 import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
 import { OrderResponse } from "../../types/OrderResponse";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
+import { initialOrder } from "./CreateOrderPage";
 
 const columns: TableColumn<any>[] = [
   {
@@ -28,14 +35,15 @@ const columns: TableColumn<any>[] = [
   {
     id: "name",
     name: "Nombre",
-    selector: (data) => data.customer?.name,
+    selector: (data) =>
+      `${data?.customer?.firstName} ${data?.customer?.firstLastName}`,
     omit: false,
     sortable: true,
   },
   {
     id: "payment",
     name: "Pago",
-    selector: (data) => data.payment?.name,
+    selector: (data) => data?.paymentType?.name,
     sortable: true,
     maxWidth: "150px",
     omit: false,
@@ -43,7 +51,7 @@ const columns: TableColumn<any>[] = [
   {
     id: "status",
     name: "Estado",
-    selector: (data) => data.orderState.name,
+    selector: (data) => data?.orderState?.name,
     sortable: true,
     maxWidth: "150px",
     omit: false,
@@ -68,7 +76,7 @@ const columns: TableColumn<any>[] = [
     id: "actions",
     name: "Acciones",
     cell: (data) => {
-      return <CatalogueActionMenu data={data} useStore={useOrderStore} />;
+      return <OrderActionMenu data={data} />;
     },
     wrap: true,
   },
@@ -76,7 +84,11 @@ const columns: TableColumn<any>[] = [
 
 export const OrderPage = () => {
   const { open, toggle } = useToggle();
+  const { reRender, render } = useRetraseRender();
   const { open: openUpdate, toggle: toggleUpdate } = useToggle();
+  const { create, update } = useOrder();
+  const { order, add } = useOrderStore();
+  const { updateDetails } = useOrderDetailStore();
 
   const { data, error, isFetching, isLoading } = useQuery<
     ApiResponse<OrderResponse[]>,
@@ -85,6 +97,10 @@ export const OrderPage = () => {
     queryKey: ["orders"],
     queryFn: getOrders,
   });
+
+  useEffect(() => {
+    reRender();
+  }, []);
 
   if (error) {
     return <NotFound Message={error.message} Number={error.statusCode} />;
@@ -110,6 +126,43 @@ export const OrderPage = () => {
             width={false}
           />
         </div>
+        {render && (
+          <Drawer
+            isOpen={open}
+            setIsOpen={toggle}
+            title={`Crear Orden`}
+            size="5xl"
+          >
+            <div className="p-5">
+              <OrderForm
+                initialForm={initialOrder}
+                sendForm={create}
+                action="Crear"
+                reboot
+              />
+            </div>
+          </Drawer>
+        )}
+        {render && (
+          <Drawer
+            isOpen={openUpdate}
+            setIsOpen={() => {
+              toggleUpdate();
+              add(null);
+              updateDetails([]);
+            }}
+            title={`Editar Cliente`}
+            size="5xl"
+          >
+            <div className="p-5">
+              <OrderForm
+                initialForm={order!}
+                sendForm={update}
+                action="Editar"
+              />
+            </div>
+          </Drawer>
+        )}
       </DrawerProvider>
     </Protected>
   );

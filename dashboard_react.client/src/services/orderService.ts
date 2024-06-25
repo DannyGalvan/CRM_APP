@@ -1,5 +1,6 @@
 import { api } from "../config/axios/interceptors";
 import { ApiResponse } from "../types/ApiResponse";
+import { OrderRequest } from "../types/OrderRequest";
 import { OrderResponse } from "../types/OrderResponse";
 
 export const getOrders = async () => {
@@ -22,31 +23,31 @@ export const getOrder = async (id: string) => {
   return response;
 };
 
-export const createOrder = async (data: OrderResponse) => {
+export const createOrder = async (data: OrderRequest) => {
   const response: ApiResponse<OrderResponse> = await api.post<
     any,
     ApiResponse<OrderResponse>,
-    OrderResponse
+    OrderRequest
   >("/order", data);
 
   return response;
 };
 
-export const updateOrder = async (data: OrderResponse) => {
+export const updateOrder = async (data: OrderRequest) => {
   const response: ApiResponse<OrderResponse> = await api.put<
     any,
     ApiResponse<OrderResponse>,
-    OrderResponse
+    OrderRequest
   >(`/order`, data);
 
   return response;
 };
 
-export const partialUpdateOrder = async (data: OrderResponse) => {
+export const partialUpdateOrder = async (data: OrderRequest) => {
   const response: ApiResponse<OrderResponse> = await api.patch<
     any,
     ApiResponse<OrderResponse>,
-    OrderResponse
+    OrderRequest
   >(`/order`, data);
 
   return response;

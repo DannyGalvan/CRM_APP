@@ -18,6 +18,7 @@ import { useProductStore } from "../../store/useProductStore";
 import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
 import { ProductResponse } from "../../types/ProductResponse";
+import { ValidationFailure } from "../../types/ValidationFailure";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
 import { initialProduct } from "./CreateProductPage";
@@ -45,7 +46,7 @@ const columns: TableColumn<any>[] = [
     selector: (data) => data.description,
     sortable: true,
     wrap: true,
-    omit: false,
+    omit: true,
   },
   {
     id: "family",
@@ -58,7 +59,7 @@ const columns: TableColumn<any>[] = [
   {
     id: "cost",
     name: "Costo",
-    selector: (data) => data.cost.toFixed(2),
+    selector: (data) => data.cost?.toFixed(2),
     sortable: true,
     wrap: true,
     omit: false,
@@ -66,7 +67,7 @@ const columns: TableColumn<any>[] = [
   {
     id: "salePrice",
     name: "Precio de Venta",
-    selector: (data) => data.salePrice.toFixed(2),
+    selector: (data) => data.salePrice?.toFixed(2),
     sortable: true,
     wrap: true,
     omit: false,
@@ -121,11 +122,11 @@ export const ProductPage = () => {
   const { product, add } = useProductStore();
 
   const { data, error, isFetching, isLoading } = useQuery<
-    ApiResponse<ProductResponse[]>,
+    ApiResponse<ProductResponse[] | ValidationFailure[]>,
     ApiError | undefined
   >({
     queryKey: ["products"],
-    queryFn: getProducts,
+    queryFn: ()=> getProducts(),
   });
 
   if (error) {
