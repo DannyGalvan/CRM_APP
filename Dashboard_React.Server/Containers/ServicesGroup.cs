@@ -23,7 +23,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEntityService<Order, OrderRequest, ObjectId>, EntityService<Order, OrderRequest, ObjectId>>();
             services.AddScoped<IEntityService<Operation, OperationRequest, ObjectId>, EntityService<Operation, OperationRequest, ObjectId>>();
             services.AddScoped<ICatalogueService, CatalogueService>();
+            services.AddScoped<IDashboardServices, DashboardServices>();
             services.AddSingleton<IAuthorizationHandler, MultipleClaimsHandler>();
+           
 
             return services;
         }

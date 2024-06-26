@@ -136,7 +136,6 @@ builder.Services.AddAuthorization(options =>
         }
         else
         {
-            Console.WriteLine($"Policy: {operation.Policy}, id: {operation.Id.ToString()}");
             options.AddPolicy(operation.Policy, policy => policy.RequireClaim(claimType: ClaimTypes.AuthorizationDecision, operation.Id.ToString()));
         }        
     }
