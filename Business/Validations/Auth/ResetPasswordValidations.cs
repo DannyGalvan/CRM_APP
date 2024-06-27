@@ -1,5 +1,4 @@
-﻿using Users = Entities.Models.User;
-using Entities.Request;
+﻿using Entities.Request;
 using FluentValidation;
 using BC = BCrypt.Net;
 using MongoDB.Bson;
@@ -36,13 +35,13 @@ namespace Business.Validations.Auth
                 .WithMessage("La confirmación de la contraseña debe coincidir con la contraseña");
             RuleFor(x => x).Custom((model, context) =>
             {
-                string nameCollection = typeof(User).Name.Pluralize();
+                string nameCollection = nameof(User).Pluralize();
 
-                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(nameCollection);
+                IMongoCollection<User> users = _bd.Database.GetCollection<User>(nameCollection);
 
                 ObjectId id = ObjectId.Parse(model.IdUser);
 
-                Users? user = Users.Find(x => x.Id.Equals(id)).FirstOrDefault();
+                User? user = users.Find(x => x.Id.Equals(id)).FirstOrDefault();
 
                 if (user != null)
                 {
@@ -60,13 +59,13 @@ namespace Business.Validations.Auth
 
         private bool UserExists(string id)
         {
-            string nameCollection = typeof(User).Name.Pluralize();
+            string nameCollection = nameof(User).Pluralize();
 
-            IMongoCollection<User> Users = _bd.Database.GetCollection<User>(nameCollection);
+            IMongoCollection<User> users = _bd.Database.GetCollection<User>(nameCollection);
 
             ObjectId id1 = ObjectId.Parse(id);
 
-            return Users.Find(u => u.Id == id1).FirstOrDefault() != null;
+            return users.Find(u => u.Id == id1).FirstOrDefault() != null;
         }
 
     }

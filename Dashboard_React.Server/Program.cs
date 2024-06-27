@@ -21,6 +21,7 @@ using Entities.Context;
 using Microsoft.Extensions.Options;
 using Dashboard_React.Server.Filters;
 using Dashboard_React.Server.Containers;
+using Microsoft.Extensions.Primitives;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -84,10 +85,10 @@ builder.Services.AddAuthentication(d =>
            {
                OnAuthenticationFailed = context =>
                {
-                   if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                   {
-                       context.Response.Headers.Append("Token-Expired", "true");
-                   }
+                   if (context.Exception.GetType() != typeof(SecurityTokenExpiredException)) return Task.CompletedTask;
+                   StringValues assert = new("true");
+
+                   context.Response.Headers.Append("Token-Expired", assert);
                    return Task.CompletedTask;
                },
                OnChallenge = context =>
@@ -96,7 +97,7 @@ builder.Services.AddAuthentication(d =>
                    context.Response.StatusCode = 401;
                    context.Response.ContentType = "application/json";
 
-                   string? result = JsonSerializer.Serialize(
+                   var result = JsonSerializer.Serialize(
                         new Response<string>()
                         {
                             Success = false,
@@ -115,16 +116,16 @@ builder.Services.AddAuthorization(options =>
 
     ICRMContext bd = new CRMContext(mongoConnectionOptions);
 
-    IMongoCollection<Operation> Operations = bd.Database.GetCollection<Operation>(typeof(Operation).Name.Pluralize());
+    var operationsCollection = bd.Database.GetCollection<Operation>(nameof(Operation).Pluralize());
 
-    var operations = Operations.Find(FilterDefinition<Operation>.Empty).ToList();
+    var operations = operationsCollection.Find(FilterDefinition<Operation>.Empty).ToList();
 
-    foreach (Operation operation in operations)
+    foreach (var operation in operations)
     {
 
         if (operation.Policy.Contains(policySettings.ContainsList) && operation.Policy != policySettings.NotEqualList)
         {
-            // Agrega una política personalizada que permita cualquiera de los claims
+            // Add a custom policy that allows any of the claims.
             options.AddPolicy(operation.Policy, policy =>
             {
                 policy.Requirements.Add(new MultipleClaimsRequirement(
@@ -170,7 +171,7 @@ builder.Services.AddControllers()
             var result = new Response<List<ValidationFailure>>()
             {
                 Success = false,
-                Message = "La peticion no es valida, contiene errores, porfavor revise",
+                Message = "La petición no es valida, contiene errores, porfavor revise",
                 Data = failures
             };
 

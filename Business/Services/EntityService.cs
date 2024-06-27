@@ -22,8 +22,8 @@ namespace Business.Services
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<EntityService<TEntity, TRequest, TId>> _logger;
-        private static readonly string[] separator = [" AND "];
-        private static readonly string[] separatorArray = [" OR "];
+        private static readonly string[] Separator = [" AND "];
+        private static readonly string[] SeparatorArray = [" OR "];
 
         private IValidator<TRequest> GetValidator(string key)
         {
@@ -96,9 +96,9 @@ namespace Business.Services
 
                 IMongoCollection<TEntity> database = _context.Database.GetCollection<TEntity>(collectionName);
 
-                var aggregate = database.Aggregate();              
+                var aggregate = database.Aggregate();
 
-                // Obtén todas las propiedades virtuales para hacer los $lookup
+                // Get all the virtual properties to make the $lookups
                 var properties = typeof(TEntity).GetProperties()
                     .Where(p => p.GetGetMethod()!.IsVirtual && p.PropertyType.IsClass);
 
@@ -170,7 +170,7 @@ namespace Business.Services
 
                 var aggregate = database.Aggregate();
 
-                // Obtén todas las propiedades virtuales para hacer los $lookup
+                // Get all the virtual properties to make the $lookups
                 var properties = typeof(TEntity).GetProperties()
                     .Where(p => p.GetGetMethod()!.IsVirtual && p.PropertyType.IsClass);
 
@@ -367,44 +367,38 @@ namespace Business.Services
             {
                 return Builders<TEntity>.Filter.Empty;
             }
-            // Dividir la consulta SQL en partes separadas por AND u OR
-            var andParts = sqlQuery.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            // Split the SQL query into parts separated by AND or OR
+            var andParts = sqlQuery.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
-            // Lista para almacenar filtros individuales
+            // List to store individual filters
             var andFilters = new List<FilterDefinition<TEntity>>();
 
-            // Procesar cada parte de la consulta
+            // Process each part of the query
             foreach (var andPart in andParts)
             {
-                // Dividir la parte AND en partes separadas por OR
-                var orParts = andPart.Split(separatorArray, StringSplitOptions.RemoveEmptyEntries);
+                // Split the AND part into parts separated by OR
+                var orParts = andPart.Split(SeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-                // Lista para almacenar filtros de las partes OR
+                // List to store filters from OR parts
                 var orFilters = new List<FilterDefinition<TEntity>>();
 
-                // Procesar cada parte de la consulta OR
+                // Process each part of the OR query
                 foreach (var orPart in orParts)
                 {
-                    // Traducir la condición a un filtro de MongoDB
+                    // Translate the condition to a MongoDB filter
                     var filter = TranslateConditionToMongoFilter(orPart);
 
-                    // Agregar el filtro a la lista de filtros OR
+                    // Add the filter to the OR filter list
                     orFilters.Add(filter);
                 }
 
-                // Combinar los filtros OR con un operador OR
-                if (andPart.Contains("OR"))
-                {
-
-                    andFilters.Add(Builders<TEntity>.Filter.Or(orFilters));
-                }
-                else
-                {
-                    andFilters.Add(Builders<TEntity>.Filter.And(orFilters));
-                }
+                // Combine OR filters with an OR operator
+                andFilters.Add(andPart.Contains("OR")
+                    ? Builders<TEntity>.Filter.Or(orFilters)
+                    : Builders<TEntity>.Filter.And(orFilters));
             }
 
-            // Combinar los filtros AND con un operador AND
+            // Combine AND filters with an AND operator
             var combinedAndFilter = Builders<TEntity>.Filter.And(andFilters);
 
             return combinedAndFilter;
@@ -412,9 +406,9 @@ namespace Business.Services
 
         private static FilterDefinition<TEntity> TranslateConditionToMongoFilter(string condition)
         {
-            // Traducir una condición SQL individual a un filtro de MongoDB
+            // Translate a single SQL condition to a MongoDB filter
 
-            // Ejemplo: Name:like:libre
+            // Example: Name:like:free
             var parts = condition.Split(':');
 
             bool isObjectId = HasValidId(parts[2]);
@@ -430,9 +424,7 @@ namespace Business.Services
 
             var filterBuilder = Builders<TEntity>.Filter;
 
-            FilterDefinition<TEntity> individualFilter;
-
-            individualFilter = filterDefinition.Operator.ToLower() switch
+            FilterDefinition<TEntity> individualFilter = filterDefinition.Operator.ToLower() switch
             {
                 "eq" => filterBuilder.Eq(filterDefinition.Field, filterDefinition.Value),
                 "ne" => filterBuilder.Ne(filterDefinition.Field, filterDefinition.Value),

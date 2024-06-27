@@ -1,5 +1,4 @@
 ﻿using Business.Interfaces;
-using Business.Repository;
 using Business.Services;
 using Dashboard_React.Server.Filters;
 using Entities.Models;
@@ -7,11 +6,11 @@ using Entities.Request;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServicesGroup
     {
-
         public static IServiceCollection AddServicesGroup(this IServiceCollection services)
         {
             services.AddScoped<ISendMail, SendEmail>();

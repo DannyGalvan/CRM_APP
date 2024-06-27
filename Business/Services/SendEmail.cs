@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 
-namespace Business.Repository
+namespace Business.Services
 {
     [AllArgsConstructor]
     public partial class SendEmail : ISendMail

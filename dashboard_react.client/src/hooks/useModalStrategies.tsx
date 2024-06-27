@@ -27,15 +27,22 @@ export const useModalStrategies = () => {
   const { modal } = useModalCreateStore();
 
   const openCreate = () => {
+    const select = {
+      name: modal.title,
+      selected: modal.keyForm,
+    };
+
+    const catalogCreate = (catalogue: CatalogueRequest) =>
+      createCatalog(catalogue, select);
+
+    console.log({select});
+
     const ModalStrategies: Record<ModalType, ReactNode> = {
       Municipalities: (
         <CatalogueForm
           collectionError={collectionError}
-          selectedCatalogue={{
-            name: modal.keyForm,
-            selected: "",
-          }}
-          sendForm={createCatalog}
+          selectedCatalogue={select}
+          sendForm={catalogCreate}
           text="Crear"
           initialForm={initialCatalogue}
           reboot
@@ -44,11 +51,8 @@ export const useModalStrategies = () => {
       Zones: (
         <CatalogueForm
           collectionError={collectionError}
-          selectedCatalogue={{
-            name: modal.keyForm,
-            selected: "",
-          }}
-          sendForm={createCatalog}
+          selectedCatalogue={select}
+          sendForm={catalogCreate}
           text="Crear"
           initialForm={initialCatalogue}
           reboot
@@ -57,11 +61,8 @@ export const useModalStrategies = () => {
       Departments: (
         <CatalogueForm
           collectionError={collectionError}
-          selectedCatalogue={{
-            name: modal.keyForm,
-            selected: "",
-          }}
-          sendForm={createCatalog}
+          selectedCatalogue={select}
+          sendForm={catalogCreate}
           text="Crear"
           initialForm={initialCatalogue}
           reboot
@@ -78,11 +79,8 @@ export const useModalStrategies = () => {
       PaymentTypes: (
         <CatalogueForm
           collectionError={collectionError}
-          selectedCatalogue={{
-            name: modal.keyForm,
-            selected: "",
-          }}
-          sendForm={createCatalog}
+          selectedCatalogue={select}
+          sendForm={catalogCreate}
           text="Crear"
           initialForm={initialCatalogue}
           reboot
@@ -91,11 +89,8 @@ export const useModalStrategies = () => {
       Families: (
         <CatalogueForm
           collectionError={collectionError}
-          selectedCatalogue={{
-            name: modal.keyForm,
-            selected: "",
-          }}
-          sendForm={createCatalog}
+          selectedCatalogue={select}
+          sendForm={catalogCreate}
           text="Crear"
           initialForm={initialCatalogue}
           reboot

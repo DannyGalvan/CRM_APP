@@ -54,11 +54,11 @@ namespace Business.Services
                     return userResponse;
                 }
 
-                string collectionName = typeof(User).Name.Pluralize();
+                string collectionName = nameof(User).Pluralize();
 
-                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
+                IMongoCollection<User> users = _bd.Database.GetCollection<User>(collectionName);
 
-                User? oUser = Users.Find(u => u.UserName.Equals(model.UserName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                User? oUser = users.Find(u => u.UserName.Equals(model.UserName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
 
                 if (oUser == null)
                 {
@@ -98,7 +98,7 @@ namespace Business.Services
                 };
 
                 userResponse.Success = true;
-                userResponse.Message = "Inicio de sesion exitosa";
+                userResponse.Message = "Inicio de sesión exitosa";
                 userResponse.Data = auth;
                 userResponse.Errors = null;
 
@@ -136,11 +136,11 @@ namespace Business.Services
                     return response;
                 }
 
-                string collectionName = typeof(User).Name.Pluralize();
+                string collectionName = nameof(User).Pluralize();
 
-                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
+                IMongoCollection<User> users = _bd.Database.GetCollection<User>(collectionName);
 
-                User? oUser = Users.Find(u => u.RecoveryToken == model.Token).FirstOrDefault();
+                User? oUser = users.Find(u => u.RecoveryToken == model.Token).FirstOrDefault();
 
                 if (oUser == null || model.Password != model.ConfirmPassword)
                 {
@@ -162,7 +162,7 @@ namespace Business.Services
 
                 string encrypt = BC.BCrypt.HashPassword(model.Password);
 
-                var saveChanges = Users.UpdateOne(u => u.Id == oUser.Id, Builders<User>.Update.Set(u => u.Password, encrypt).Set(u => u.RecoveryToken, ""));
+                var saveChanges = users.UpdateOne(u => u.Id == oUser.Id, Builders<User>.Update.Set(u => u.Password, encrypt).Set(u => u.RecoveryToken, ""));
 
                 if (saveChanges.ModifiedCount == 0)
                 {
@@ -213,17 +213,15 @@ namespace Business.Services
                     return response;
                 }
 
-                string collectionName = typeof(User).Name.Pluralize();
+                string collectionName = nameof(User).Pluralize();
 
-                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
+                IMongoCollection<User> users = _bd.Database.GetCollection<User>(collectionName);
 
                 ObjectId id = ObjectId.Parse(model.IdUser);
 
-                User oUser = Users.Find(u => u.Id == id).FirstOrDefault();
-
                 string encrypt = BC.BCrypt.HashPassword(model.Password);
 
-                var saveChanges = Users.UpdateOne(u => u.Id == id, Builders<User>.Update.Set(u => u.Password, encrypt).Set(u => u.RecoveryToken, "").Set(u => u.Reset, false));
+                var saveChanges = users.UpdateOne(u => u.Id == id, Builders<User>.Update.Set(u => u.Password, encrypt).Set(u => u.RecoveryToken, "").Set(u => u.Reset, false));
 
                 if (saveChanges.MatchedCount == 0)
                 {
@@ -261,9 +259,9 @@ namespace Business.Services
             {
                 string collectionName = typeof(User).Name.Pluralize();
 
-                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
+                IMongoCollection<User> users = _bd.Database.GetCollection<User>(collectionName);
 
-                var oUser = Users.Find(u => u.RecoveryToken == token).FirstOrDefault();
+                var oUser = users.Find(u => u.RecoveryToken == token).FirstOrDefault();
 
                 if (oUser == null)
                 {
@@ -323,11 +321,11 @@ namespace Business.Services
                     return response;
                 }
 
-                string collectionName = typeof(User).Name.Pluralize();
+                string collectionName = nameof(User).Pluralize();
 
-                IMongoCollection<User> Users = _bd.Database.GetCollection<User>(collectionName);
+                IMongoCollection<User> users = _bd.Database.GetCollection<User>(collectionName);
 
-                User oUser = Users.Find(u => u.Email == model.Email).FirstOrDefault();
+                User oUser = users.Find(u => u.Email == model.Email).FirstOrDefault();
 
                 string token = BC.BCrypt.HashPassword(Guid.NewGuid().ToString());
 
@@ -335,7 +333,7 @@ namespace Business.Services
                 oUser.Reset = true;
                 oUser.DateToken = DateTime.Now.ToString("yyyy-MM-dd mm:ss:f");
 
-                var saveChanges = Users.UpdateOne(u => u.Id == oUser.Id, Builders<User>.Update.Set(u => u.RecoveryToken, token).Set(u => u.Reset, true).Set(u => u.DateToken, oUser.DateToken));
+                var saveChanges = users.UpdateOne(u => u.Id == oUser.Id, Builders<User>.Update.Set(u => u.RecoveryToken, token).Set(u => u.Reset, true).Set(u => u.DateToken, oUser.DateToken));
 
                 if (saveChanges.ModifiedCount == 0)
                 {
@@ -399,7 +397,7 @@ namespace Business.Services
                                  new (ClaimTypes.Hash, Guid.NewGuid().ToString()),
                              };
 
-                if (user != null && user.UserOperations.Count != 0)
+                if (user.UserOperations.Count != 0)
                 {
                     claims.AddRange(user.UserOperations.Select(item => new Claim(ClaimTypes.AuthorizationDecision, item.OperationId.ToString())));
                 }
@@ -427,11 +425,11 @@ namespace Business.Services
 
         private AuthorizationsResponse GetAuthorizations(User user)
         {
-            string operationsCollection = typeof(UserOperation).Name.Pluralize();
-            IMongoCollection<UserOperation> UserOperations = _bd.Database.GetCollection<UserOperation>(operationsCollection);
+            string operationsCollection = nameof(UserOperation).Pluralize();
+            IMongoCollection<UserOperation> userOperationsCollection = _bd.Database.GetCollection<UserOperation>(operationsCollection);
 
-            var aggregate = UserOperations.Aggregate();
-            var relatedCollectionName = typeof(Operation).Name.Pluralize();
+            var aggregate = userOperationsCollection.Aggregate();
+            var relatedCollectionName = nameof(Operation).Pluralize();
 
             var lookupStage = new BsonDocument("$lookup", new BsonDocument
             {
@@ -450,15 +448,15 @@ namespace Business.Services
 
             aggregate = aggregate.AppendStage<UserOperation>(unwindStage);
             List<UserOperation> userOperations = aggregate.Match(o => o.UserId == user.Id).ToList();
-            var agrupedByModule = userOperations.GroupBy(o => o.Operation!.ModuleId).ToList();
+            var agroupedByModule = userOperations.GroupBy(o => o.Operation!.ModuleId).ToList();
 
             List<Authorizations> authorizations = new();
-            foreach (var item in agrupedByModule)
+            foreach (var item in agroupedByModule)
             {
                 var module = item.FirstOrDefault()!.Operation!.ModuleId;
-                string moduleCollection = typeof(Module).Name.Pluralize();
-                IMongoCollection<Module> Module = _bd.Database.GetCollection<Module>(moduleCollection);
-                var oModule = Module.Find(m => m.Id == module).FirstOrDefault();
+                string moduleCollectionName = nameof(Module).Pluralize();
+                IMongoCollection<Module> moduleCollection = _bd.Database.GetCollection<Module>(moduleCollectionName);
+                var oModule = moduleCollection.Find(m => m.Id == module).FirstOrDefault();
                 List<Operation> operations = item.Select(op => op.Operation!).ToList();
 
                 Authorizations authorization = new()

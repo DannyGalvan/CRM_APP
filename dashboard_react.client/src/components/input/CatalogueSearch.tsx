@@ -90,7 +90,7 @@ export const CatalogueSearch = ({
         isForm={false}
         defaultValue={defaultValue}
         keyname={toCamelCase(keyName)}
-        createItemFn={()=>open(querykey, `Crear ${entity}`)}
+        createItemFn={()=>open(querykey, entity)}
       />
     </div>
   );

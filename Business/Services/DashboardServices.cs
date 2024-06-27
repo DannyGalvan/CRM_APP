@@ -4,7 +4,6 @@ using Entities.Models;
 using Entities.Response;
 using Humanizer;
 using Lombok.NET;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 
 namespace Business.Services
@@ -21,9 +20,9 @@ namespace Business.Services
                 Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, DateTime.DaysInMonth(DateTime.Now.Year, month)))
             );
 
-            var Orders = _crmContext.Database.GetCollection<Order>(typeof(Order).Name.Pluralize());
+            var orders = _crmContext.Database.GetCollection<Order>(typeof(Order).Name.Pluralize());
 
-            var result = await Orders
+            var result = await orders
                 .Find(filter)
                 .ToListAsync();
 
@@ -48,17 +47,17 @@ namespace Business.Services
                 }
                 else
                 {
-                    var o = ordersAgroupedByDay.First(o => o.Key == i);
+                    var first = ordersAgroupedByDay.First(o => o.Key == i);
 
                     dailyOrdersList.Add(new DailyOrders
                     {
                         Id = new DayMonth
                         {
-                            Day = o.Key,
+                            Day = first.Key,
                             Month = month
                         },
-                        TotalOrders = o.Count(),
-                        TotalAmount = o.Sum(o => o.Total),
+                        TotalOrders = first.Count(),
+                        TotalAmount = first.Sum(o => o.Total),
                     });
                 }
             }
@@ -73,9 +72,9 @@ namespace Business.Services
                 Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(year, 12, 31))
             );
 
-            var Orders = _crmContext.Database.GetCollection<Order>(typeof(Order).Name.Pluralize());
+            var orders = _crmContext.Database.GetCollection<Order>(typeof(Order).Name.Pluralize());
 
-            var result = await Orders.Find(filter).ToListAsync();
+            var result = await orders.Find(filter).ToListAsync();
 
             var ordersAgroupedByMonth = result.GroupBy(o => o.OrderDate.Month);
 
@@ -98,17 +97,17 @@ namespace Business.Services
                 }
                 else
                 {
-                    var o = ordersAgroupedByMonth.First(o => o.Key == i);
+                    var first = ordersAgroupedByMonth.First(o => o.Key == i);
 
                     monthlyOrdersList.Add(new MonthlyOrders
                     {
                         Id = new MonthYear
                         {
-                            Month = o.Key,
+                            Month = first.Key,
                             Year = year
                         },
-                        TotalOrders = o.Count(),
-                        TotalAmount = o.Sum(o => o.Total),
+                        TotalOrders = first.Count(),
+                        TotalAmount = first.Sum(o => o.Total),
                     });
                 }
             }

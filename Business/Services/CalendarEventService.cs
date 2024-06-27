@@ -10,10 +10,9 @@ using MongoDB.Driver;
 
 namespace Business.Services
 {
-    public partial class CalendarEventService(IMapper mapper, IMongoContext mongo, IServiceProvider serviceProvider, ILogger<CalendarEventService> logger) : EntityService<Event, EventRequest, ObjectId>(mongo, mapper, serviceProvider, logger), ICalendarEventService
+    public class CalendarEventService(IMapper mapper, IMongoContext mongo, IServiceProvider serviceProvider, ILogger<CalendarEventService> logger) : EntityService<Event, EventRequest, ObjectId>(mongo, mapper, serviceProvider, logger), ICalendarEventService
     {
         private readonly IMongoContext _mongo = mongo;
-        private readonly ILogger<CalendarEventService> _logger = logger;
 
         public List<Event> GetAllEventsByUser(ObjectId userId, DateTime start, DateTime end)
         {
@@ -21,7 +20,7 @@ namespace Business.Services
 
             try
             {
-                string nameCollection = typeof(Event).Name.Pluralize();
+                string nameCollection = nameof(Event).Pluralize();
 
                 IMongoCollection<Event> collection = _mongo.Database.GetCollection<Event>(nameCollection);
 
@@ -39,7 +38,7 @@ namespace Business.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener los eventos del usuario {userId}", userId);
+                logger.LogError(ex, "Error al obtener los eventos del usuario {userId}", userId);
 
                 return events;
             }

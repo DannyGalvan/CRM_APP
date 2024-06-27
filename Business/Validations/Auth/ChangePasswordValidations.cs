@@ -12,7 +12,7 @@ namespace Business.Validations.Auth
                 .WithMessage("El token es obligatorio");
             RuleFor(c => c.ConfirmPassword)
                 .NotEmpty()
-                .WithMessage("La confirmacion es obligatoria")
+                .WithMessage("La confirmación es obligatoria")
                 .Equal(c => c.Password)
                 .WithMessage("Las contraseñas no coinciden");
             RuleFor(c => c.Password)

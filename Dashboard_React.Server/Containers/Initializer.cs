@@ -14,7 +14,7 @@ namespace Dashboard_React.Server.Containers
             
             using IServiceScope scope = app.Services.CreateScope();
             IServiceProvider services = scope.ServiceProvider;
-            ILogger<Program> _logger = services.GetRequiredService<ILogger<Program>>();
+            ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
 
             if (app.Environment.IsDevelopment())
             {
@@ -25,15 +25,15 @@ namespace Dashboard_React.Server.Containers
 
                     var dbContext = services.GetRequiredService<ICRMContext>();
 
-                    string collectionName = typeof(User).Name.Pluralize();
+                    string collectionName = nameof(User).Pluralize();
 
-                    IMongoCollection<User> Users = dbContext.Database.GetCollection<User>(collectionName);
+                    IMongoCollection<User> users = dbContext.Database.GetCollection<User>(collectionName);
 
-                    User? manager = Users.Find(u => u.Email == emailManager).FirstOrDefault();
+                    User? manager = users.Find(u => u.Email == emailManager).FirstOrDefault();
 
                     if (manager == null)
                     {
-                        Users.InsertOne(new User
+                        users.InsertOne(new User
                         {
                             Id = ObjectId.Parse("662754d99f4e1bf2407306ba"),
                             Email = emailManager,
@@ -50,23 +50,23 @@ namespace Dashboard_React.Server.Containers
                         });
                     }
 
-                    _logger.LogInformation("Aplicacion Iniciada en Desarrollo con Exito!!!");
+                    logger.LogInformation("Aplicacion Iniciada en Desarrollo con Exito!!!");
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogCritical(ex, "Error al crear SA: {mensaje}", ex.Message);
+                    logger.LogCritical(ex, "Error al crear SA: {mensaje}", ex.Message);
 
                     throw new Exception($"Error al crear SA: {ex.Message}");
                 }
             }
             else
             {
-                _logger.LogInformation("Aplicacion Iniciada en Produccion con Exito!!!");
+                logger.LogInformation("Aplicación Iniciada en Producción con Exito!!!");
             }
 
 
-            // Middleware para manejar errores
-            app.Use(async (context, next) =>
+            // Middleware to handle errors
+            app.Use(async (_, next) =>
             {
                 try
                 {
@@ -74,7 +74,7 @@ namespace Dashboard_React.Server.Containers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogCritical(ex, "Error en la aplicacion: {mensaje}", ex.Message);
+                    logger.LogCritical(ex, "Error en la aplicación: {mensaje}", ex.Message);
                     throw;
                 }
             });

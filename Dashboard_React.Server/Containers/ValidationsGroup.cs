@@ -9,6 +9,7 @@ using Entidades.Request;
 using Entities.Request;
 using FluentValidation;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ValidationsGroup
@@ -19,27 +20,27 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IValidator<ChangePasswordRequest>, ChangePasswordValidations>();
             services.AddScoped<IValidator<ResetPasswordRequest>, ResetPasswordValidations>();
             services.AddScoped<IValidator<RecoveryPasswordRequest>, RecoveryPasswordValidations>();
-            //Validaciones de catálogo
+            //Validations de catálogo
             services.AddKeyedScoped<IValidator<CatalogueRequest>,CreateCatalogValidator>("Create");
             services.AddKeyedScoped<IValidator<CatalogueRequest>, UpdateCatalogValidator >("Update");
             services.AddKeyedScoped<IValidator<CatalogueRequest>,PartialUpdateCatalogValidator>("PartialUpdate");
-            //Validaciones de colección
+            //Validations of collections
             services.AddKeyedScoped<IValidator<CollectionRequest>,CreateCollectionValidator>("Create");
             services.AddKeyedScoped<IValidator<CollectionRequest>,UpdateCollectionValidator>("Update");
             services.AddKeyedScoped<IValidator<CollectionRequest>,PartialUpdateCollectionValidator>("PartialUpdate");
-            //Validaciones de cliente
+            //Validations of customers
             services.AddKeyedScoped<IValidator<CustomerRequest>, CreateCustomerValidator>("Create");
             services.AddKeyedScoped<IValidator<CustomerRequest>, UpdateCustomerValidator>("Update");
             services.AddKeyedScoped<IValidator<CustomerRequest>, PartialUpdateCustomerValidator>("PartialUpdate");
-            //Validaciones de producto
+            //Validations of products
             services.AddKeyedScoped<IValidator<ProductRequest>, CreateProductValidator>("Create");
             services.AddKeyedScoped<IValidator<ProductRequest>, UpdateProductValidator>("Update");
             services.AddKeyedScoped<IValidator<ProductRequest>, PartialUpdateProductValidator>("PartialUpdate");
-            //Validaciones de evento
+            //Validations of events
             services.AddKeyedScoped<IValidator<EventRequest>, CreateEventValidator>("Create");
             services.AddKeyedScoped<IValidator<EventRequest>, UpdateEventValidator>("Update");
             services.AddKeyedScoped<IValidator<EventRequest>, PartialUpdateEventValidator>("PartialUpdate");
-            //Validaciones de Ordenes
+            //Validations of Orders
             services.AddKeyedScoped<IValidator<OrderRequest>, CreateOrderValidator>("Create");
             services.AddKeyedScoped<IValidator<OrderRequest>, UpdateOrderValidator>("Update");
             services.AddKeyedScoped<IValidator<OrderRequest>, PartialupdateOrderValidator>("PartialUpdate");

@@ -2,10 +2,9 @@
 
 namespace Dashboard_React.Server.Filters
 {
-    public class MultipleClaimsRequirement : IAuthorizationRequirement
+    public class MultipleClaimsRequirement(List<KeyValuePair<string, string>> requiredClaims)
+        : IAuthorizationRequirement
     {
-        public MultipleClaimsRequirement(List<KeyValuePair<string, string>> requiredClaims) => RequiredClaims = requiredClaims;
-
-        public List<KeyValuePair<string, string>> RequiredClaims { get; }
+        public List<KeyValuePair<string, string>> RequiredClaims { get; } = requiredClaims;
     }
 }

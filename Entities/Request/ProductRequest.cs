@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace Entities.Request
 {
     public class ProductRequest
@@ -12,5 +14,8 @@ namespace Entities.Request
         public int? Stock { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, object> AdditionalProperties { get; set; } = new Dictionary<string, object>();
     }
 }

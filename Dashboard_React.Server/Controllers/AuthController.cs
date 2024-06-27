@@ -1,4 +1,5 @@
-﻿using Business.Interfaces;
+﻿using System.Security.Claims;
+using Business.Interfaces;
 using Entidades.Request;
 using Entities.Request;
 using Entities.Response;
@@ -7,9 +8,8 @@ using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using System.Security.Claims;
 
-namespace CardReader.Controllers
+namespace Dashboard_React.Server.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]

@@ -7,8 +7,6 @@ namespace Business.Validations.Auth
     {
         public LoginValidations()
         {
-            // validar que la contraseña contenga al menos 8 caracteres, una letra mayuscula, una minuscula, un numero y un caracter especial
-
             RuleFor(l => l.Password)
                 .NotEmpty()
                 .OverridePropertyName("Password")

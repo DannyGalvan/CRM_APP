@@ -4,7 +4,7 @@ import { useCatalogueStore } from "../store/useCatalogueStore";
 import { ApiResponse } from "../types/ApiResponse";
 import { CatalogueResponse } from "../types/CatalogueResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
-import { useListCollections } from "./useListCollections";
+import { SelectedCatalogue, useListCollections } from "./useListCollections";
 
 export const useCatalogues = () => {
   const client = useQueryClient();
@@ -20,14 +20,15 @@ export const useCatalogues = () => {
 
   const createCatalog = async (
     catalogue: CatalogueRequest,
+    forceSelected?: SelectedCatalogue, 
   ): Promise<ApiResponse<CatalogueResponse | ValidationFailure[]>> => {
     const response = await createCatalogue(
-      selectedCatalogue.selected,
+      forceSelected?.selected ?? selectedCatalogue.selected,
       catalogue,
     );
 
     client.refetchQueries({
-      queryKey: ["catalogues", selectedCatalogue.selected],
+      queryKey: ["catalogues", forceSelected?.selected ?? selectedCatalogue.selected],
       type: "active",
       exact: true,
     });
