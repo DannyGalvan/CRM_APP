@@ -1,4 +1,5 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialCustomer } from "../../pages/customer/CustomerCreatePage";
 import { useCustomerStore } from "../../store/useCustomerStore";
@@ -25,6 +26,8 @@ const validateCustomer = (customer: CustomerRequest) => {
   let errors: ErrorObject = {};
 
   const parce = customerShema.safeParse(customer);
+
+  console.log(parce);
 
   if (!parce.success) errors = handleOneLevelZodError(parce.error);
 
@@ -83,7 +86,6 @@ export const CustomerForm = ({
                 errorMessage={errors?.secondName}
                 variant="underlined"
                 isInvalid={!!errors?.secondName}
-                isRequired
               />
             </Col>
           </Row>
@@ -111,7 +113,6 @@ export const CustomerForm = ({
                 errorMessage={errors?.secondLastName}
                 variant="underlined"
                 isInvalid={!!errors?.secondLastName}
-                isRequired
               />
             </Col>
           </Row>
@@ -175,7 +176,6 @@ export const CustomerForm = ({
                 errorMessage={errors?.secondPhone}
                 variant="underlined"
                 isInvalid={!!errors?.secondPhone}
-                isRequired
               />
             </Col>
           </Row>

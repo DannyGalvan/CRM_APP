@@ -1,10 +1,11 @@
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Suspense, lazy } from "react";
 import { Grid } from "../../components/grid/Grid";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 import { MONTHS } from "../../config/contants";
 import { useDashboard } from "../../hooks/useDashboard";
 import { dataFormatter } from "../../util/converted";
+import { NotFound } from "../error/NotFound";
 
 const ProtectedPublic = lazy(
   () => import("../../routes/middlewares/ProtectedPublic"),
@@ -23,7 +24,12 @@ export function Component() {
     year,
     pendingOrders,
     year_orders,
+    error,
   } = useDashboard();
+
+  if (error) {
+    return <NotFound Message={error.message} Number={error.statusCode} />;
+  }
 
   return (
     <ProtectedPublic>

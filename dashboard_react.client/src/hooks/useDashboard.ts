@@ -3,6 +3,7 @@ import { MONTHS } from "../config/contants";
 import { getOrdersByDay, getOrdersByMonth } from "../services/dashboardService";
 import { DailyOrders } from "../types/DailyOrders";
 import { MonthlyOrders } from "../types/MonthlyOrders";
+import { ApiError } from "../util/errors";
 
 export const useDashboard = () => {
   const year = new Date().getFullYear();
@@ -10,7 +11,11 @@ export const useDashboard = () => {
   const month = new Date().getMonth() + 1;
   const month_orders = `Ordenes ${MONTHS[month]}`;
 
-  const { data, isPending } = useQuery({
+  const { data, isPending, error } = useQuery<
+    MonthlyOrders[],
+    ApiError | undefined,
+    DashboardMonthlyResponse
+  >({
     queryKey: ["monthlyOrders"],
     queryFn: getOrdersByMonth,
     select: (data) => {
@@ -27,7 +32,11 @@ export const useDashboard = () => {
     },
   });
 
-  const { data: dataOrders, isPending: pendingOrders } = useQuery({
+  const {
+    data: dataOrders,
+    isPending: pendingOrders,
+    error: errorOrders,
+  } = useQuery<DailyOrders[], ApiError | undefined, DashboardDailyResponse>({
     queryKey: ["dailyOrders", month],
     queryFn: () => getOrdersByDay(month),
     select: (data) => {
@@ -54,5 +63,6 @@ export const useDashboard = () => {
     isPending,
     dataOrders,
     pendingOrders,
+    error: error || errorOrders,
   };
 };

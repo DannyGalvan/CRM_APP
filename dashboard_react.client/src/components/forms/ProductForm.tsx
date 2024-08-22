@@ -1,4 +1,5 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialProduct } from "../../pages/product/CreateProductPage";
 import { useProductStore } from "../../store/useProductStore";
@@ -138,7 +139,6 @@ export const ProductForm = ({
                 errorMessage={errors?.stock}
                 variant="underlined"
                 isInvalid={!!errors?.stock}
-                isRequired
               />
             </Col>
           </Row>

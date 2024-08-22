@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from "node:url";
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 import plugin from "@vitejs/plugin-react";
 import child_process from "child_process";
@@ -62,6 +63,7 @@ export default defineConfig({
         enabled: true,
       },
     }),
+    tsconfigPaths(),
   ],
   base: "http://3.16.70.85", // url of the server
   envPrefix: "VITE_", // optional

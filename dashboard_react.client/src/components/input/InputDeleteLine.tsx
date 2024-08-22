@@ -1,4 +1,4 @@
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { useOrderDetailStore } from "../../store/useOrderDetailStore";
 import { Icon } from "../Icons/Icon";
 

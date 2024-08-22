@@ -32,6 +32,38 @@
   transition: all 0.4s ease-in-out;
 }
 
+.mw-sm {
+  @apply max-w-sm;
+}
+
+.mw-md {
+  @apply max-w-md;
+}
+
+.mw-lg {
+  @apply max-w-lg;
+}
+
+.mw-xl {
+  @apply max-w-xl;
+}
+
+.mw-2xl {
+  @apply max-w-2xl;
+}
+
+.mw-3xl {
+  @apply max-w-3xl;
+}
+
+.mw-4xl {
+  @apply max-w-4xl;
+}
+
+.mw-5xl {
+  @apply max-w-5xl;
+}
+
 :root{
   --bs-container: #00488a;
   --solusersa: #a3d2e6;

@@ -1,5 +1,6 @@
 import { EventApi } from "@fullcalendar/core/index.js";
-import { ScrollShadow, Switch } from "@nextui-org/react";
+import { Switch } from "@nextui-org/switch";
+import { ScrollShadow } from "@nextui-org/scroll-shadow";
 import { Icon } from "../Icons/Icon";
 import { EventSidebar } from "../calendar/EventSidebar";
 

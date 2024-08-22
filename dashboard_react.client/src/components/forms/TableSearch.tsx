@@ -1,4 +1,6 @@
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/select";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
 import { Ref } from "react";
 import { Icon } from "../Icons/Icon";
 import { Col } from "../grid/Col";
@@ -26,7 +28,7 @@ export const TableSearch = ({
           onChange={selectedField}
           size="md"
           variant="bordered"
-          draggable={true}
+          aria-label="Filtrar por campo"  
         >
           {columns.map((item, index) => (
             <SelectItem key={index}>{item.name}</SelectItem>

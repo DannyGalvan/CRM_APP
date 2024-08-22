@@ -1,4 +1,4 @@
-import { Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/input";
 import React, { FormEvent, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";

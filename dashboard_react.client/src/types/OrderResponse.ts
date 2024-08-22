@@ -6,6 +6,7 @@ export interface OrderResponse {
   id?: string;
   customerId: string;
   orderDate: string;
+  deliveryDate: Date;
   paymentTypeId: string;
   orderStateId: string;
   total: number;

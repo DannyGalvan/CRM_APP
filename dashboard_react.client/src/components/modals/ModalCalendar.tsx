@@ -1,15 +1,15 @@
 import { EventInput } from "@fullcalendar/core/index.js";
 import FullCalendar from "@fullcalendar/react";
 import {
-  Button,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Switch,
-} from "@nextui-org/react";
+} from "@nextui-org/modal";
+import { Switch } from "@nextui-org/switch";
+import { Input } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
 import { MutableRefObject } from "react";
 import { useEvents } from "../../hooks/useEvents";
 import { ErrorObject, useForm } from "../../hooks/useForm";

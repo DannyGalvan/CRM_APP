@@ -1,11 +1,11 @@
 import {
-  Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from "@nextui-org/react";
+} from "@nextui-org/modal";
+import { Button } from "@nextui-org/button";
 import { useModalStrategies } from "../../hooks/useModalStrategies";
 import { useModalCreateStore } from "../../store/useModalCreateStore";
 

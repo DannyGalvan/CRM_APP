@@ -1,6 +1,7 @@
 
 export interface OrderRequest {
   id?: string;
+  deliveryDate: Date;
   customerId: string;
   paymentTypeId: string;
   orderStateId: string;

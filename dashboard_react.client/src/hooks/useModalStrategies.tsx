@@ -35,8 +35,6 @@ export const useModalStrategies = () => {
     const catalogCreate = (catalogue: CatalogueRequest) =>
       createCatalog(catalogue, select);
 
-    console.log({select});
-
     const ModalStrategies: Record<ModalType, ReactNode> = {
       Municipalities: (
         <CatalogueForm

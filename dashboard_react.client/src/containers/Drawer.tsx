@@ -20,11 +20,11 @@ export const Drawer = ({ children, isOpen, setIsOpen, title, size = "md" } : Dra
     >
       <section
         className={
-          `w-screen max-w-${size} right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform ` +
+          `w-screen mw-${size} z-[0] right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform ` +
           (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
         }
       >
-        <article className={`relative my-6 flex h-full max-w-${size} flex-col overflow-y-scroll px-0 pb-10 scrollbar-thin`}>
+        <article className={`relative my-6 flex h-full mw-${size} flex-col overflow-y-scroll px-0 pb-10 scrollbar-thin`}>
           <header className="p-4 text-lg font-bold">{title}</header>
           <IoIosClose
             className="absolute right-4 top-3 cursor-pointer text-red-600"

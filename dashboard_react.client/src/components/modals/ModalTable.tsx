@@ -3,8 +3,8 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
-  Switch,
-} from "@nextui-org/react";
+} from "@nextui-org/modal";
+import { Switch } from "@nextui-org/switch";
 import { TableColumn } from "react-data-table-component";
 import { Icon } from "../Icons/Icon";
 

@@ -3,14 +3,28 @@ import { ApiResponse } from "../types/ApiResponse";
 import { OrderRequest } from "../types/OrderRequest";
 import { OrderResponse } from "../types/OrderResponse";
 
-export const getOrders = async () => {
-  const response: ApiResponse<OrderResponse[]> = await api.get<
-    any,
-    ApiResponse<OrderResponse[]>,
-    any
-  >("/order");
+interface OrderFilters {
+  start: string;
+  end: string;
+}
 
-  return response;
+export const getOrders = async ({ start, end }: OrderFilters) => {
+  console.log(start, end);
+  if (start && end) {
+    const response: ApiResponse<OrderResponse[]> = await api.get<
+      any,
+      ApiResponse<OrderResponse[]>,
+      any
+    >(`/order?filters=OrderDate:gt:${end}T00 AND OrderDate:lt:${start}T23`);
+    return response;
+  } else {
+    const response: ApiResponse<OrderResponse[]> = await api.get<
+      any,
+      ApiResponse<OrderResponse[]>,
+      any
+    >(`/order`);
+    return response;
+  }
 };
 
 export const getOrder = async (id: string) => {

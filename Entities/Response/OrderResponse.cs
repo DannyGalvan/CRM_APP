@@ -6,6 +6,7 @@ namespace Entities.Response
         public string Id { get; set; } = string.Empty;
         public string CustomerId { get; set; } = string.Empty;
         public string OrderDate { get; set; } = string.Empty;
+        public string DeliveryDate { get; set; } = string.Empty;
         public string PaymentTypeId { get; set; } = string.Empty;
         public string OrderStateId { get; set; } = string.Empty;
         public decimal Total { get; set; }

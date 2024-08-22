@@ -1,4 +1,5 @@
-import { Button, Tooltip } from '@nextui-org/react'
+import { Button} from '@nextui-org/button'
+import { Tooltip } from '@nextui-org/tooltip'
 import { Icon } from '../Icons/Icon'
 
 

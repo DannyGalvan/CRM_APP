@@ -43,7 +43,7 @@ export const TableRoot = ({
     setFilteredData(
       field
         ? data.filter((item) =>
-            hasJsonOrOtherToString(item, field.selector!).includes(
+            hasJsonOrOtherToString(item, field.selector!)?.includes(
               searchValue!,
             ),
           )
@@ -63,7 +63,9 @@ export const TableRoot = ({
 
   const selectedField = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
+      console.log(e.target.value);
       setField(columns[e.target.value as any]);
+      console.log(columns[e.target.value as any])
     },
     [columns],
   );

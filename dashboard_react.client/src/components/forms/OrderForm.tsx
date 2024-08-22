@@ -1,4 +1,4 @@
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { TableColumn } from "react-data-table-component";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialOrder } from "../../pages/orders/CreateOrderPage";
@@ -19,6 +19,9 @@ import { InputDeleteLine } from "../input/InputDeleteLine";
 import { InputQuantity } from "../input/InputQuantity";
 import { Response } from "../messages/Response";
 import { TableRoot } from "../table/TableRoot";
+import { Row } from "../grid/Row";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { Input } from "@nextui-org/input";
 
 interface OrderFormProps {
   initialForm: OrderRequest | OrderResponse;
@@ -88,6 +91,8 @@ const validateOrder = (order: OrderRequest) => {
 
   const parce = orderSchema.safeParse(order);
 
+  console.log(parce);
+
   if (!parce.success) errors = handleOneLevelZodError(parce.error);
 
   return errors;
@@ -101,13 +106,20 @@ export const OrderForm = ({
 }: OrderFormProps) => {
   const { order } = useOrderStore();
   const { orderDetail, add, load, changeLoad, total } = useOrderDetailStore();
-  const { errors, handleChange, handleSubmit, loading, success, message } =
-    useForm<OrderRequest, OrderResponse>(
-      initialForm ?? initialOrder,
-      validateOrder,
-      sendForm,
-      reboot,
-    );
+  const {
+    errors,
+    handleChange,
+    handleSubmit,
+    loading,
+    success,
+    message,
+    form,
+  } = useForm<OrderRequest, OrderResponse>(
+    initialForm ?? initialOrder,
+    validateOrder,
+    sendForm,
+    reboot,
+  );
 
   const handleAddOrderDetail = (selected: any) => {
     add({
@@ -119,12 +131,47 @@ export const OrderForm = ({
     changeLoad();
   };
 
+  const format = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: getLocalTimeZone(),
+  });
+
   return (
     <Col md={12}>
       <h1 className="text-center text-2xl font-bold">{action} Orden</h1>
       <div>
         {success != null && <Response message={message} type={success!} />}
-        <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
+        <form
+          className="flex flex-col gap-4 pb-10 pt-5"
+          onSubmit={handleSubmit}
+        >
+          <Row className="justify-end">
+            <Col md={6}>
+              <Input
+                min={today(getLocalTimeZone()).toString()}
+                value={format.format(form.deliveryDate)}
+                onChange={(e) => {
+                  const [year, month, day] = e.target.value
+                    .split("-")
+                    .map(Number);
+                  const fecha = new Date(year, month - 1, day, 0, 0, 0);
+                  handleChange({
+                    target: { name: "deliveryDate", value: fecha },
+                  } as any);
+                }}
+                name="deliveryDate"
+                label="Fecha de Entrega"
+                className="max-w"
+                type="date"
+                pattern="\d{4}-\d{2}-\d{2}"
+                errorMessage={errors?.deliveryDate}
+                variant="underlined"
+                isInvalid={!!errors?.deliveryDate}
+              />
+            </Col>
+          </Row>
           <CatalogueSearch
             name="customerId"
             querykey="Customers"
@@ -165,7 +212,9 @@ export const OrderForm = ({
               hasFilters={true}
               pending={load}
             />
-            <p className="font-bold text-2xl text-end bg-black text-white" >Total: {total().toFixed(2)}</p>
+            <p className="bg-black text-end text-2xl font-bold text-white">
+              Total: {total().toFixed(2)}
+            </p>
           </div>
           <Button
             isLoading={loading}

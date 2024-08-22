@@ -1,4 +1,4 @@
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 import { Col } from "@tremor/react";
 import { useEffect } from "react";
@@ -211,7 +211,7 @@ export const CustomerPage = () => {
                 add(null);
               }}
               title={`Editar Cliente`}
-              size="2xl"
+              size="xl"
             >
               <div className="p-5">
                 <CustomerForm

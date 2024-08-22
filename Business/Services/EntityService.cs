@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Globalization;
 
 namespace Business.Services
 {
@@ -415,6 +416,10 @@ namespace Business.Services
 
             object value = isObjectId ? ObjectId.Parse(parts[2]) : parts[2];
 
+            bool isDate = HasValidDate(parts[2]);
+
+            value = isDate ? DateTime.ParseExact(parts[2], "yyyy-MM-ddTHH", CultureInfo.InvariantCulture) : value;
+
             FilterDefinition filterDefinition = new()
             {
                 Field = parts[0],
@@ -428,8 +433,8 @@ namespace Business.Services
             {
                 "eq" => filterBuilder.Eq(filterDefinition.Field, filterDefinition.Value),
                 "ne" => filterBuilder.Ne(filterDefinition.Field, filterDefinition.Value),
-                "gt" => filterBuilder.Gt(filterDefinition.Field, filterDefinition.Value),
-                "lt" => filterBuilder.Lt(filterDefinition.Field, filterDefinition.Value),
+                "gt" => filterBuilder.Gte(filterDefinition.Field, filterDefinition.Value),
+                "lt" => filterBuilder.Lte(filterDefinition.Field, filterDefinition.Value),
                 "like" => filterBuilder.Regex(filterDefinition.Field, new BsonRegularExpression(filterDefinition.Value.ToString(), "i")),
                 "in" => filterBuilder.In(filterDefinition.Field, filterDefinition!.Value!.ToString()!.Split(",")),
                 _ => throw new ArgumentException($"Unsupported filter operator: {filterDefinition.Operator}"),
@@ -441,6 +446,11 @@ namespace Business.Services
         private static bool HasValidId(string? id)
         {
             return ObjectId.TryParse(id, out _);
+        }
+
+        private static bool HasValidDate(string? date)
+        {
+            return DateTime.TryParseExact(date, "yyyy-MM-ddTHH", CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
         }
     }
 }

@@ -99,6 +99,14 @@ export const dateNow = () => {
   return formattedDate;
 };
 
+export const today = () => {
+  const now = new Date();
+  const offset = now.getTimezoneOffset(); // Obtiene la diferencia en minutos entre UTC y la zona horaria local
+  now.setMinutes(now.getMinutes() - offset); // Ajusta la fecha restando la diferencia
+
+  return now;
+};
+
 export const minDateMaxDate = () => {
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -119,15 +127,17 @@ export const handleOneLevelZodError = ({ issues }: ZodError<unknown>) => {
   return formData;
 };
 
-export const hasJsonOrOtherToString = (object : any, func : Selector<any>) => {
-  return typeof (func(object)) === 'object' ? JSON.stringify({ ...object }) : func(object).toString();
-}
+export const hasJsonOrOtherToString = (object: any, func: Selector<any>) => {
+  return typeof func(object) === "object"
+    ? JSON.stringify({ ...object }).toLowerCase()
+    : func(object)?.toString().toLowerCase();
+};
 
 export const copyToClipboard = async (textToCopy: string) => {
   try {
     await navigator.clipboard.writeText(textToCopy);
-    toast.success('Texto copiado al portapapeles');
+    toast.success("Texto copiado al portapapeles");
   } catch (err) {
-    console.error('Error al copiar el texto: ', err);
+    console.error("Error al copiar el texto: ", err);
   }
 };

@@ -1,4 +1,6 @@
-import { Button, Card, CardBody, Input } from "@nextui-org/react";
+import { Card, CardBody } from "@nextui-org/card";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
 import { Icon } from "../../components/Icons/Icon";
 import { Response } from "../../components/messages/Response";
 import { useAuth } from "../../hooks/useAuth";

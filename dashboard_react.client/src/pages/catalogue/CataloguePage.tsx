@@ -1,4 +1,4 @@
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { TableColumn } from "react-data-table-component";

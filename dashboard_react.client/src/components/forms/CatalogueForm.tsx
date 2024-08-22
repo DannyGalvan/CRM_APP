@@ -1,4 +1,5 @@
-import { Button, Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
 import { useCallback } from "react";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { SelectedCatalogue } from "../../hooks/useListCollections";

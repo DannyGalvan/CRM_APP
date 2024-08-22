@@ -44,7 +44,7 @@ export const SubMenu = ({ data }: subMenuProps) => {
         animate={
           subMenuOpen
             ? {
-                height: "fit-content",
+                height: "auto",
               }
             : {
                 height: 0,

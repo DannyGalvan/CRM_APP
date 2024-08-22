@@ -1,10 +1,10 @@
 import {
-  Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-} from "@nextui-org/react";
+} from "@nextui-org/dropdown";
+import { Button } from "@nextui-org/button";
 import { useContext } from "react";
 import { DrawerContext } from "../../context/DrawerContext";
 import { useOrderDetailStore } from "../../store/useOrderDetailStore";

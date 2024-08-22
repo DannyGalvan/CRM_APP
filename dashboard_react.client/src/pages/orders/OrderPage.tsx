@@ -1,7 +1,7 @@
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 import { Col } from "@tremor/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TableColumn } from "react-data-table-component";
 import { Icon } from "../../components/Icons/Icon";
 import { OrderForm } from "../../components/forms/OrderForm";
@@ -22,6 +22,9 @@ import { OrderResponse } from "../../types/OrderResponse";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
 import { initialOrder } from "./CreateOrderPage";
+import { DateRangePicker } from "@nextui-org/date-picker";
+import { minDateMaxDate } from "../../util/converted";
+import { parseDate } from "@internationalized/date";
 
 const columns: TableColumn<any>[] = [
   {
@@ -68,7 +71,7 @@ const columns: TableColumn<any>[] = [
     name: "Creado",
     selector: (data) => data.createdAt,
     sortable: true,
-    maxWidth: "160px",
+    maxWidth: "200px",
     omit: true,
   },
   {
@@ -80,6 +83,14 @@ const columns: TableColumn<any>[] = [
     omit: true,
   },
   {
+    id: "deliveryDate",
+    name: "Entrega",
+    selector: (data) => data.deliveryDate,
+    sortable: true,
+    maxWidth: "115px",
+    omit: false,
+  },
+  {
     id: "actions",
     name: "Acciones",
     cell: (data) => {
@@ -89,7 +100,13 @@ const columns: TableColumn<any>[] = [
   },
 ];
 
+const dateRange = minDateMaxDate();
+
 export const OrderPage = () => {
+  const [rageOfDate, setRageOfDate] = useState({
+    start: dateRange.maxDate,
+    end: dateRange.minDate,
+  });
   const { open, toggle } = useToggle();
   const { reRender, render } = useRetraseRender();
   const { open: openUpdate, toggle: toggleUpdate } = useToggle();
@@ -101,8 +118,8 @@ export const OrderPage = () => {
     ApiResponse<OrderResponse[]>,
     ApiError | undefined
   >({
-    queryKey: ["orders"],
-    queryFn: getOrders,
+    queryKey: ["orders", rageOfDate],
+    queryFn: () => getOrders(rageOfDate),
   });
 
   useEffect(() => {
@@ -122,6 +139,20 @@ export const OrderPage = () => {
               <Icon name={"bi bi-person-plus"} /> Crear Orden
             </Button>
           </Col>
+          <DateRangePicker
+            label="Rango de Fechas de Ordenes"
+            defaultValue={{
+              start: parseDate(dateRange.minDate),
+              end: parseDate(dateRange.maxDate),
+            }}
+            className="max-w-xs"
+            onChange={(date) => {
+              setRageOfDate({
+                start: date.end.toString(),
+                end: date.start.toString(),
+              });
+            }}
+          />
           <TableRoot
             columns={columns}
             data={data?.data ?? []}

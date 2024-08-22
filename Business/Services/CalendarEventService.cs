@@ -20,7 +20,7 @@ namespace Business.Services
 
             try
             {
-                string nameCollection = nameof(Event).Pluralize();
+                string nameCollection = nameof(Event).Pluralize(); 
 
                 IMongoCollection<Event> collection = _mongo.Database.GetCollection<Event>(nameCollection);
 

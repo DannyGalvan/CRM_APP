@@ -1,4 +1,4 @@
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/select";
 import { CollectionResponse } from "../../types/CollectionResponse";
 
 export interface CollectionSelectProps {

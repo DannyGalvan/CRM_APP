@@ -1,4 +1,5 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
 import { Icon } from "../../components/Icons/Icon";
 import { Col } from "../../components/grid/Col";
 import { Response } from "../../components/messages/Response";

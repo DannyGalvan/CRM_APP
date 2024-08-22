@@ -9,6 +9,7 @@ namespace Entities.Models
         public ObjectId Id { get; set; }
         public ObjectId CustomerId { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
+        public DateTime? DeliveryDate { get; set; }
         public ObjectId PaymentTypeId { get; set; }
         public ObjectId OrderStateId { get; set; }
         public decimal Total { get; set; }
