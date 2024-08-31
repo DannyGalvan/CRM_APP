@@ -9,6 +9,7 @@ export const getCollections = async () => {
     ApiResponse<CollectionResponse[]>,
     any
   >("/collection");
+
   
   return response;
 };

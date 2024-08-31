@@ -20,6 +20,8 @@ interface TableRootProps {
   title: string;
   styles: any;
   hasFilters: boolean;
+  selectedRows?: boolean;
+  onSelectedRowsChange?: (state: any) => void;
 }
 
 export const TableRoot = ({
@@ -31,6 +33,8 @@ export const TableRoot = ({
   title,
   styles,
   hasFilters = true,
+  selectedRows = false,
+  onSelectedRowsChange,
 }: TableRootProps) => {
   const { open, toggle } = useToggle();
   const [field, setField] = useState<TableColumn<any> | undefined>(undefined);
@@ -65,7 +69,7 @@ export const TableRoot = ({
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       console.log(e.target.value);
       setField(columns[e.target.value as any]);
-      console.log(columns[e.target.value as any])
+      console.log(columns[e.target.value as any]);
     },
     [columns],
   );
@@ -98,6 +102,8 @@ export const TableRoot = ({
         paginationComponentOptions={PAGINATION_OPTIONS}
         subHeader={true}
         fixedHeader
+        selectableRows={selectedRows}
+        onSelectedRowsChange={onSelectedRowsChange}
         fixedHeaderScrollHeight="650px"
         theme="individuality"
         highlightOnHover

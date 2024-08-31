@@ -8,4 +8,5 @@ export interface ProductRequest {
   cost: number;
   salePrice: number;
   stock: number;
+  state?: number,
 }

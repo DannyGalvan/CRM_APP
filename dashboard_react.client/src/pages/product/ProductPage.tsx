@@ -1,6 +1,6 @@
 import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { TableColumn } from "react-data-table-component";
 import { Icon } from "../../components/Icons/Icon";
 import { ProductForm } from "../../components/forms/ProductForm";
@@ -22,6 +22,7 @@ import { ValidationFailure } from "../../types/ValidationFailure";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
 import { initialProduct } from "./CreateProductPage";
+import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 
 const columns: TableColumn<any>[] = [
   {
@@ -114,6 +115,12 @@ const columns: TableColumn<any>[] = [
   },
 ];
 
+const ModalCreateItem = lazy(() =>
+  import("../../components/modals/ModalCreateItem").then((module) => ({
+    default: module.ModalCreateItem,
+  })),
+);
+
 export const ProductPage = () => {
   const { open, toggle } = useToggle();
   const { open: openUpdate, toggle: toggleUpdate } = useToggle();
@@ -126,7 +133,7 @@ export const ProductPage = () => {
     ApiError | undefined
   >({
     queryKey: ["products"],
-    queryFn: ()=> getProducts(),
+    queryFn: () => getProducts(),
   });
 
   if (error) {
@@ -138,62 +145,65 @@ export const ProductPage = () => {
   }, []);
 
   return (
-   <Protected>
-     <DrawerProvider setOpenUpdate={toggleUpdate}>
-      <div className="mt-20 md:mt-0">
-        <Col className="mt-5 flex justify-end">
-          <Button color={"secondary"} onClick={toggle}>
-            <Icon name={"bi bi-bag-plus"} /> Crear Producto
-          </Button>
-        </Col>
-        <TableRoot
-          columns={columns}
-          data={data?.data ?? []}
-          hasFilters={true}
-          pending={isLoading || isFetching}
-          text="de los productos"
-          styles={compactGrid}
-          title={"Productos"}
-          width={false}
-        />
-        {render && (
-          <Drawer
-            isOpen={open}
-            setIsOpen={toggle}
-            title={`Crear Producto`}
-            size="2xl"
-          >
-            <div className="p-5">
-              <ProductForm
-                initialForm={initialProduct}
-                sendForm={create}
-                text="Crear"
-                reboot
-              />
-            </div>
-          </Drawer>
-        )}
-        {render && (
-          <Drawer
-            isOpen={openUpdate}
-            setIsOpen={() => {
-              toggleUpdate();
-              add(null);
-            }}
-            title={`Editar Cliente`}
-            size="2xl"
-          >
-            <div className="p-5">
-              <ProductForm
-                initialForm={product!}
-                sendForm={update}
-                text="Editar"
-              />
-            </div>
-          </Drawer>
-        )}
-      </div>
-    </DrawerProvider>
-   </Protected>
+    <Protected>
+      <DrawerProvider setOpenUpdate={toggleUpdate}>
+        <div className="mt-20 md:mt-0">
+          <Col className="mt-5 flex justify-end">
+            <Button color={"secondary"} onClick={toggle}>
+              <Icon name={"bi bi-bag-plus"} /> Crear Producto
+            </Button>
+          </Col>
+          <TableRoot
+            columns={columns}
+            data={data?.data ?? []}
+            hasFilters={true}
+            pending={isLoading || isFetching}
+            text="de los productos"
+            styles={compactGrid}
+            title={"Productos"}
+            width={false}
+          />
+          {render && (
+            <Drawer
+              isOpen={open}
+              setIsOpen={toggle}
+              title={`Crear Producto`}
+              size="2xl"
+            >
+              <div className="p-5">
+                <ProductForm
+                  initialForm={initialProduct}
+                  sendForm={create}
+                  text="Crear"
+                  reboot
+                />
+              </div>
+            </Drawer>
+          )}
+          {render && (
+            <Drawer
+              isOpen={openUpdate}
+              setIsOpen={() => {
+                toggleUpdate();
+                add(null);
+              }}
+              title={`Editar Cliente`}
+              size="2xl"
+            >
+              <div className="p-5">
+                <ProductForm
+                  initialForm={product!}
+                  sendForm={update}
+                  text="Editar"
+                />
+              </div>
+            </Drawer>
+          )}
+        </div>
+      </DrawerProvider>
+      <Suspense fallback={<LoadingComponent />}>
+        <ModalCreateItem />
+      </Suspense>
+    </Protected>
   );
 };

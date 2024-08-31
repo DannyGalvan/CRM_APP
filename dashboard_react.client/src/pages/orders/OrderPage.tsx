@@ -1,7 +1,7 @@
 import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 import { Col } from "@tremor/react";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { TableColumn } from "react-data-table-component";
 import { Icon } from "../../components/Icons/Icon";
 import { OrderForm } from "../../components/forms/OrderForm";
@@ -25,6 +25,7 @@ import { initialOrder } from "./CreateOrderPage";
 import { DateRangePicker } from "@nextui-org/date-picker";
 import { minDateMaxDate } from "../../util/converted";
 import { parseDate } from "@internationalized/date";
+import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 
 const columns: TableColumn<any>[] = [
   {
@@ -101,6 +102,12 @@ const columns: TableColumn<any>[] = [
 ];
 
 const dateRange = minDateMaxDate();
+
+const ModalCreateItem = lazy(() =>
+  import("../../components/modals/ModalCreateItem").then((module) => ({
+    default: module.ModalCreateItem,
+  })),
+);
 
 export const OrderPage = () => {
   const [rageOfDate, setRageOfDate] = useState({
@@ -202,6 +209,9 @@ export const OrderPage = () => {
           </Drawer>
         )}
       </DrawerProvider>
+      <Suspense fallback={<LoadingComponent />}>
+        <ModalCreateItem />
+      </Suspense>
     </Protected>
   );
 };

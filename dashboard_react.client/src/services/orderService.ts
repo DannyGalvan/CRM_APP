@@ -27,6 +27,16 @@ export const getOrders = async ({ start, end }: OrderFilters) => {
   }
 };
 
+export const getFilteredOrders = async (filters: string) => {
+  const response: ApiResponse<OrderResponse[]> = await api.get<
+    any,
+    ApiResponse<OrderResponse[]>,
+    any
+  >(`/order?filters=${filters}`);
+
+  return response;
+}
+
 export const getOrder = async (id: string) => {
   const response: ApiResponse<OrderResponse> = await api.get<
     any,

@@ -82,7 +82,7 @@ export const useForm = <T,U>(
         set(response);
       } catch (error : any) {
 
-        error instanceof ApiError
+        error instanceof ApiError   
           ? navigate('/Error', {
             state: {
               statusCode: error.statusCode,
@@ -93,7 +93,7 @@ export const useForm = <T,U>(
           : set({
             success: false,
             data: null,
-            message: `${error?.name} ${error?.message}`,
+            message: `${error?.name} ${error?.stack}`,
           });
 
       }

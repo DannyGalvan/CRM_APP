@@ -106,7 +106,7 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPost("Bulk")]
-        [Authorize(Policy = "RouteDetail.Bulk")]
+        [Authorize(Policy = "RouteDetail.BulkCreate")]
         public IActionResult Create(BulkRouteDetailRequest model)
         {
             model.CreatedBy = GetUserId();

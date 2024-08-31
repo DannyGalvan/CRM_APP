@@ -10,6 +10,9 @@ import { useCatalogues } from "./useCatalogues";
 import { useCustomer } from "./useCustomer";
 import { useProducts } from "./useProducts";
 import { useNavigate } from "react-router-dom";
+import { PilotForm } from "../components/forms/PilotForm";
+import { initialPilot } from "../pages/pilots/CreatePilotPage";
+import { usePilots } from "./usePilots";
 
 export type ModalType =
   | "Municipalities"
@@ -19,23 +22,25 @@ export type ModalType =
   | "Customers"
   | "PaymentTypes"
   | "Products"
-  | "Families";
+  | "Families"
+  | "Pilots";
 
 export const useModalStrategies = () => {
   const { createCatalog, collectionError } = useCatalogues();
   const { create } = useCustomer();
   const { create: createProduct } = useProducts();
+  const { create: cretePilot } = usePilots();
   const { modal } = useModalCreateStore();
   const navigate = useNavigate();
 
   if (collectionError) {
-    navigate('/Error', {
+    navigate("/Error", {
       state: {
         statusCode: collectionError.statusCode,
         message: collectionError.message,
         name: collectionError.name,
       },
-    })    
+    });
   }
 
   const openCreate = () => {
@@ -110,6 +115,14 @@ export const useModalStrategies = () => {
         <ProductForm
           initialForm={initialProduct}
           sendForm={createProduct}
+          text="Crear"
+          reboot
+        />
+      ),
+      Pilots: (
+        <PilotForm
+          initialForm={initialPilot}
+          sendForm={cretePilot}
           text="Crear"
           reboot
         />

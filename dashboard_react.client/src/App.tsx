@@ -14,6 +14,14 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: 0,
+      networkMode: "online",
+      staleTime: 1000 * 60 * 5,
+    },
+    mutations: {
+      retry: 1,
+      onError: (error) => {
+        console.error({ error });
+      },
     },
   },
 });

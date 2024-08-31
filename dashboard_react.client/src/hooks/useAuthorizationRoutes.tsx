@@ -10,6 +10,7 @@ import { ProductRoutes } from "../routes/ProductRoutes";
 import { PublicRoutes } from "../routes/PublicRoutes";
 import { useAuth } from "./useAuth";
 import { PilotRoutes } from "../routes/PilotRoutes";
+import { RouteRoutes } from "../routes/RouteRoutes";
 
 export const useAuthorizationRoutes = () => {
   const { allOperations } = useAuth();
@@ -25,6 +26,7 @@ export const useAuthorizationRoutes = () => {
         ...ProductRoutes,
         ...OrderRoutes,
         ...PilotRoutes,
+        ...RouteRoutes,
       ],
     },
     {
@@ -45,4 +47,4 @@ export const useAuthorizationRoutes = () => {
   routes.routes[0].children = routesFiltered as any;
 
   return routes;
-}
+};

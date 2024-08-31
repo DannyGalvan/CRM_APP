@@ -1,7 +1,7 @@
 import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 import { Col } from "@tremor/react";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { TableColumn } from "react-data-table-component";
 import { Icon } from "../../components/Icons/Icon";
 import { CustomerForm } from "../../components/forms/CustomerForm";
@@ -22,6 +22,7 @@ import { ValidationFailure } from "../../types/ValidationFailure";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
 import { initialCustomer } from "./CustomerCreatePage";
+import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 
 const columns: TableColumn<any>[] = [
   {
@@ -145,6 +146,12 @@ const columns: TableColumn<any>[] = [
   },
 ];
 
+const ModalCreateItem = lazy(() =>
+  import("../../components/modals/ModalCreateItem").then((module) => ({
+    default: module.ModalCreateItem,
+  })),
+);
+
 export const CustomerPage = () => {
   const { open, toggle } = useToggle();
   const { open: openUpdate, toggle: toggleUpdate } = useToggle();
@@ -224,6 +231,9 @@ export const CustomerPage = () => {
           )}
         </div>
       </DrawerProvider>
+      <Suspense fallback={<LoadingComponent />}>
+        <ModalCreateItem />
+      </Suspense>
     </Protected>
   );
 };

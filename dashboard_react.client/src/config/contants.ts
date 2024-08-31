@@ -33,6 +33,7 @@ export const nameRoutes = {
   product: "/product",
   order: "/order",
   pilot: "/pilot",
+  route: "/route",
   create: "create",
 };
 

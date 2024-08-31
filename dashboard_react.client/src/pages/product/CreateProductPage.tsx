@@ -1,8 +1,10 @@
+import { lazy, Suspense } from "react";
 import { ProductForm } from "../../components/forms/ProductForm";
 import { Col } from "../../components/grid/Col";
 import { useProducts } from "../../hooks/useProducts";
 import Protected from "../../routes/middlewares/Protected";
 import { ProductRequest } from "../../types/ProductRequest";
+import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 
 export const initialProduct: ProductRequest = {
   name: "",
@@ -12,6 +14,12 @@ export const initialProduct: ProductRequest = {
   familyId: "",
   stock: 0,
 };
+
+const ModalCreateItem = lazy(() =>
+  import("../../components/modals/ModalCreateItem").then((module) => ({
+    default: module.ModalCreateItem,
+  })),
+);
 
 export const CreateProductPage = () => {
   const { create } = useProducts();
@@ -28,6 +36,9 @@ export const CreateProductPage = () => {
         />
       </Col>
     </div>
+    <Suspense fallback={<LoadingComponent />}>
+        <ModalCreateItem />
+      </Suspense>
    </Protected>
   );
 };
