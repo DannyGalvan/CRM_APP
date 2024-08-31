@@ -16,23 +16,22 @@ namespace Dashboard_React.Server.Controllers
     [Authorize]
     [ApiController]
     [AllArgsConstructor]
-    public partial class ProductController : ControllerBase
+    public partial class RouteDetailController : ControllerBase
     {
-        private readonly IEntityService<Product, ProductRequest, ObjectId> _productService;
+        private readonly IRouteDetailService _routeDetailService;
         private readonly IMapper _mapper;
 
         [HttpGet]
-        [Authorize(Policy = "Product.List")]
+        [Authorize(Policy = "RouteDetail.List")]
         public IActionResult GetAll(string? filters)
         {
-            var response = _productService.GetAll(filters);
+            var response = _routeDetailService.GetAll(filters);
 
-            if
-            (response.Success)
+            if (response.Success)
             {
-                Response<List<ProductResponse>> successResponse = new()
+                Response<List<RouteDetailResponse>> successResponse = new()
                 {
-                    Data = _mapper.Map<List<Product>, List<ProductResponse>>(response.Data!),
+                    Data = _mapper.Map<List<RouteDetail>, List<RouteDetailResponse>>(response.Data!),
                     Success = response.Success,
                     Message = response.Message
                 };
@@ -51,17 +50,16 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "Product.List")]
+        [Authorize(Policy = "RouteDetail.List")]
         public IActionResult GetById(string id)
         {
-            var response = _productService.GetById(ObjectId.Parse(id));
+            var response = _routeDetailService.GetById(ObjectId.Parse(id));
 
-            if
-            (response.Success)
+            if (response.Success)
             {
-                Response<ProductResponse> successResponse = new()
+                Response<RouteDetailResponse> successResponse = new()
                 {
-                    Data = _mapper.Map<ProductResponse>(response.Data!),
+                    Data = _mapper.Map<RouteDetailResponse>(response.Data!),
                     Success = response.Success,
                     Message = response.Message
                 };
@@ -80,16 +78,44 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Product.Create")]
-        public IActionResult Create(ProductRequest model)
+        [Authorize(Policy = "RouteDetail.Create")]
+        public IActionResult Create(RouteDetailRequest model)
         {
             model.CreatedBy = GetUserId();
-            var response = _productService.Create(model);
+            var response = _routeDetailService.Create(model);
             if (response.Success)
             {
-                Response<ProductResponse> successResponse = new()
+                Response<RouteDetailResponse> successResponse = new()
                 {
-                    Data = _mapper.Map<ProductResponse>(response.Data),
+                    Data = _mapper.Map<RouteDetailResponse>(response.Data),
+                    Success = response.Success,
+                    Message = response.Message
+                };
+
+                return Ok(successResponse);
+            }
+
+            Response<List<ValidationFailure>> errorResponse = new()
+            {
+                Data = response.Errors,
+                Success = response.Success,
+                Message = response.Message
+            };
+
+            return BadRequest(errorResponse);
+        }
+
+        [HttpPost("Bulk")]
+        [Authorize(Policy = "RouteDetail.Bulk")]
+        public IActionResult Create(BulkRouteDetailRequest model)
+        {
+            model.CreatedBy = GetUserId();
+            var response = _routeDetailService.Bulk(model);
+            if (response.Success)
+            {
+                Response<List<RouteDetailResponse>> successResponse = new()
+                {
+                    Data = _mapper.Map<List<RouteDetail>, List<RouteDetailResponse>>(response.Data!),
                     Success = response.Success,
                     Message = response.Message
                 };
@@ -108,16 +134,16 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = "Product.Update")]
-        public IActionResult Update(ProductRequest model)
+        [Authorize(Policy = "RouteDetail.Update")]
+        public IActionResult Update(RouteDetailRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _productService.Update(model);
+            var response = _routeDetailService.Update(model);
             if (response.Success)
             {
-                Response<ProductResponse> successResponse = new()
+                Response<RouteDetailResponse> successResponse = new()
                 {
-                    Data = _mapper.Map<ProductResponse>(response.Data),
+                    Data = _mapper.Map<RouteDetailResponse>(response.Data),
                     Success = response.Success,
                     Message = response.Message
                 };
@@ -136,16 +162,16 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPatch]
-        [Authorize(Policy = "Product.Patch")]
-        public IActionResult PartialUpdate(ProductRequest model)
+        [Authorize(Policy = "RouteDetail.Patch")]
+        public IActionResult PartialUpdate(RouteDetailRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _productService.PartialUpdate(model);
+            var response = _routeDetailService.PartialUpdate(model);
             if (response.Success)
             {
-                Response<ProductResponse> successResponse = new()
+                Response<RouteDetailResponse> successResponse = new()
                 {
-                    Data = _mapper.Map<ProductResponse>(response.Data),
+                    Data = _mapper.Map<RouteDetailResponse>(response.Data),
                     Success = response.Success,
                     Message = response.Message
                 };

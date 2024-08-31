@@ -64,7 +64,6 @@ namespace Dashboard_React.Server.Containers
                 logger.LogInformation("Aplicación Iniciada en Producción con Exito!!!");
             }
 
-
             // Middleware to handle errors
             app.Use(async (_, next) =>
             {

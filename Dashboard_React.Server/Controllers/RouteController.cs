@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Business.Interfaces;
-using Entities.Models;
 using Entities.Request;
 using Entities.Response;
 using FluentValidation.Results;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System.Security.Claims;
+using Route = Entities.Models.Route;
 
 namespace Dashboard_React.Server.Controllers
 {
@@ -16,23 +16,23 @@ namespace Dashboard_React.Server.Controllers
     [Authorize]
     [ApiController]
     [AllArgsConstructor]
-    public partial class ProductController : ControllerBase
+    public partial class RouteController : ControllerBase
     {
-        private readonly IEntityService<Product, ProductRequest, ObjectId> _productService;
+        private readonly IEntityService<Route, RouteRequest, ObjectId> _routeService;
         private readonly IMapper _mapper;
 
         [HttpGet]
-        [Authorize(Policy = "Product.List")]
+        [Authorize(Policy = "Route.List")]
         public IActionResult GetAll(string? filters)
         {
-            var response = _productService.GetAll(filters);
+            var response = _routeService.GetAll(filters);
 
             if
-            (response.Success)
+                (response.Success)
             {
-                Response<List<ProductResponse>> successResponse = new()
+                Response<List<RouteResponse>> successResponse = new()
                 {
-                    Data = _mapper.Map<List<Product>, List<ProductResponse>>(response.Data!),
+                    Data = _mapper.Map<List<Route>, List<RouteResponse>>(response.Data!),
                     Success = response.Success,
                     Message = response.Message
                 };
@@ -51,17 +51,16 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "Product.List")]
+        [Authorize(Policy = "Route.List")]
         public IActionResult GetById(string id)
         {
-            var response = _productService.GetById(ObjectId.Parse(id));
+            var response = _routeService.GetById(ObjectId.Parse(id));
 
-            if
-            (response.Success)
+            if(response.Success)
             {
-                Response<ProductResponse> successResponse = new()
+                Response<RouteResponse> successResponse = new()
                 {
-                    Data = _mapper.Map<ProductResponse>(response.Data!),
+                    Data = _mapper.Map<RouteResponse>(response.Data!),
                     Success = response.Success,
                     Message = response.Message
                 };
@@ -80,16 +79,16 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Product.Create")]
-        public IActionResult Create(ProductRequest model)
+        [Authorize(Policy = "Route.Create")]
+        public IActionResult Create(RouteRequest model)
         {
             model.CreatedBy = GetUserId();
-            var response = _productService.Create(model);
+            var response = _routeService.Create(model);
             if (response.Success)
             {
-                Response<ProductResponse> successResponse = new()
+                Response<RouteResponse> successResponse = new()
                 {
-                    Data = _mapper.Map<ProductResponse>(response.Data),
+                    Data = _mapper.Map<RouteResponse>(response.Data),
                     Success = response.Success,
                     Message = response.Message
                 };
@@ -108,16 +107,16 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = "Product.Update")]
-        public IActionResult Update(ProductRequest model)
+        [Authorize(Policy = "Route.Update")]
+        public IActionResult Update(RouteRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _productService.Update(model);
+            var response = _routeService.Update(model);
             if (response.Success)
             {
-                Response<ProductResponse> successResponse = new()
+                Response<RouteResponse> successResponse = new()
                 {
-                    Data = _mapper.Map<ProductResponse>(response.Data),
+                    Data = _mapper.Map<RouteResponse>(response.Data),
                     Success = response.Success,
                     Message = response.Message
                 };
@@ -136,16 +135,16 @@ namespace Dashboard_React.Server.Controllers
         }
 
         [HttpPatch]
-        [Authorize(Policy = "Product.Patch")]
-        public IActionResult PartialUpdate(ProductRequest model)
+        [Authorize(Policy = "Route.Patch")]
+        public IActionResult PartialUpdate(RouteRequest model)
         {
             model.UpdatedBy = GetUserId();
-            var response = _productService.PartialUpdate(model);
+            var response = _routeService.PartialUpdate(model);
             if (response.Success)
             {
-                Response<ProductResponse> successResponse = new()
+                Response<RouteResponse> successResponse = new()
                 {
-                    Data = _mapper.Map<ProductResponse>(response.Data),
+                    Data = _mapper.Map<RouteResponse>(response.Data),
                     Success = response.Success,
                     Message = response.Message
                 };

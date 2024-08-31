@@ -18,7 +18,7 @@ export const CollectionSelect = ({
       label="Selecciona una catalogo"
       onChange={handleSelect}
       variant="bordered"
-      draggable={true}
+      aria-label="Filtrar por campo"  
       isRequired
     >
       {collections.map((collection) => (

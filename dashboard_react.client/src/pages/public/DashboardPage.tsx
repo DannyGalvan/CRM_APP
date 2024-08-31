@@ -48,7 +48,7 @@ export function Component() {
                 </CardHeader>
                 <CardBody>
                   <p className="text-center text-4xl">
-                    Q {!pendingOrders && dataOrders?.totalOrders}
+                    Q {!pendingOrders && dataOrders?.totalOrders.toFixed(2)}
                   </p>
                 </CardBody>
               </Card>
@@ -98,7 +98,7 @@ export function Component() {
                 </CardHeader>
                 <CardBody>
                   <p className="text-center text-4xl">
-                    Q {!isPending && data?.totalOrders}
+                    Q {!isPending && data?.totalOrders.toFixed(2)}
                   </p>
                 </CardBody>
               </Card>

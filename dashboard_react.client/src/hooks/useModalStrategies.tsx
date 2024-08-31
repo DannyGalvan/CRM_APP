@@ -9,6 +9,7 @@ import { useModalCreateStore } from "../store/useModalCreateStore";
 import { useCatalogues } from "./useCatalogues";
 import { useCustomer } from "./useCustomer";
 import { useProducts } from "./useProducts";
+import { useNavigate } from "react-router-dom";
 
 export type ModalType =
   | "Municipalities"
@@ -25,6 +26,17 @@ export const useModalStrategies = () => {
   const { create } = useCustomer();
   const { create: createProduct } = useProducts();
   const { modal } = useModalCreateStore();
+  const navigate = useNavigate();
+
+  if (collectionError) {
+    navigate('/Error', {
+      state: {
+        statusCode: collectionError.statusCode,
+        message: collectionError.message,
+        name: collectionError.name,
+      },
+    })    
+  }
 
   const openCreate = () => {
     const select = {
