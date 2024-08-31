@@ -1,11 +1,11 @@
 
 export interface OrderRequest {
   id?: string;
-  deliveryDate: Date;
-  customerId: string;
-  paymentTypeId: string;
-  orderStateId: string;
-  orderDetails: OrderDetailRequest[];
+  deliveryDate?: Date;
+  customerId?: string;
+  paymentTypeId?: string;
+  orderStateId?: string;
+  orderDetails?: OrderDetailRequest[];
 }
 
 export interface OrderDetailRequest {

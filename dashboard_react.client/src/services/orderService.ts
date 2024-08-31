@@ -1,7 +1,9 @@
 import { api } from "../config/axios/interceptors";
 import { ApiResponse } from "../types/ApiResponse";
+import { BulkOrderRequest } from "../types/BulkOrderRequest";
 import { OrderRequest } from "../types/OrderRequest";
 import { OrderResponse } from "../types/OrderResponse";
+import { ValidationFailure } from "../types/ValidationFailure";
 
 interface OrderFilters {
   start: string;
@@ -73,6 +75,16 @@ export const partialUpdateOrder = async (data: OrderRequest) => {
     ApiResponse<OrderResponse>,
     OrderRequest
   >(`/order`, data);
+
+  return response;
+};
+
+export const bulkPartialUpdateOrder = async (data: BulkOrderRequest) => {
+  const response: ApiResponse<OrderResponse[] | ValidationFailure[]> = await api.patch<
+    any,
+    ApiResponse<OrderResponse[]>,
+    BulkOrderRequest
+  >(`/order/bulk`, data);
 
   return response;
 };

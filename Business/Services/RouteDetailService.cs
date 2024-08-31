@@ -60,6 +60,11 @@ namespace Business.Services
 
                 database.InsertMany(entities);
 
+                response.Errors = null;
+                response.Data = entities;
+                response.Success = true;
+                response.Message = $"Entity {nameof(RouteDetail)} created successfully";
+
                 return response;
             }
             catch (Exception ex)

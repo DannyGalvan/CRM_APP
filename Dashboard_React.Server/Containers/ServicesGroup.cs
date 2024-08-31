@@ -18,10 +18,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICalendarEventService, CalendarEventService>();
             services.AddScoped<IRouteDetailService, RouteDetailService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IEntityService<Customer, CustomerRequest, ObjectId>, EntityService<Customer, CustomerRequest, ObjectId>>();
             services.AddScoped<IEntityService<Product, ProductRequest, ObjectId>, EntityService<Product, ProductRequest, ObjectId>>();
             services.AddScoped<IEntityService<Collection, CollectionRequest, ObjectId>, EntityService<Collection, CollectionRequest, ObjectId>>();
-            services.AddScoped<IEntityService<Order, OrderRequest, ObjectId>, EntityService<Order, OrderRequest, ObjectId>>();
             services.AddScoped<IEntityService<Operation, OperationRequest, ObjectId>, EntityService<Operation, OperationRequest, ObjectId>>();
             services.AddScoped<IEntityService<Pilot, PilotRequest, ObjectId>, EntityService<Pilot, PilotRequest, ObjectId>>();
             services.AddScoped<IEntityService<Route, RouteRequest, ObjectId>, EntityService<Route, RouteRequest, ObjectId>>();

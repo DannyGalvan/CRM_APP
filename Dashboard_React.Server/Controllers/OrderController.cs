@@ -17,7 +17,7 @@ namespace Dashboard_React.Server.Controllers
     [AllArgsConstructor]
     public partial class OrderController : ControllerBase
     {
-        private readonly IEntityService<Order, OrderRequest, ObjectId> _orderService;
+        private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
 
         [HttpGet]
@@ -26,8 +26,7 @@ namespace Dashboard_React.Server.Controllers
         {
             var response = _orderService.GetAll(filters);
 
-            if
-            (response.Success)
+            if(response.Success)
             {
                 Response<List<OrderResponse>> successResponse = new()
                 {
@@ -38,17 +37,15 @@ namespace Dashboard_React.Server.Controllers
 
                 return Ok(successResponse);
             }
-            else
-            {
-                Response<List<ValidationFailure>> errorResponse = new()
-                {
-                    Data = response.Errors,
-                    Success = response.Success,
-                    Message = response.Message
-                };
 
-                return BadRequest(errorResponse);
-            }
+            Response<List<ValidationFailure>> errorResponse = new()
+            {
+                Data = response.Errors,
+                Success = response.Success,
+                Message = response.Message
+            };
+
+            return BadRequest(errorResponse);
         }
 
         [HttpGet("{id}")]
@@ -57,8 +54,7 @@ namespace Dashboard_React.Server.Controllers
         {
             var response = _orderService.GetById(ObjectId.Parse(id));
 
-            if
-            (response.Success)
+            if(response.Success)
             {
                 Response<OrderResponse> successResponse = new()
                 {
@@ -69,17 +65,15 @@ namespace Dashboard_React.Server.Controllers
 
                 return Ok(successResponse);
             }
-            else
-            {
-                Response<List<ValidationFailure>> errorResponse = new()
-                {
-                    Data = response.Errors,
-                    Success = response.Success,
-                    Message = response.Message
-                };
 
-                return BadRequest(errorResponse);
-            }
+            Response<List<ValidationFailure>> errorResponse = new()
+            {
+                Data = response.Errors,
+                Success = response.Success,
+                Message = response.Message
+            };
+
+            return BadRequest(errorResponse);
         }
 
         [HttpPost]
@@ -89,8 +83,7 @@ namespace Dashboard_React.Server.Controllers
             request.CreatedBy = GetUserId();
             var response = _orderService.Create(request);
 
-            if
-            (response.Success)
+            if(response.Success)
             {
                 Response<OrderResponse> successResponse = new()
                 {
@@ -101,17 +94,15 @@ namespace Dashboard_React.Server.Controllers
 
                 return Ok(successResponse);
             }
-            else
-            {
-                Response<List<ValidationFailure>> errorResponse = new()
-                {
-                    Data = response.Errors,
-                    Success = response.Success,
-                    Message = response.Message
-                };
 
-                return BadRequest(errorResponse);
-            }
+            Response<List<ValidationFailure>> errorResponse = new()
+            {
+                Data = response.Errors,
+                Success = response.Success,
+                Message = response.Message
+            };
+
+            return BadRequest(errorResponse);
         }
 
         [HttpPut]
@@ -121,8 +112,7 @@ namespace Dashboard_React.Server.Controllers
             request.UpdatedBy = GetUserId();
             var response = _orderService.Update(request);
 
-            if
-            (response.Success)
+            if(response.Success)
             {
                 Response<OrderResponse> successResponse = new()
                 {
@@ -133,17 +123,15 @@ namespace Dashboard_React.Server.Controllers
 
                 return Ok(successResponse);
             }
-            else
-            {
-                Response<List<ValidationFailure>> errorResponse = new()
-                {
-                    Data = response.Errors,
-                    Success = response.Success,
-                    Message = response.Message
-                };
 
-                return BadRequest(errorResponse);
-            }
+            Response<List<ValidationFailure>> errorResponse = new()
+            {
+                Data = response.Errors,
+                Success = response.Success,
+                Message = response.Message
+            };
+
+            return BadRequest(errorResponse);
         }
 
         [HttpPatch]
@@ -153,8 +141,7 @@ namespace Dashboard_React.Server.Controllers
             request.UpdatedBy = GetUserId();
             var response = _orderService.PartialUpdate(request);
 
-            if
-            (response.Success)
+            if(response.Success)
             {
                 Response<OrderResponse> successResponse = new()
                 {
@@ -165,17 +152,43 @@ namespace Dashboard_React.Server.Controllers
 
                 return Ok(successResponse);
             }
-            else
+
+            Response<List<ValidationFailure>> errorResponse = new()
             {
-                Response<List<ValidationFailure>> errorResponse = new()
+                Data = response.Errors,
+                Success = response.Success,
+                Message = response.Message
+            };
+
+            return BadRequest(errorResponse);
+        }
+
+        [HttpPatch("Bulk")]
+        [Authorize(Policy = "Order.BulkPartialUpdate")]
+        public IActionResult BulkUpdate(BulkUpdateOrderRequest model)
+        {
+            model.UpdatedBy = GetUserId();
+            var response = _orderService.BulkUpdate(model);
+            if (response.Success)
+            {
+                Response<List<OrderResponse>> successResponse = new()
                 {
-                    Data = response.Errors,
+                    Data = _mapper.Map<List<Order>, List<OrderResponse>>(response.Data!),
                     Success = response.Success,
                     Message = response.Message
                 };
 
-                return BadRequest(errorResponse);
+                return Ok(successResponse);
             }
+
+            Response<List<ValidationFailure>> errorResponse = new()
+            {
+                Data = response.Errors,
+                Success = response.Success,
+                Message = response.Message
+            };
+
+            return BadRequest(errorResponse);
         }
 
         private string GetUserId()

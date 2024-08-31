@@ -11,7 +11,6 @@ using Business.Validations.RouteDetail;
 using Entidades.Request;
 using Entities.Request;
 using FluentValidation;
-using System.ComponentModel.DataAnnotations;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -25,6 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IValidator<ResetPasswordRequest>, ResetPasswordValidations>();
             services.AddScoped<IValidator<RecoveryPasswordRequest>, RecoveryPasswordValidations>();
             services.AddScoped<IValidator<BulkRouteDetailRequest>, BulkRouteDetailValidator>();
+            services.AddScoped<IValidator<BulkUpdateOrderRequest>, BulkUpdateOrderValidator>();
             //Validations de catálogo
             services.AddKeyedScoped<IValidator<CatalogueRequest>,CreateCatalogValidator>("Create");
             services.AddKeyedScoped<IValidator<CatalogueRequest>, UpdateCatalogValidator >("Update");

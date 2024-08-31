@@ -20,6 +20,8 @@ import { getFilteredOrders } from "../../services/orderService";
 import { NotFound } from "../../pages/error/NotFound";
 import { TableRoot } from "../table/TableRoot";
 import { compactGrid } from "../../theme/tableTheme";
+import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
+import { RouteDetailsRequest } from "../../types/RouteDetailsRequest";
 
 interface RouteFormProps {
   initialForm: RouteDtoRequest | RouteDtoResponse;
@@ -115,13 +117,15 @@ export const RouteForm = ({
   reboot,
 }: RouteFormProps) => {
   const { route } = useRouteStore();
+  const { add } = useRouteDetailStore();
 
   const { data, error, isFetching, isLoading } = useQuery<
     ApiResponse<OrderResponse[]>,
     ApiError | undefined
   >({
     queryKey: ["ordersFiltered"],
-    queryFn: () => getFilteredOrders(""),
+    queryFn: () =>
+      getFilteredOrders("OrderStateId:eq:667a0b4ea82250a2c13748c2"),
   });
 
   const {
@@ -162,12 +166,13 @@ export const RouteForm = ({
           <Textarea
             label="Description"
             labelPlacement="outside"
-            placeholder="Enter your description"
+            placeholder="Ingresa observaciones de la ruta"
             name="observations"
             value={form.observations}
             onChange={handleChange}
             errorMessage={errors?.observations}
             isInvalid={!!errors?.observations}
+            variant="underlined"
           />
           <TableRoot
             columns={columns}
@@ -176,10 +181,17 @@ export const RouteForm = ({
             pending={isLoading || isFetching}
             text="de las ordenes"
             styles={compactGrid}
-            title={"Ordenes"}
+            title={"Ordenes pendientes"}
             width={false}
             selectedRows={true}
-            onSelectedRowsChange={(rows) => console.log(rows)}
+            onSelectedRowsChange={(rows) => {
+              const details : RouteDetailsRequest[] = rows.selectedRows.map((row : any)  => ({
+                orderId: row.id,
+                routeId: "",
+                state: 1,
+              }));
+              add(details);
+            }}
           />
           <Button
             isLoading={loading}
