@@ -26,7 +26,7 @@ import { RouteDetailsRequest } from "../../types/RouteDetailsRequest";
 interface RouteFormProps {
   initialForm: RouteDtoRequest | RouteDtoResponse;
   sendForm: (
-    product: RouteDtoRequest,
+    route: RouteDtoRequest,
   ) => Promise<ApiResponse<RouteDtoResponse | ValidationFailure[]>>;
   text: string;
   reboot?: boolean;
@@ -117,7 +117,7 @@ export const RouteForm = ({
   reboot,
 }: RouteFormProps) => {
   const { route } = useRouteStore();
-  const { add } = useRouteDetailStore();
+  const { add, route:routeDetail } = useRouteDetailStore();
 
   const { data, error, isFetching, isLoading } = useQuery<
     ApiResponse<OrderResponse[]>,
@@ -158,7 +158,7 @@ export const RouteForm = ({
             querykey="Pilots"
             entity="Pilotos"
             setFormValue={handleChange}
-            defaultValue={route?.pilot?.id}
+            defaultValue={route?.pilot?.name}
             errorMessage={errors?.pilotId}
             keyName="Name"
             queryFn={getPilots}

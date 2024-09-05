@@ -12,6 +12,9 @@ import { useOrderStore } from "../../store/useOrderStore";
 import { OrderResponse } from "../../types/OrderResponse";
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
+import { partialUpdateOrder } from "../../services/orderService";
+import { ValidationFailure } from "../../types/ValidationFailure";
+import { toast } from "react-toastify";
 
 interface CatalogueActionMenuProps {
   data: OrderResponse;
@@ -30,6 +33,20 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
     updateDetails(data.orderDetails);
     setOpenUpdate();
     add(data);
+  };
+
+  const handleDelete = async () => {
+    const response = await partialUpdateOrder({
+      id: data.id!,
+      orderStateId: "66d4e2be0cb8112b950ab12f",
+    });
+
+    if (!response.success) {
+      const errors = response.data as ValidationFailure[];
+      errors.forEach((error: ValidationFailure) => {
+        toast.error(error.errorMessage);
+      });
+    }
   };
 
   return (
@@ -58,6 +75,7 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
         </DropdownItem>
         <DropdownItem
           key="delete"
+          onClick={handleDelete}
           startContent={<Icon name="bi bi-trash3" />}
           className="text-danger"
           color="danger"

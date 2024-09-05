@@ -1,9 +1,9 @@
 import { NextUIProvider } from "@nextui-org/system";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./hooks/useAuth";
 
 const ErrorBoundary = lazy(() => import("./pages/error/ErrorBoundary"));
 const LoadingPage = lazy(() => import("./pages/public/LoadingPage"));
@@ -27,17 +27,21 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  const { syncAuth } = useAuth();
+
+  useEffect(() => {
+    syncAuth();
+  }, []);
+
   return (
     <Suspense fallback={<LoadingPage />}>
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <NextUIProvider>
-              <AppRoutes />
-              <ToastContainer />
-            </NextUIProvider>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </AuthProvider>
+          <NextUIProvider>
+            <AppRoutes />
+            <ToastContainer />
+          </NextUIProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </ErrorBoundary>
     </Suspense>

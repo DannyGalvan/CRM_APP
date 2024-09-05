@@ -110,6 +110,7 @@ const ModalCreateItem = lazy(() =>
 );
 
 export const OrderPage = () => {
+ try {
   const [rageOfDate, setRageOfDate] = useState({
     start: dateRange.maxDate,
     end: dateRange.minDate,
@@ -117,7 +118,7 @@ export const OrderPage = () => {
   const { open, toggle } = useToggle();
   const { reRender, render } = useRetraseRender();
   const { open: openUpdate, toggle: toggleUpdate } = useToggle();
-  const { create, update } = useOrder();
+  const { create, update } = useOrder(rageOfDate);
   const { order, add } = useOrderStore();
   const { updateDetails } = useOrderDetailStore();
 
@@ -125,7 +126,7 @@ export const OrderPage = () => {
     ApiResponse<OrderResponse[]>,
     ApiError | undefined
   >({
-    queryKey: ["orders", rageOfDate],
+    queryKey: ["orders", rageOfDate.start, rageOfDate.end],
     queryFn: () => getOrders(rageOfDate),
   });
 
@@ -136,6 +137,8 @@ export const OrderPage = () => {
   if (error) {
     return <NotFound Message={error.message} Number={error.statusCode} />;
   }
+
+  console.log(rageOfDate);
 
   return (
     <Protected>
@@ -214,4 +217,7 @@ export const OrderPage = () => {
       </Suspense>
     </Protected>
   );
+ } catch (error) {
+    console.error(error);
+ }
 };

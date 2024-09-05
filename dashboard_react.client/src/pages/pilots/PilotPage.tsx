@@ -46,7 +46,7 @@ const columns: TableColumn<any>[] = [
     selector: (data) => data.lastName,
     sortable: true,
     wrap: true,
-    omit: true,
+    omit: false,
   },
   {
     id: "licence",

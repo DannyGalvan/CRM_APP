@@ -13,8 +13,6 @@ export const useResponse = <T, U>() => {
   const showErrors = (errors: ValidationFailure[]) => {
     let errorsConverted: ErrorObject = {};
 
-    console.log({errors});
-
     errors.forEach((error) => {
       errorsConverted[toCamelCase(error.propertyName)] = error.errorMessage;
     });

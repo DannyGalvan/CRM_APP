@@ -5,8 +5,8 @@ import { ProductResponse } from "./ProductResponse";
 export interface OrderResponse {
   id?: string;
   customerId: string;
-  orderDate: string;
-  deliveryDate: Date;
+  orderDate: Date;
+  deliveryDate: any;
   paymentTypeId: string;
   orderStateId: string;
   total: number;

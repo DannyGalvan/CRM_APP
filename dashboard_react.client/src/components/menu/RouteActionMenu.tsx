@@ -9,28 +9,38 @@ import { useContext } from "react";
 import { DrawerContext } from "../../context/DrawerContext";
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
+import { RouteResponse } from "../../types/RouteResponse";
+import { useRouteStore } from "../../store/useRouteStore";
+import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
+import { getRouteDetails } from "../../services/routeDetailService";
 
 interface CatalogueActionMenuProps {
-  data: any;
-  useStore: any;
-  deleteAction?: () => void;
+  data: RouteResponse;
 }
 
-export const CatalogueActionMenu = ({
-  data,
-  useStore,
-}: CatalogueActionMenuProps) => {
+export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
   const { setOpenUpdate } = useContext(DrawerContext);
-  const { add } = useStore();
+  const { add: addDetail } = useRouteDetailStore();
+  const { add: addRoute } = useRouteStore();
 
-  const handleOpen = () => {
+  const handleOpen = async () => {
     data.createdAt = null;
     data.updatedAt = null;
     data.updatedBy = null;
     data.createdBy = null;
-    add(data);
     setOpenUpdate();
+
+    addRoute({
+      ...data,
+      details: [],
+    });
+
+    const details = await getRouteDetails(`RouteId:eq:${data.id}`);
+
+    addDetail(details.data!);
   };
+
+  const handleDelete = async () => {};
 
   return (
     <Dropdown>
@@ -43,7 +53,7 @@ export const CatalogueActionMenu = ({
         <DropdownItem
           key="copy"
           startContent={<Icon name="bi bi-clipboard-check" />}
-          onClick={() => copyToClipboard(data.id)}
+          onClick={() => copyToClipboard(data.id!)}
         >
           Copiar
         </DropdownItem>
@@ -56,16 +66,16 @@ export const CatalogueActionMenu = ({
         >
           Editar
         </DropdownItem>
-        {/* <DropdownItem
+        <DropdownItem
           key="delete"
+          onClick={handleDelete}
           startContent={<Icon name="bi bi-trash3" />}
           className="text-danger"
           color="danger"
-          onClick={deleteAction}
           content="Eliminar"
         >
           Eliminar
-        </DropdownItem> */}
+        </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );

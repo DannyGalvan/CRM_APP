@@ -20,10 +20,10 @@ namespace Business.Services
                 Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, DateTime.DaysInMonth(DateTime.Now.Year, month)))
             );
 
-            var orders = _crmContext.Database.GetCollection<Order>(typeof(Order).Name.Pluralize());
+            var orders = _crmContext.Database.GetCollection<Order>(nameof(Order).Pluralize());
 
             var result = await orders
-                .Find(filter)
+                .Find(g=> true)
                 .ToListAsync();
 
             var ordersAgroupedByDay = result.GroupBy(o => o.OrderDate.Day);
@@ -72,7 +72,7 @@ namespace Business.Services
                 Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(year, 12, 31))
             );
 
-            var orders = _crmContext.Database.GetCollection<Order>(typeof(Order).Name.Pluralize());
+            var orders = _crmContext.Database.GetCollection<Order>(nameof(Order).Pluralize());
 
             var result = await orders.Find(filter).ToListAsync();
 

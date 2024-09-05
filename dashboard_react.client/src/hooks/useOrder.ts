@@ -6,7 +6,12 @@ import { ApiResponse } from "../types/ApiResponse";
 import { OrderRequest } from "../types/OrderRequest";
 import { OrderResponse } from "../types/OrderResponse";
 
-export const useOrder = () => {
+interface RangeOfDates {
+  start: string;
+  end: string;
+}
+
+export const useOrder = (rangeOfDates?: RangeOfDates) => {
   const client = useQueryClient();
   const { orderDetail, clear } = useOrderDetailStore();
   const { add } = useOrderStore();
@@ -42,31 +47,48 @@ export const useOrder = () => {
 
     const response = await updateOrder(form);
 
-    await client.refetchQueries({
+    if (!response.success) {
+      return response;
+    }
+
+    await client.invalidateQueries({
       queryKey: ["orders"],
       type: "active",
-      exact: true,
+      exact: false,
     });
 
     const orders = client.getQueryData<ApiResponse<OrderResponse[]>>([
       "orders",
+      rangeOfDates!.start,
+      rangeOfDates!.end,
     ]);
 
     if (orders != undefined) {
       const find = orders.data?.find((c) => c.id === form.id);
 
       if (find != undefined) {
-        find.createdAt = null;
-        find.updatedAt = null;
-        find.updatedBy = null;
-        find.createdBy = null;
-      }
+        const newOrder = {
+          ...find,
+          createdAt: null,
+          updatedAt: null,
+          updatedBy: null,
+          createdBy: null,
+        };
 
-      find && add(find);
+        find && add(newOrder);
+      }
     }
 
     return response;
   };
+
+  const invalidateQueries = async() => {
+    await client.invalidateQueries({
+      queryKey: ["orders"],
+      type: "active",
+      exact: false,
+    });
+  }
 
   return {
     create,

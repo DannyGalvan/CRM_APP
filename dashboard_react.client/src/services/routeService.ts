@@ -13,6 +13,20 @@ export const createRoute = async (route: RouteRequest) => {
   return response;
 };
 
+export const getRoutes = async (filter?: string) => {
+  let response;
+
+  if (filter) {
+    response = await api.get<any,ApiResponse<RouteResponse[]>,any>(
+      `/route?filters=${filter}`
+    );
+  } else {
+    response = await api.get<any, ApiResponse<RouteResponse[]>, any>("/route");
+  }
+
+  return response;
+};
+
 export const updateRoute = async (route: RouteRequest) => {
   const response = await api.put<
     RouteRequest,

@@ -11,7 +11,6 @@ interface OrderFilters {
 }
 
 export const getOrders = async ({ start, end }: OrderFilters) => {
-  console.log(start, end);
   if (start && end) {
     const response: ApiResponse<OrderResponse[]> = await api.get<
       any,
@@ -70,7 +69,7 @@ export const updateOrder = async (data: OrderRequest) => {
 };
 
 export const partialUpdateOrder = async (data: OrderRequest) => {
-  const response: ApiResponse<OrderResponse> = await api.patch<
+  const response: ApiResponse<OrderResponse | ValidationFailure[]> = await api.patch<
     any,
     ApiResponse<OrderResponse>,
     OrderRequest

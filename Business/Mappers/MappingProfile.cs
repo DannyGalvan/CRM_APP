@@ -5,6 +5,7 @@ using Entities.Response;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
+using System.Globalization;
 
 namespace Business.Mappers
 {
@@ -146,7 +147,7 @@ namespace Business.Mappers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId.ToString()))
                 .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.AddHours(-6).ToString("dd/MM/yyyy HH:mm:ss")))
-                .ForMember(dest => dest.DeliveryDate, opt => opt.MapFrom(src => src.DeliveryDate.HasValue ? src.DeliveryDate.Value.AddHours(-6).ToString("dd/MM/yyyy") : ""))
+                .ForMember(dest => dest.DeliveryDate, opt => opt.MapFrom(src => src.DeliveryDate.HasValue ? src.DeliveryDate.Value.AddHours(-6).ToString("MM/dd/yyyy") : ""))
                 .ForMember(dest => dest.PaymentTypeId, opt => opt.MapFrom(src => src.PaymentTypeId.ToString()))
                 .ForMember(dest => dest.OrderStateId, opt => opt.MapFrom(src => src.OrderStateId.ToString()))
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.Total))

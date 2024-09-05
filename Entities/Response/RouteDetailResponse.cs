@@ -13,7 +13,7 @@ namespace Entities.Response
         public string CreatedAt { get; set; } = string.Empty;
         public string? UpdatedAt { get; set; }
 
-        public  Route? Route { get; set; }
-        public  Order? Order { get; set; }
+        public  RouteResponse? Route { get; set; }
+        public  OrderResponse? Order { get; set; }
     }
 }

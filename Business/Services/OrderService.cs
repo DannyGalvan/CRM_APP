@@ -46,16 +46,11 @@ namespace Business.Services
 
                 List<Order> entities = _mapper.Map<List<OrderRequest>, List<Order>>(model.Orders);
 
-                foreach (var entity in entities)
-                {
-                    entity.CreatedAt = DateTime.Now.ToUniversalTime();
-                    entity.UpdatedAt = null;
-                    entity.UpdatedBy = null;
-                }
-
                 string collectionName = nameof(Order).Pluralize();
 
                 IMongoCollection<Order> database = _mongo.Database.GetCollection<Order>(collectionName);
+
+                List<Order> existEntitiesUpdated = new List<Order>();
 
                 foreach (var en in entities)
                 {
@@ -77,9 +72,11 @@ namespace Business.Services
 
                     entityExist.UpdatedAt = DateTime.Now.ToUniversalTime();
                     entityExist.CreatedAt = createdAt;
+
+                    existEntitiesUpdated.Add(entityExist);
                 }
 
-                foreach (var en in entities)
+                foreach (var en in existEntitiesUpdated)
                 {
                     database.ReplaceOne(e => e.Id!.Equals(en.Id), en);
                 }

@@ -15,6 +15,6 @@ namespace Entities.Response
         public string? UpdatedBy { get; set; }
 
 
-        public virtual Pilot? Pilot { get; set; }
+        public virtual PilotResponse? Pilot { get; set; }
     }
 }

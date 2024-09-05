@@ -1,9 +1,9 @@
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { toAllOperations } from '../util/converted';
+import { toAllOperations } from "../util/converted";
+import { useAuthStore } from "../store/useAuthStore";
 
 export const useAuth = () => {
-  const { authState, logout, signIn } = useContext(AuthContext);
+  const { authState, logout, signIn, syncAuth } = useAuthStore();
+
   const {
     email,
     isLoggedIn,
@@ -29,5 +29,6 @@ export const useAuth = () => {
     operations,
     allOperations,
     userId,
+    syncAuth,
   };
 };
