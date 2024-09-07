@@ -54,7 +54,7 @@ namespace Business.Services
 
                 foreach (var en in entities)
                 {
-                    Order? entityExist = database.Find(e => e.Id!.Equals(en.Id)).FirstOrDefault();
+                    Order? entityExist = database.Find(e => e.Id.Equals(en.Id)).FirstOrDefault();
 
                     if (entityExist == null)
                     {
@@ -78,7 +78,7 @@ namespace Business.Services
 
                 foreach (var en in existEntitiesUpdated)
                 {
-                    database.ReplaceOne(e => e.Id!.Equals(en.Id), en);
+                    database.ReplaceOne(e => e.Id.Equals(en.Id), en);
                 }
 
                 response.Errors = null;

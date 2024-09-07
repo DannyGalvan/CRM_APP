@@ -53,6 +53,7 @@ export const PilotForm = ({
     sendForm,
     reboot,
   );
+  
   return (
     <Col md={12}>
       <h1 className="text-center text-2xl font-bold">{text} Piloto</h1>

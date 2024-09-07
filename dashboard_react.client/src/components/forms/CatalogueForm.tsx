@@ -1,10 +1,9 @@
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { SelectedCatalogue } from "../../hooks/useListCollections";
 import { initialCatalogue } from "../../pages/catalogue/CreateCataloguePage";
-import { NotFound } from "../../pages/error/NotFound";
 import { ApiResponse } from "../../types/ApiResponse";
 import { CatalogueResponse } from "../../types/CatalogueResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
@@ -13,6 +12,7 @@ import { ApiError } from "../../util/errors";
 import { catalogueShema } from "../../util/validations/catalogueValidations";
 import { Col } from "../grid/Col";
 import { Response } from "../messages/Response";
+import { useErrorsStore } from "../../store/useErrorsStore";
 
 interface CatalogueFormProps {
   selectedCatalogue: SelectedCatalogue;
@@ -43,6 +43,7 @@ export const CatalogueForm = ({
   text,
   reboot,
 }: CatalogueFormProps) => {
+  const {setError} = useErrorsStore();
   const {
     form,
     message,
@@ -65,14 +66,11 @@ export const CatalogueForm = ({
     [handleChange],
   );
 
-  if (collectionError) {
-    return (
-      <NotFound
-        Message={collectionError.message}
-        Number={collectionError.statusCode}
-      />
-    );
-  }
+  useEffect(() => {
+    if (collectionError) {
+      setError(collectionError);
+     }
+  }, [collectionError, setError]);
 
   return (
     <>

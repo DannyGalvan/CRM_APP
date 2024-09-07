@@ -12,16 +12,18 @@ import { Button } from "@nextui-org/button";
 import { CatalogueSearch } from "../input/CatalogueSearch";
 import { getPilots } from "../../services/pilotService";
 import { Textarea } from "@nextui-org/input";
-import { TableColumn } from "react-data-table-component";
 import { useQuery } from "@tanstack/react-query";
 import { OrderResponse } from "../../types/OrderResponse";
 import { ApiError } from "../../util/errors";
 import { getFilteredOrders } from "../../services/orderService";
-import { NotFound } from "../../pages/error/NotFound";
 import { TableRoot } from "../table/TableRoot";
 import { compactGrid } from "../../theme/tableTheme";
 import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
 import { RouteDetailsRequest } from "../../types/RouteDetailsRequest";
+import { useErrorsStore } from "../../store/useErrorsStore";
+import { useEffect } from "react";
+import { OrderResponseColumns } from "../columns/OrderResponseColumns";
+import { OrderDetailResponseColumns } from "../columns/OrderDetailResponseColumns";
 
 interface RouteFormProps {
   initialForm: RouteDtoRequest | RouteDtoResponse;
@@ -31,72 +33,6 @@ interface RouteFormProps {
   text: string;
   reboot?: boolean;
 }
-
-const columns: TableColumn<any>[] = [
-  {
-    id: "id",
-    name: "Id",
-    selector: (data) => data.id,
-    sortable: true,
-    maxWidth: "150px",
-    omit: true,
-  },
-  {
-    id: "name",
-    name: "Nombre",
-    selector: (data) => data?.customer?.fullName,
-    omit: false,
-    sortable: true,
-  },
-  {
-    id: "total",
-    name: "Total",
-    selector: (data) => data.total,
-    omit: false,
-    sortable: true,
-    maxWidth: "100px",
-  },
-  {
-    id: "payment",
-    name: "Pago",
-    selector: (data) => data?.paymentType?.name,
-    sortable: true,
-    maxWidth: "150px",
-    omit: false,
-  },
-  {
-    id: "status",
-    name: "Estado",
-    selector: (data) => data?.orderState?.name,
-    sortable: true,
-    maxWidth: "150px",
-    omit: false,
-  },
-  {
-    id: "createdAt",
-    name: "Creado",
-    selector: (data) => data.createdAt,
-    sortable: true,
-    maxWidth: "200px",
-    omit: true,
-  },
-  {
-    id: "updatedAt",
-    name: "Actualizado",
-    selector: (data) => data.updatedAt,
-    sortable: true,
-    maxWidth: "160px",
-    omit: true,
-  },
-  {
-    id: "deliveryDate",
-    name: "Entrega",
-    selector: (data) => data.deliveryDate,
-    sortable: true,
-    maxWidth: "115px",
-    omit: false,
-  },
-];
 
 const routeValidations = (request: RouteDtoRequest) => {
   let errors: ErrorObject = {};
@@ -117,7 +53,12 @@ export const RouteForm = ({
   reboot,
 }: RouteFormProps) => {
   const { route } = useRouteStore();
-  const { add, route:routeDetail } = useRouteDetailStore();
+  const { setError } = useErrorsStore();
+  const {
+    add,
+    savedRoutes: routeDetail,
+    loading: loadingDetails,
+  } = useRouteDetailStore();
 
   const { data, error, isFetching, isLoading } = useQuery<
     ApiResponse<OrderResponse[]>,
@@ -143,9 +84,11 @@ export const RouteForm = ({
     reboot,
   );
 
-  if (error) {
-    return <NotFound Message={error.message} Number={error.statusCode} />;
-  }
+  useEffect(() => {
+    if (error) {
+      setError(error);
+    }
+  }, [error, setError]);
 
   return (
     <Col md={12}>
@@ -174,8 +117,20 @@ export const RouteForm = ({
             isInvalid={!!errors?.observations}
             variant="underlined"
           />
+          {text === "Editar" && (
+            <TableRoot
+              columns={OrderDetailResponseColumns}
+              data={routeDetail ?? []}
+              hasFilters={true}
+              pending={loadingDetails}
+              text="de las ordenes"
+              styles={compactGrid}
+              title={"Ordenes en la ruta"}
+              width={false}
+            />
+          )}
           <TableRoot
-            columns={columns}
+            columns={OrderResponseColumns}
             data={data?.data ?? []}
             hasFilters={true}
             pending={isLoading || isFetching}
@@ -185,11 +140,13 @@ export const RouteForm = ({
             width={false}
             selectedRows={true}
             onSelectedRowsChange={(rows) => {
-              const details : RouteDetailsRequest[] = rows.selectedRows.map((row : any)  => ({
-                orderId: row.id,
-                routeId: "",
-                state: 1,
-              }));
+              const details: RouteDetailsRequest[] = rows.selectedRows.map(
+                (row: any) => ({
+                  orderId: row.id,
+                  routeId: "",
+                  state: 1,
+                }),
+              );
               add(details);
             }}
           />

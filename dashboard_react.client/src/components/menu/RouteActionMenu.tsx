@@ -5,23 +5,25 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
-import { useContext } from "react";
-import { DrawerContext } from "../../context/DrawerContext";
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
 import { RouteResponse } from "../../types/RouteResponse";
 import { useRouteStore } from "../../store/useRouteStore";
 import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
-import { getRouteDetails } from "../../services/routeDetailService";
+import { useDrawer } from "../../hooks/useDrawer";
+import { useErrorsStore } from "../../store/useErrorsStore";
+import { useRoutes } from "../../hooks/useRoutes";
 
 interface CatalogueActionMenuProps {
   data: RouteResponse;
 }
 
 export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
-  const { setOpenUpdate } = useContext(DrawerContext);
-  const { add: addDetail } = useRouteDetailStore();
+  const { setOpenUpdate } = useDrawer();
+  const { setError } = useErrorsStore();
+  const { getRouteDetailsByRouteId } = useRouteDetailStore();
   const { add: addRoute } = useRouteStore();
+  const { deleteRoute } = useRoutes();
 
   const handleOpen = async () => {
     data.createdAt = null;
@@ -35,12 +37,12 @@ export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
       details: [],
     });
 
-    const details = await getRouteDetails(`RouteId:eq:${data.id}`);
-
-    addDetail(details.data!);
+    await getRouteDetailsByRouteId(data.id!, setError);
   };
 
-  const handleDelete = async () => {};
+  const handleDelete = async () => {
+    await deleteRoute(data.id!);
+  };
 
   return (
     <Dropdown>

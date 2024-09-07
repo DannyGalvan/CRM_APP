@@ -14,18 +14,18 @@ namespace Entities.Context
 {
     public class MongoContext : IMongoContext
     {
-        private readonly ICRMContext _crmContext;
+        private readonly ICrmContext _crmContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMemoryCache _cache;
         private readonly ILogger<MongoContext> _logger;
         public IMongoDatabase Database { get; private set; }
-        public MongoContext(IHttpContextAccessor httpContextAccessor, ICRMContext cRMContext, IMemoryCache memoryCache, ILogger<MongoContext> logger) {
-            _crmContext = cRMContext;
+        public MongoContext(IHttpContextAccessor httpContextAccessor, ICrmContext crmContext, IMemoryCache memoryCache, ILogger<MongoContext> logger) {
+            _crmContext = crmContext;
             _httpContextAccessor = httpContextAccessor;
             _cache = memoryCache;
             _logger = logger;
 
-            UserMongoConnection? conn = GetConnectonStringUser();
+            UserMongoConnection? conn = GetConnectionStringUser();
 
             var mongoClientSettings = MongoClientSettings.FromConnectionString($"{conn.ConnectionString}/{conn.Database}");
 
@@ -43,7 +43,7 @@ namespace Entities.Context
 
         public void GetConnection()
         {
-            UserMongoConnection? conn = GetConnectonStringUser();
+            UserMongoConnection? conn = GetConnectionStringUser();
 
             var mongoClientSettings = MongoClientSettings.FromConnectionString($"{conn.ConnectionString}/{conn.Database}");
 
@@ -59,7 +59,7 @@ namespace Entities.Context
             Database = client.GetDatabase(conn.Database);
         }
 
-        private UserMongoConnection GetConnectonStringUser()
+        private UserMongoConnection GetConnectionStringUser()
         {
             try
             {
@@ -70,11 +70,11 @@ namespace Entities.Context
 
                 if (!_cache.TryGetValue(userId, out UserMongoConnection? userMongoConnection))
                 {
-                    string collectionName = typeof(User).Name.Pluralize();
+                    string collectionName = nameof(User).Pluralize();
 
-                    IMongoCollection<User> Users = _crmContext.Database.GetCollection<User>(collectionName);
+                    IMongoCollection<User> users = _crmContext.Database.GetCollection<User>(collectionName);
 
-                    User? user = Users.Find(u => u.Id == userId).FirstOrDefault();
+                    User? user = users.Find(u => u.Id == userId).FirstOrDefault();
 
                     if (user == null)
                     {

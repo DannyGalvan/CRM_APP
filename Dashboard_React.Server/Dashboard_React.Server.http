@@ -7,5 +7,3 @@ Accept: application/json
   "username": "admin",
   "password": "admin"
 }
-
-###

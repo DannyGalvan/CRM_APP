@@ -114,7 +114,7 @@ builder.Services.AddAuthorization(options =>
 {
     IOptions<MongoConnection> mongoConnectionOptions = new OptionsWrapper<MongoConnection>(mongoConnection);
 
-    ICRMContext bd = new CRMContext(mongoConnectionOptions);
+    ICrmContext bd = new CrmContext(mongoConnectionOptions);
 
     var operationsCollection = bd.Database.GetCollection<Operation>(nameof(Operation).Pluralize());
 

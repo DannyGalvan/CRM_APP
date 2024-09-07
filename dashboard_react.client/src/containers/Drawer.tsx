@@ -1,7 +1,7 @@
 import { IoIosClose } from 'react-icons/io';
 
 interface DrawerProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   title: React.ReactNode | string;
@@ -30,7 +30,7 @@ export const Drawer = ({ children, isOpen, setIsOpen, title, size = "md" } : Dra
             className="absolute right-4 top-3 cursor-pointer text-red-600"
             size={35}
             onClick={() => {
-              setIsOpen(false);
+              setIsOpen(!isOpen);
             }}
           />
           {children}

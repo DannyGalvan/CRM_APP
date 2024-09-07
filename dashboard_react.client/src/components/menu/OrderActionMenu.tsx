@@ -5,8 +5,6 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
-import { useContext } from "react";
-import { DrawerContext } from "../../context/DrawerContext";
 import { useOrderDetailStore } from "../../store/useOrderDetailStore";
 import { useOrderStore } from "../../store/useOrderStore";
 import { OrderResponse } from "../../types/OrderResponse";
@@ -15,13 +13,17 @@ import { Icon } from "../Icons/Icon";
 import { partialUpdateOrder } from "../../services/orderService";
 import { ValidationFailure } from "../../types/ValidationFailure";
 import { toast } from "react-toastify";
+import { useDrawer } from "../../hooks/useDrawer";
+import { OrderStates } from "../../config/contants";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CatalogueActionMenuProps {
   data: OrderResponse;
 }
 
 export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
-  const { setOpenUpdate } = useContext(DrawerContext);
+  const client = useQueryClient();
+  const { setOpenUpdate } = useDrawer();
   const { updateDetails } = useOrderDetailStore();
   const { add } = useOrderStore();
 
@@ -38,7 +40,7 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
   const handleDelete = async () => {
     const response = await partialUpdateOrder({
       id: data.id!,
-      orderStateId: "66d4e2be0cb8112b950ab12f",
+      orderStateId: OrderStates.deleted,
     });
 
     if (!response.success) {
@@ -46,6 +48,14 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
       errors.forEach((error: ValidationFailure) => {
         toast.error(error.errorMessage);
       });
+    } else {
+      await client.invalidateQueries({
+        queryKey: ["orders"],
+        type: "active",
+        exact: false,
+      });
+
+      toast.success("Orden eliminada correctamente");
     }
   };
 

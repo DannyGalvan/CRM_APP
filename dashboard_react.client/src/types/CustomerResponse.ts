@@ -6,6 +6,7 @@ export interface CustomerResponse {
   secondName: string;
   firstLastName: string;
   secondLastName: string;
+  fullName: string;
   firstPhone: string;
   secondPhone: string;
   address: string;

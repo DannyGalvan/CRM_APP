@@ -29,7 +29,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         if (this.state.hasError) {
             // Puedes personalizar la UI de fallback que se muestra cuando ocurre un error.
             return (
-                <section className="flex h-screen flex-col flex-wrap justify-around overflow-y-auto p-8 font-bold text-red-600">
+                <section className="flex h-screen flex-col flex-wrap justify-around overflow-y-auto p-8 text-red-600">
                     <header className="text-center text-3xl">
                         <p> Hubo un error en la aplicación. {this.state.error?.message}</p>
                     </header>
@@ -48,7 +48,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                         </article>
                         <article className='mt-8'>
                             <p className='text-xl'> Lamentamos los inconvenientes</p>
-                            <p> <a href="/login">Regresar a inicio</a></p>
+                            <p className='font-bold'> <a href="/login">Regresar a inicio</a></p>
                         </article>
                     </main>
                     <footer className="text-center">

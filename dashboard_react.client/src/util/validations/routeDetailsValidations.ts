@@ -25,4 +25,4 @@ export const routeDetailsShemaArray = z
     description: "Error en los detalles de la ruta",
     message: "Debes agregar al menos un detalle",
   })
-  .nonempty({ message: "Debes agregar al menos un detalle" });
+  .nonempty({ message: "Debes asignar al menos una orden a esta ruta! 🤷‍♂️" });

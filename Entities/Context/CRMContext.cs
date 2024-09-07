@@ -7,11 +7,11 @@ using MongoDB.Driver.Core.Events;
 
 namespace Entities.Context
 {
-    public class CRMContext : ICRMContext
+    public class CrmContext : ICrmContext
     {
         public IMongoDatabase Database { get; private set; }
 
-        public CRMContext(IOptions<MongoConnection> options)
+        public CrmContext(IOptions<MongoConnection> options)
         {
             MongoConnection mongoConnection = options.Value;
 

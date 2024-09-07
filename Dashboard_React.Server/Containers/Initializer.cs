@@ -1,4 +1,5 @@
-﻿using Entities.Interfaces;
+﻿using Entities.Configurations;
+using Entities.Interfaces;
 using Entities.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -14,39 +15,39 @@ namespace Dashboard_React.Server.Containers
             
             using IServiceScope scope = app.Services.CreateScope();
             IServiceProvider services = scope.ServiceProvider;
+            IConfigurationSection configuration = services.GetRequiredService<IConfiguration>().GetSection("InitialDataConfig");
             ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
+            InitialDataConfig initialDataConfig = configuration.Get<InitialDataConfig>()!;
 
             if (app.Environment.IsDevelopment())
             {
                 // Create a sa User if not exists to start the application in development
                 try
                 {
-                    string emailManager = "pruebas.test29111999@gmail.com";
-
-                    var dbContext = services.GetRequiredService<ICRMContext>();
+                    var dbContext = services.GetRequiredService<ICrmContext>();
 
                     string collectionName = nameof(User).Pluralize();
 
                     IMongoCollection<User> users = dbContext.Database.GetCollection<User>(collectionName);
 
-                    User? manager = users.Find(u => u.Email == emailManager).FirstOrDefault();
+                    User? manager = users.Find(u => u.Email == initialDataConfig.EmailManager).FirstOrDefault();
 
                     if (manager == null)
                     {
                         users.InsertOne(new User
                         {
-                            Id = ObjectId.Parse("662754d99f4e1bf2407306ba"),
-                            Email = emailManager,
-                            Password = BC.BCrypt.HashPassword("Broiler-Charbroil4"),
-                            Name = "Systema",
-                            LastName = "Admin",
-                            UserName = "MANAGER",
-                            Number = "51995142",
-                            Active = true,
-                            Confirm = true,
-                            Database = "Dashboard_Data",
-                            ConnectionString = "mongodb://CRM_DATA:crm_data_8955@localhost:27017",
-                            CreatedBy = ObjectId.Parse("662754d99f4e1bf2407306ba"),
+                            Id = ObjectId.Parse(initialDataConfig.IdManager),
+                            Email = initialDataConfig.EmailManager,
+                            Password = BC.BCrypt.HashPassword(initialDataConfig.PasswordManager),
+                            Name = initialDataConfig.NameManager,
+                            LastName = initialDataConfig.LastNameManager,
+                            UserName = initialDataConfig.UserNameManager,
+                            Number = initialDataConfig.NumberManager,
+                            Active = initialDataConfig.ActiveManager,
+                            Confirm = initialDataConfig.ConfirmManager,
+                            Database = initialDataConfig.DatabaseManager,
+                            ConnectionString = initialDataConfig.ConnectionStringManager,
+                            CreatedBy = ObjectId.Parse(initialDataConfig.IdManager),
                         });
                     }
 

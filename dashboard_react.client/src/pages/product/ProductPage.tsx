@@ -8,10 +8,8 @@ import { Col } from "../../components/grid/Col";
 import { CatalogueActionMenu } from "../../components/menu/CatalogueActionMenu";
 import { TableRoot } from "../../components/table/TableRoot";
 import { Drawer } from "../../containers/Drawer";
-import { DrawerProvider } from "../../context/DrawerContext";
 import { useProducts } from "../../hooks/useProducts";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
-import { useToggle } from "../../hooks/useToggle";
 import Protected from "../../routes/middlewares/Protected";
 import { getProducts } from "../../services/productService";
 import { useProductStore } from "../../store/useProductStore";
@@ -23,6 +21,7 @@ import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
 import { initialProduct } from "./CreateProductPage";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
+import { useDrawer } from "../../hooks/useDrawer";
 
 const columns: TableColumn<any>[] = [
   {
@@ -122,8 +121,7 @@ const ModalCreateItem = lazy(() =>
 );
 
 export const ProductPage = () => {
-  const { open, toggle } = useToggle();
-  const { open: openUpdate, toggle: toggleUpdate } = useToggle();
+  const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();
   const { create, update } = useProducts();
   const { product, add } = useProductStore();
@@ -136,71 +134,69 @@ export const ProductPage = () => {
     queryFn: () => getProducts(),
   });
 
-  if (error) {
-    return <NotFound Message={error.message} Number={error.statusCode} />;
-  }
-
   useEffect(() => {
     reRender();
   }, []);
 
+  if (error) {
+    return <NotFound Message={error.message} Number={error.statusCode} />;
+  }
+
   return (
     <Protected>
-      <DrawerProvider setOpenUpdate={toggleUpdate}>
-        <div className="mt-20 md:mt-0">
-          <Col className="mt-5 flex justify-end">
-            <Button color={"secondary"} onClick={toggle}>
-              <Icon name={"bi bi-bag-plus"} /> Crear Producto
-            </Button>
-          </Col>
-          <TableRoot
-            columns={columns}
-            data={data?.data ?? []}
-            hasFilters={true}
-            pending={isLoading || isFetching}
-            text="de los productos"
-            styles={compactGrid}
-            title={"Productos"}
-            width={false}
-          />
-          {render && (
-            <Drawer
-              isOpen={open}
-              setIsOpen={toggle}
-              title={`Crear Producto`}
-              size="2xl"
-            >
-              <div className="p-5">
-                <ProductForm
-                  initialForm={initialProduct}
-                  sendForm={create}
-                  text="Crear"
-                  reboot
-                />
-              </div>
-            </Drawer>
-          )}
-          {render && (
-            <Drawer
-              isOpen={openUpdate}
-              setIsOpen={() => {
-                toggleUpdate();
-                add(null);
-              }}
-              title={`Editar Cliente`}
-              size="2xl"
-            >
-              <div className="p-5">
-                <ProductForm
-                  initialForm={product!}
-                  sendForm={update}
-                  text="Editar"
-                />
-              </div>
-            </Drawer>
-          )}
-        </div>
-      </DrawerProvider>
+      <div className="mt-20 md:mt-0">
+        <Col className="mt-5 flex justify-end">
+          <Button color={"secondary"} onClick={setOpenCreate}>
+            <Icon name={"bi bi-bag-plus"} /> Crear Producto
+          </Button>
+        </Col>
+        <TableRoot
+          columns={columns}
+          data={data?.data ?? []}
+          hasFilters={true}
+          pending={isLoading || isFetching}
+          text="de los productos"
+          styles={compactGrid}
+          title={"Productos"}
+          width={false}
+        />
+        {render && (
+          <Drawer
+            isOpen={openCreate}
+            setIsOpen={setOpenCreate}
+            title={`Crear Producto`}
+            size="2xl"
+          >
+            <div className="p-5">
+              <ProductForm
+                initialForm={initialProduct}
+                sendForm={create}
+                text="Crear"
+                reboot
+              />
+            </div>
+          </Drawer>
+        )}
+        {render && (
+          <Drawer
+            isOpen={openUpdate}
+            setIsOpen={() => {
+              setOpenUpdate();
+              add(null);
+            }}
+            title={`Editar Cliente`}
+            size="2xl"
+          >
+            <div className="p-5">
+              <ProductForm
+                initialForm={product!}
+                sendForm={update}
+                text="Editar"
+              />
+            </div>
+          </Drawer>
+        )}
+      </div>
       <Suspense fallback={<LoadingComponent />}>
         <ModalCreateItem />
       </Suspense>

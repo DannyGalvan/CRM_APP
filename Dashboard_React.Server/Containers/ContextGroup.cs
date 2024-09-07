@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddContextGroup(this IServiceCollection services)
         {
-            services.AddScoped<ICRMContext, CRMContext>();
+            services.AddScoped<ICrmContext, CrmContext>();
             services.AddScoped<IMongoContext, MongoContext>();
 
             return services;

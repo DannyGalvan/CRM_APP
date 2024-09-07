@@ -5,10 +5,9 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
-import { useContext } from "react";
-import { DrawerContext } from "../../context/DrawerContext";
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
+import { useDrawer } from "../../hooks/useDrawer";
 
 interface CatalogueActionMenuProps {
   data: any;
@@ -20,7 +19,7 @@ export const CatalogueActionMenu = ({
   data,
   useStore,
 }: CatalogueActionMenuProps) => {
-  const { setOpenUpdate } = useContext(DrawerContext);
+  const { setOpenUpdate } = useDrawer();
   const { add } = useStore();
 
   const handleOpen = () => {

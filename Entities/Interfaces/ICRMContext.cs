@@ -3,7 +3,7 @@ using MongoDB.Driver;
 
 namespace Entities.Interfaces
 {
-    public interface ICRMContext
+    public interface ICrmContext
     {
         IMongoDatabase Database { get; }
     }

@@ -23,7 +23,7 @@ export const CreateCataloguePage = () => {
 
   return (
     <Protected>
-      <div className="page-view container flex flex-col flex-wrap items-center justify-center">
+      <div className="page-view flex flex-col flex-wrap items-center justify-center">
       <Col md={6}>
         <Col md={12}>
           <CollectionSelect

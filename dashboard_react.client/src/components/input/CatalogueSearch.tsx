@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ModalType } from "../../hooks/useModalStrategies";
 import { getAllCatalogues } from "../../services/catalogueService";
 import { useModalCreateStore } from "../../store/useModalCreateStore";
 import { toCamelCase } from "../../util/converted";
 import { ApiError } from "../../util/errors";
 import { InputSearch } from "./InputSearch";
+import { useErrorsStore } from "../../store/useErrorsStore";
 
 interface CatalogueSearchProps {
   querykey: ModalType;
@@ -33,9 +33,9 @@ export const CatalogueSearch = ({
   isForm = true,
   required = true,
 }: CatalogueSearchProps) => {
-  const navigate = useNavigate();
+  const { setError } = useErrorsStore();
   const [search, setSearch] = useState<string>("");
-  const {open} = useModalCreateStore();
+  const { open } = useModalCreateStore();
 
   const { data, isPending, error } = useQuery<any, ApiError>({
     queryKey: [querykey, "search", search],
@@ -51,12 +51,14 @@ export const CatalogueSearch = ({
 
   const handleSelect = (selected: any) => {
     setSearch(selected[toCamelCase(keyName)]);
-    isForm ? setFormValue({
-      target: {
-        name: name,
-        value: selected.id,
-      },
-    } as any) : setFormValue(selected);
+    isForm
+      ? setFormValue({
+          target: {
+            name: name,
+            value: selected.id,
+          },
+        } as any)
+      : setFormValue(selected);
   };
 
   useEffect(() => {
@@ -65,15 +67,15 @@ export const CatalogueSearch = ({
     }
   }, [defaultValue]);
 
-  if (error) {
-    navigate("/error", {
-      state: {
-        statuaCode: error.statusCode,
+   useEffect(() => {
+    if (error) {
+      setError({
+        statusCode: error.statusCode,
         message: error.message,
         name: error.name,
-      },
-    });
-  }
+      });
+    }
+  }, [error, setError]);
 
   return (
     <div>
@@ -90,7 +92,7 @@ export const CatalogueSearch = ({
         isForm={false}
         defaultValue={defaultValue}
         keyname={toCamelCase(keyName)}
-        createItemFn={()=>open(querykey, entity)}
+        createItemFn={() => open(querykey, entity)}
       />
     </div>
   );

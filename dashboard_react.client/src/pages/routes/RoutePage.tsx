@@ -5,13 +5,10 @@ import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
 import { ApiError } from "../../util/errors";
-import { NotFound } from "../error/NotFound";
 import { getRoutes } from "../../services/routeService";
 import { RouteResponse } from "../../types/RouteResponse";
 import { TableColumn } from "react-data-table-component";
 import { RouteActionMenu } from "../../components/menu/RouteActionMenu";
-import { DrawerProvider } from "../../context/DrawerContext";
-import { useToggle } from "../../hooks/useToggle";
 import { Col } from "../../components/grid/Col";
 import { Button } from "@nextui-org/button";
 import { Icon } from "../../components/Icons/Icon";
@@ -22,7 +19,8 @@ import { useRetraseRender } from "../../hooks/useRetraseRender";
 import { useEffect } from "react";
 import { initialRoute } from "./CreateRoutePage";
 import { useRouteStore } from "../../store/useRouteStore";
-import { RouteDtoRequest } from "../../types/RouteDto";
+import { useDrawer } from "../../hooks/useDrawer";
+import { NotFound } from "../error/NotFound";
 
 const columns: TableColumn<any>[] = [
   {
@@ -84,10 +82,9 @@ const columns: TableColumn<any>[] = [
 ];
 
 export const RoutePage = () => {
-  const { open, toggle } = useToggle();
-  const { open: openUpdate, toggle: toggleUpdate } = useToggle();
+  const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();
-  const { create } = useRoutes();
+  const { create, update } = useRoutes();
   const { route, add } = useRouteStore();
 
   const { data, error, isFetching, isLoading } = useQuery<
@@ -95,75 +92,67 @@ export const RoutePage = () => {
     ApiError | undefined
   >({
     queryKey: ["routes"],
-    queryFn: () => getRoutes(""),
+    queryFn: () => getRoutes("State:eq:1"),
   });
-
-  if (error) {
-    return <NotFound Message={error.message} Number={error.statusCode} />;
-  }
 
   useEffect(() => {
     reRender();
   }, []);
 
+  if (error) {
+    return <NotFound Message={error.message} Number={error.statusCode} />;
+  }
+
   return (
     <Protected>
       <div className="mt-20 md:mt-0">
-        <DrawerProvider setOpenUpdate={toggleUpdate}>
-          <Col className="mt-5 flex justify-end">
-            <Button color={"secondary"} onClick={toggle}>
-              <Icon name={"bi bi-bag-plus"} /> Crear Ruta
-            </Button>
-          </Col>
-          <TableRoot
-            columns={columns}
-            data={data?.data ?? []}
-            hasFilters={true}
-            pending={isLoading || isFetching}
-            text="de las rutas"
-            styles={compactGrid}
-            title={"Rutas"}
-            width={false}
-          />
-          {render && (
-            <Drawer
-              isOpen={open}
-              setIsOpen={toggle}
-              title={`Crear Producto`}
-              size="2xl"
-            >
-              <div className="p-5">
-                <RouteForm
-                  initialForm={initialRoute}
-                  sendForm={create}
-                  text="Crear"
-                  reboot
-                />
-              </div>
-            </Drawer>
-          )}
-          {render && (
-            <Drawer
-              isOpen={openUpdate}
-              setIsOpen={() => {
-                toggleUpdate();
-                add(null);
-              }}
-              title={`Editar Cliente`}
-              size="2xl"
-            >
-              <div className="p-5">
-                <RouteForm
-                  initialForm={route!}
-                  sendForm={(route:RouteDtoRequest)=>{
-
-                  }}
-                  text="Editar"
-                />
-              </div>
-            </Drawer>
-          )}
-        </DrawerProvider>
+        <Col className="mt-5 flex justify-end">
+          <Button color={"secondary"} onClick={setOpenCreate}>
+            <Icon name={"bi bi-bag-plus"} /> Crear Ruta
+          </Button>
+        </Col>
+        <TableRoot
+          columns={columns}
+          data={data?.data ?? []}
+          hasFilters={true}
+          pending={isLoading || isFetching}
+          text="de las rutas"
+          styles={compactGrid}
+          title={"Rutas"}
+          width={false}
+        />
+        {render && (
+          <Drawer
+            isOpen={openCreate}
+            setIsOpen={setOpenCreate}
+            title={`Crear Ruta`}
+            size="2xl"
+          >
+            <div className="p-5">
+              <RouteForm
+                initialForm={initialRoute}
+                sendForm={create}
+                text="Crear"
+                reboot
+              />
+            </div>
+          </Drawer>
+        )}
+        {render && (
+          <Drawer
+            isOpen={openUpdate}
+            setIsOpen={() => {
+              setOpenUpdate();
+              add(null);
+            }}
+            title={`Editar Ruta`}
+            size="2xl"
+          >
+            <div className="p-5">
+              <RouteForm initialForm={route!} sendForm={update} text="Editar" />
+            </div>
+          </Drawer>
+        )}
       </div>
     </Protected>
   );

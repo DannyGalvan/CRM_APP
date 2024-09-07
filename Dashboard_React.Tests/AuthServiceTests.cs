@@ -18,7 +18,7 @@ namespace Dashboard_React.Tests
     public class AuthServiceTests
     {
         private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-        private readonly Mock<ICRMContext> _mockContext;
+        private readonly Mock<ICrmContext> _mockContext;
         private readonly Mock<ISendMail> _mockSendMail;
         private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<LoginValidations> _mockLoginValidations;
@@ -32,7 +32,7 @@ namespace Dashboard_React.Tests
             _mockAppSettings = new Mock<IOptions<AppSettings>>();
             _mockSendMail = new Mock<ISendMail>();
             _mockMapper = new Mock<IMapper>();
-            _mockContext = new Mock<ICRMContext>();
+            _mockContext = new Mock<ICrmContext>();
             _mockLoginValidations = new Mock<LoginValidations>();
             _mockChangePasswordValidations = new Mock<IValidator<ChangePasswordRequest>>();
             _mockResetPasswordValidator = new Mock<IValidator<ResetPasswordRequest>>();

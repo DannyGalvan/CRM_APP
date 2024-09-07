@@ -4,10 +4,15 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Suspense, lazy, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { useAuth } from "./hooks/useAuth";
+import ErrorBoundary from "./pages/error/ErrorBoundary";
+import LoadingPage from "./pages/public/LoadingPage";
 
-const ErrorBoundary = lazy(() => import("./pages/error/ErrorBoundary"));
-const LoadingPage = lazy(() => import("./pages/public/LoadingPage"));
-const AppRoutes = lazy(() => import("./routes/AppRoutes"));
+const LazyAppRoutes = lazy(() =>
+  import("./routes/AppRoutes").catch((error) => {
+    console.error("Error loading AppRoutes", error);
+    throw error; // Para que ErrorBoundary lo capture
+  }),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,24 +32,24 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const { syncAuth } = useAuth();
+  const { loading, syncAuth } = useAuth();
 
   useEffect(() => {
     syncAuth();
   }, []);
 
   return (
-    <Suspense fallback={<LoadingPage />}>
-      <ErrorBoundary>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingPage />}>
         <QueryClientProvider client={queryClient}>
           <NextUIProvider>
-            <AppRoutes />
+            {loading ? <LoadingPage /> : <LazyAppRoutes />}
             <ToastContainer />
           </NextUIProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
-      </ErrorBoundary>
-    </Suspense>
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 

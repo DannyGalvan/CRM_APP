@@ -2,7 +2,7 @@ import { toAllOperations } from "../util/converted";
 import { useAuthStore } from "../store/useAuthStore";
 
 export const useAuth = () => {
-  const { authState, logout, signIn, syncAuth } = useAuthStore();
+  const { authState, loading, logout, signIn, syncAuth } = useAuthStore();
 
   const {
     email,
@@ -29,6 +29,7 @@ export const useAuth = () => {
     operations,
     allOperations,
     userId,
+    loading,
     syncAuth,
   };
 };

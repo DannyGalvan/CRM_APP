@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { usePilots } from "../../hooks/usePilots";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
-import { useToggle } from "../../hooks/useToggle";
 import { usePilotStore } from "../../store/usePilotStore";
 import { PilotResponse } from "../../types/PilotResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
@@ -11,7 +10,6 @@ import { getPilots } from "../../services/pilotService";
 import { NotFound } from "../error/NotFound";
 import { useEffect } from "react";
 import Protected from "../../routes/middlewares/Protected";
-import { DrawerProvider } from "../../context/DrawerContext";
 import { Col } from "../../components/grid/Col";
 import { Button } from "@nextui-org/button";
 import { Icon } from "../../components/Icons/Icon";
@@ -22,6 +20,7 @@ import { CatalogueActionMenu } from "../../components/menu/CatalogueActionMenu";
 import { Drawer } from "../../containers/Drawer";
 import { PilotForm } from "../../components/forms/PilotForm";
 import { initialPilot } from "./CreatePilotPage";
+import { useDrawer } from "../../hooks/useDrawer";
 
 const columns: TableColumn<any>[] = [
   {
@@ -107,8 +106,7 @@ const columns: TableColumn<any>[] = [
 ];
 
 export const PilotPage = () => {
-  const { open, toggle } = useToggle();
-  const { open: openUpdate, toggle: toggleUpdate } = useToggle();
+  const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();
   const { create, update } = usePilots();
   const { pilot, add } = usePilotStore();
@@ -121,71 +119,65 @@ export const PilotPage = () => {
     queryFn: () => getPilots(),
   });
 
-  if (error) {
-    return <NotFound Message={error.message} Number={error.statusCode} />;
-  }
-
   useEffect(() => {
     reRender();
   }, []);
 
+  if (error) {
+    return <NotFound Message={error.message} Number={error.statusCode} />;
+  }
+
   return (
     <Protected>
-      <DrawerProvider setOpenUpdate={toggleUpdate}>
-        <div className="mt-20 md:mt-0">
-          <Col className="mt-5 flex justify-end">
-            <Button color={"secondary"} onClick={toggle}>
-              <Icon name={"bi bi-bag-plus"} /> Crear Piloto
-            </Button>
-          </Col>
-          <TableRoot
-            columns={columns}
-            data={data?.data ?? []}
-            hasFilters={true}
-            pending={isLoading || isFetching}
-            text="de los pilotos"
-            styles={compactGrid}
-            title={"Pilotos"}
-            width={false}
-          />
-          {render && (
-            <Drawer
-              isOpen={open}
-              setIsOpen={toggle}
-              title={`Crear Producto`}
-              size="2xl"
-            >
-              <div className="p-5">
-                <PilotForm
-                  initialForm={initialPilot}
-                  sendForm={create}
-                  text="Crear"
-                  reboot
-                />
-              </div>
-            </Drawer>
-          )}
-          {render && (
-            <Drawer
-              isOpen={openUpdate}
-              setIsOpen={() => {
-                toggleUpdate();
-                add(null);
-              }}
-              title={`Editar Cliente`}
-              size="2xl"
-            >
-              <div className="p-5">
-                <PilotForm
-                  initialForm={pilot!}
-                  sendForm={update}
-                  text="Editar"
-                />
-              </div>
-            </Drawer>
-          )}
-        </div>
-      </DrawerProvider>
+      <div className="mt-20 md:mt-0">
+        <Col className="mt-5 flex justify-end">
+          <Button color={"secondary"} onClick={setOpenCreate}>
+            <Icon name={"bi bi-bag-plus"} /> Crear Piloto
+          </Button>
+        </Col>
+        <TableRoot
+          columns={columns}
+          data={data?.data ?? []}
+          hasFilters={true}
+          pending={isLoading || isFetching}
+          text="de los pilotos"
+          styles={compactGrid}
+          title={"Pilotos"}
+          width={false}
+        />
+        {render && (
+          <Drawer
+            isOpen={openCreate}
+            setIsOpen={setOpenCreate}
+            title={`Crear Producto`}
+            size="2xl"
+          >
+            <div className="p-5">
+              <PilotForm
+                initialForm={initialPilot}
+                sendForm={create}
+                text="Crear"
+                reboot
+              />
+            </div>
+          </Drawer>
+        )}
+        {render && (
+          <Drawer
+            isOpen={openUpdate}
+            setIsOpen={() => {
+              setOpenUpdate();
+              add(null);
+            }}
+            title={`Editar Cliente`}
+            size="2xl"
+          >
+            <div className="p-5">
+              <PilotForm initialForm={pilot!} sendForm={update} text="Editar" />
+            </div>
+          </Drawer>
+        )}
+      </div>
     </Protected>
   );
 };

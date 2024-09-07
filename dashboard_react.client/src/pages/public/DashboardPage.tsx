@@ -30,7 +30,7 @@ export function Component() {
   if (error) {
     return <NotFound Message={error.message} Number={error.statusCode} />;
   }
-
+  
   return (
     <ProtectedPublic>
       <div>
@@ -40,7 +40,7 @@ export function Component() {
         <Grid md={1} className="my-3 p-4">
           <div>
             <Grid lg={2} md={2} xs={1} className="my-3 p-4">
-              <Card className="border-t-large border-t-blue-700 bg-secondary-50">
+              <Card className="border-t-large border-t-blue-700 bg-success-50">
                 <CardHeader>
                   <h1 className="text-xl font-bold">
                     Total Ordenes {MONTHS[month]} {year}
@@ -79,7 +79,7 @@ export function Component() {
                   data={dataOrders?.orders as any}
                   index="date"
                   categories={[month_orders]}
-                  colors={["rose"]}
+                  colors={["violet"]}
                   valueFormatter={dataFormatter}
                   yAxisWidth={50}
                   maxValue={
@@ -129,7 +129,7 @@ export function Component() {
                   data={data?.orders as any}
                   index="date"
                   categories={[year_orders]}
-                  colors={["indigo"]}
+                  colors={["yellow"]}
                   valueFormatter={dataFormatter}
                   yAxisWidth={50}
                   maxValue={data?.totalOrders! / data?.quantityOrders! + 5000}

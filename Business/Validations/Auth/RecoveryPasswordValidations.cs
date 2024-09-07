@@ -9,8 +9,8 @@ namespace Business.Validations.Auth
 {
     public class RecoveryPasswordValidations : AbstractValidator<RecoveryPasswordRequest>
     {
-        private readonly ICRMContext _bd;
-        public RecoveryPasswordValidations(ICRMContext bd)
+        private readonly ICrmContext _bd;
+        public RecoveryPasswordValidations(ICrmContext bd)
         {
             _bd = bd;
 

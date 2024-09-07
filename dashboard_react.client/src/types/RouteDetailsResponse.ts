@@ -1,4 +1,5 @@
-import { OrderRequest } from "./OrderRequest";
+import { OrderResponse } from "./OrderResponse";
+import { RouteResponse } from "./RouteResponse";
 
 export interface RouteDetailsResponse {
   id: string;
@@ -9,6 +10,6 @@ export interface RouteDetailsResponse {
   updatedAt: string | null;
   createdBy: string | null;
   updatedBy: string | null;
-  route: RouteRequest;
-  order: OrderRequest;
+  route: RouteResponse;
+  order: OrderResponse;
 }

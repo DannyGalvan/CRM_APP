@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { CatalogueForm } from "../components/forms/CatalogueForm";
 import { CustomerForm } from "../components/forms/CustomerForm";
 import { ProductForm } from "../components/forms/ProductForm";
@@ -9,10 +9,10 @@ import { useModalCreateStore } from "../store/useModalCreateStore";
 import { useCatalogues } from "./useCatalogues";
 import { useCustomer } from "./useCustomer";
 import { useProducts } from "./useProducts";
-import { useNavigate } from "react-router-dom";
 import { PilotForm } from "../components/forms/PilotForm";
 import { initialPilot } from "../pages/pilots/CreatePilotPage";
 import { usePilots } from "./usePilots";
+import { useErrorsStore } from "../store/useErrorsStore";
 
 export type ModalType =
   | "Municipalities"
@@ -31,17 +31,13 @@ export const useModalStrategies = () => {
   const { create: createProduct } = useProducts();
   const { create: cretePilot } = usePilots();
   const { modal } = useModalCreateStore();
-  const navigate = useNavigate();
+  const { setError } = useErrorsStore();
 
-  if (collectionError) {
-    navigate("/Error", {
-      state: {
-        statusCode: collectionError.statusCode,
-        message: collectionError.message,
-        name: collectionError.name,
-      },
-    });
-  }
+  useEffect(() => {
+    if (collectionError) {
+      setError(collectionError);
+    }
+  }, [collectionError, setError]);
 
   const openCreate = () => {
     const select = {

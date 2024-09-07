@@ -27,7 +27,7 @@ namespace Business.Services
     [AllArgsConstructor]
     public partial class AuthService : IAuthService
     {
-        private readonly ICRMContext _bd;
+        private readonly ICrmContext _bd;
         private readonly IOptions<AppSettings> _appSettings;
         private readonly ISendMail _mail;
         private readonly IMapper _mapper;
@@ -405,8 +405,8 @@ namespace Business.Services
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(claims.ToArray()),
-                    NotBefore = DateTime.UtcNow.AddMinutes(appSettings.NotBefore),
-                    Expires = DateTime.UtcNow.AddHours(appSettings.TokenExpirationHrs),
+                    NotBefore = DateTime.UtcNow,
+                    Expires = DateTime.UtcNow.AddSeconds(30),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
 

@@ -11,8 +11,8 @@ namespace Business.Validations.Auth
 {
     public class ResetPasswordValidations : AbstractValidator<ResetPasswordRequest>
     {
-        private readonly ICRMContext _bd;
-        public ResetPasswordValidations(ICRMContext bd)
+        private readonly ICrmContext _bd;
+        public ResetPasswordValidations(ICrmContext bd)
         {
             _bd = bd;
 

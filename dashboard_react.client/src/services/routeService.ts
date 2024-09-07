@@ -36,3 +36,13 @@ export const updateRoute = async (route: RouteRequest) => {
 
   return response;
 };
+
+export const partialUpdateRoute = async (route: RouteRequest) => {
+  const response = await api.patch<
+    RouteRequest,
+    ApiResponse<RouteResponse | ValidationFailure[]>,
+    any
+  >(`/route`, route);
+
+  return response;
+}

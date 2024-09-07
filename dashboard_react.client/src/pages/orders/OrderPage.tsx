@@ -8,10 +8,8 @@ import { OrderForm } from "../../components/forms/OrderForm";
 import { OrderActionMenu } from "../../components/menu/OrderActionMenu";
 import { TableRoot } from "../../components/table/TableRoot";
 import { Drawer } from "../../containers/Drawer";
-import { DrawerProvider } from "../../context/DrawerContext";
 import { useOrder } from "../../hooks/useOrder";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
-import { useToggle } from "../../hooks/useToggle";
 import Protected from "../../routes/middlewares/Protected";
 import { getOrders } from "../../services/orderService";
 import { useOrderDetailStore } from "../../store/useOrderDetailStore";
@@ -26,6 +24,7 @@ import { DateRangePicker } from "@nextui-org/date-picker";
 import { minDateMaxDate } from "../../util/converted";
 import { parseDate } from "@internationalized/date";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
+import { useDrawer } from "../../hooks/useDrawer";
 
 const columns: TableColumn<any>[] = [
   {
@@ -110,15 +109,13 @@ const ModalCreateItem = lazy(() =>
 );
 
 export const OrderPage = () => {
- try {
   const [rageOfDate, setRageOfDate] = useState({
     start: dateRange.maxDate,
     end: dateRange.minDate,
   });
-  const { open, toggle } = useToggle();
-  const { reRender, render } = useRetraseRender();
-  const { open: openUpdate, toggle: toggleUpdate } = useToggle();
+  const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { create, update } = useOrder(rageOfDate);
+  const { reRender, render } = useRetraseRender();
   const { order, add } = useOrderStore();
   const { updateDetails } = useOrderDetailStore();
 
@@ -138,86 +135,75 @@ export const OrderPage = () => {
     return <NotFound Message={error.message} Number={error.statusCode} />;
   }
 
-  console.log(rageOfDate);
-
   return (
     <Protected>
-      <DrawerProvider setOpenUpdate={toggleUpdate}>
-        <div className="mt-20 md:mt-0">
-          <Col className="mt-5 flex justify-end">
-            <Button color={"secondary"} onClick={toggle}>
-              <Icon name={"bi bi-person-plus"} /> Crear Orden
-            </Button>
-          </Col>
-          <DateRangePicker
-            label="Rango de Fechas de Ordenes"
-            defaultValue={{
-              start: parseDate(dateRange.minDate),
-              end: parseDate(dateRange.maxDate),
-            }}
-            className="max-w-xs"
-            onChange={(date) => {
-              setRageOfDate({
-                start: date.end.toString(),
-                end: date.start.toString(),
-              });
-            }}
-          />
-          <TableRoot
-            columns={columns}
-            data={data?.data ?? []}
-            hasFilters={true}
-            pending={isLoading || isFetching}
-            text="de las ordenes"
-            styles={compactGrid}
-            title={"Ordenes"}
-            width={false}
-          />
-        </div>
-        {render && (
-          <Drawer
-            isOpen={open}
-            setIsOpen={toggle}
-            title={`Crear Orden`}
-            size="5xl"
-          >
-            <div className="p-5">
-              <OrderForm
-                initialForm={initialOrder}
-                sendForm={create}
-                action="Crear"
-                reboot
-              />
-            </div>
-          </Drawer>
-        )}
-        {render && (
-          <Drawer
-            isOpen={openUpdate}
-            setIsOpen={() => {
-              toggleUpdate();
-              add(null);
-              updateDetails([]);
-            }}
-            title={`Editar Cliente`}
-            size="5xl"
-          >
-            <div className="p-5">
-              <OrderForm
-                initialForm={order!}
-                sendForm={update}
-                action="Editar"
-              />
-            </div>
-          </Drawer>
-        )}
-      </DrawerProvider>
+      <div className="mt-20 md:mt-0">
+        <Col className="mt-5 flex justify-end">
+          <Button color={"secondary"} onClick={setOpenCreate}>
+            <Icon name={"bi bi-person-plus"} /> Crear Orden
+          </Button>
+        </Col>
+        <DateRangePicker
+          label="Rango de Fechas de Ordenes"
+          defaultValue={{
+            start: parseDate(dateRange.minDate),
+            end: parseDate(dateRange.maxDate),
+          }}
+          className="max-w-xs"
+          onChange={(date) => {
+            setRageOfDate({
+              start: date.end.toString(),
+              end: date.start.toString(),
+            });
+          }}
+        />
+        <TableRoot
+          columns={columns}
+          data={data?.data ?? []}
+          hasFilters={true}
+          pending={isLoading || isFetching}
+          text="de las ordenes"
+          styles={compactGrid}
+          title={"Ordenes"}
+          width={false}
+        />
+      </div>
+      {render && (
+        <Drawer
+          isOpen={openCreate}
+          setIsOpen={setOpenCreate}
+          title={`Crear Orden`}
+          size="5xl"
+        >
+          <div className="p-5">
+            <OrderForm
+              initialForm={initialOrder}
+              sendForm={create}
+              action="Crear"
+              reboot
+            />
+          </div>
+        </Drawer>
+      )}
+      {render && (
+        <Drawer
+          isOpen={openUpdate}
+          setIsOpen={() => {
+            setOpenUpdate();
+            add(null);
+            updateDetails([]);
+          }}
+          title={`Editar Cliente`}
+          size="5xl"
+        >
+          <div className="p-5">
+            <OrderForm initialForm={order!} sendForm={update} action="Editar" />
+          </div>
+        </Drawer>
+      )}
       <Suspense fallback={<LoadingComponent />}>
         <ModalCreateItem />
       </Suspense>
     </Protected>
   );
- } catch (error) {
-    console.error(error);
- }
 };

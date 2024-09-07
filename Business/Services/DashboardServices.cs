@@ -4,6 +4,7 @@ using Entities.Models;
 using Entities.Response;
 using Humanizer;
 using Lombok.NET;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Business.Services
@@ -17,22 +18,23 @@ namespace Business.Services
         {
             var filter = Builders<Order>.Filter.And(
                 Builders<Order>.Filter.Gte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, 1)),
-                Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, DateTime.DaysInMonth(DateTime.Now.Year, month)))
-            );
+                Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, DateTime.DaysInMonth(DateTime.Now.Year, month))),
+                Builders<Order>.Filter.Ne(o => o.OrderStateId, ObjectId.Parse("66d4e2be0cb8112b950ab12f")));
 
             var orders = _crmContext.Database.GetCollection<Order>(nameof(Order).Pluralize());
 
             var result = await orders
-                .Find(g=> true)
+                .Find(filter)
                 .ToListAsync();
 
-            var ordersAgroupedByDay = result.GroupBy(o => o.OrderDate.Day);
+            var ordersAgroupedByDay = result.GroupBy(o => o.OrderDate.Day).ToList();
 
             var dailyOrdersList = new List<DailyOrders>();
 
             for (int i = 1; i <= DateTime.DaysInMonth(DateTime.Now.Year, month); i++)
             {
-                if (!ordersAgroupedByDay.Any(o => o.Key == i))
+
+                if (ordersAgroupedByDay.All(o => o.Key != i))
                 {
                     dailyOrdersList.Add(new DailyOrders
                     {
@@ -69,20 +71,21 @@ namespace Business.Services
         {
             var filter = Builders<Order>.Filter.And(
                 Builders<Order>.Filter.Gte(o => o.OrderDate, new DateTime(year, 1, 1)),
-                Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(year, 12, 31))
+                Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(year, 12, 31)),
+                Builders<Order>.Filter.Ne(o => o.OrderStateId, ObjectId.Parse("66d4e2be0cb8112b950ab12f"))
             );
 
             var orders = _crmContext.Database.GetCollection<Order>(nameof(Order).Pluralize());
 
             var result = await orders.Find(filter).ToListAsync();
 
-            var ordersAgroupedByMonth = result.GroupBy(o => o.OrderDate.Month);
+            var ordersAgroupedByMonth = result.GroupBy(o => o.OrderDate.Month).ToList();
 
             var monthlyOrdersList = new List<MonthlyOrders>();
 
             for (int i = 1; i <= 12; i++)
             {
-                if (!ordersAgroupedByMonth.Any(o => o.Key == i))
+                if (ordersAgroupedByMonth.All(o => o.Key != i))
                 {
                     monthlyOrdersList.Add(new MonthlyOrders
                     {

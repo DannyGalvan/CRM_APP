@@ -10,10 +10,8 @@ import { CollectionSelect } from "../../components/select/CollectionSelect";
 import { TableRoot } from "../../components/table/TableRoot";
 import { DEFAULT_CATALOGUE } from "../../config/contants";
 import { Drawer } from "../../containers/Drawer";
-import { DrawerProvider } from "../../context/DrawerContext";
 import { useCatalogues } from "../../hooks/useCatalogues";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
-import { useToggle } from "../../hooks/useToggle";
 import Protected from "../../routes/middlewares/Protected";
 import { getAllCatalogues } from "../../services/catalogueService";
 import { useCatalogueStore } from "../../store/useCatalogueStore";
@@ -23,6 +21,7 @@ import { CatalogueResponse } from "../../types/CatalogueResponse";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
 import { initialCatalogue } from "./CreateCataloguePage";
+import { useDrawer } from "../../hooks/useDrawer";
 
 const columns: TableColumn<any>[] = [
   {
@@ -96,8 +95,7 @@ const columns: TableColumn<any>[] = [
 ];
 
 export const CataloguePage = () => {
-  const { open, toggle } = useToggle();
-  const { open: openUpdate, toggle: toggleUpdate } = useToggle();
+  const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();
   const { catalogue, add } = useCatalogueStore();
   const {
@@ -138,7 +136,6 @@ export const CataloguePage = () => {
 
   return (
     <Protected>
-      <DrawerProvider setOpenUpdate={toggleUpdate}>
         <div className="mt-20 md:mt-0">
           <div>
             <CollectionSelect
@@ -150,7 +147,7 @@ export const CataloguePage = () => {
           <Col className="mt-5 flex justify-end">
             <Button
               color={"secondary"}
-              onClick={toggle}
+              onClick={setOpenCreate}
               isDisabled={selectedCatalogue.name == DEFAULT_CATALOGUE}
             >
               <Icon name={"bi bi-journal-plus"} /> Crear{" "}
@@ -169,8 +166,8 @@ export const CataloguePage = () => {
           />
           {render && (
             <Drawer
-              isOpen={open}
-              setIsOpen={toggle}
+              isOpen={openCreate}
+              setIsOpen={setOpenCreate}
               title={`Crear ${selectedCatalogue.name}`}
               size="md"
             >
@@ -190,7 +187,7 @@ export const CataloguePage = () => {
             <Drawer
               isOpen={openUpdate}
               setIsOpen={() => {
-                toggleUpdate();
+                setOpenUpdate();
                 add(null);
               }}
               title={`Editar ${selectedCatalogue.name}`}
@@ -208,7 +205,6 @@ export const CataloguePage = () => {
             </Drawer>
           )}
         </div>
-      </DrawerProvider>
     </Protected>
   );
 };

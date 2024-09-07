@@ -436,7 +436,7 @@ namespace Business.Services
                 "gt" => filterBuilder.Gte(filterDefinition.Field, filterDefinition.Value),
                 "lt" => filterBuilder.Lte(filterDefinition.Field, filterDefinition.Value),
                 "like" => filterBuilder.Regex(filterDefinition.Field, new BsonRegularExpression(filterDefinition.Value.ToString(), "i")),
-                "in" => filterBuilder.In(filterDefinition.Field, filterDefinition!.Value!.ToString()!.Split(",")),
+                "in" => filterBuilder.In(filterDefinition.Field, filterDefinition.Value.ToString()!.Split(",")),
                 _ => throw new ArgumentException($"Unsupported filter operator: {filterDefinition.Operator}"),
             };
 

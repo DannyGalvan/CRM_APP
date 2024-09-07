@@ -1,30 +1,30 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ApiResponse } from '../types/ApiResponse';
-import { ValidationFailure } from '../types/ValidationFailure';
-import { ApiError } from '../util/errors';
-import { useResponse } from './useResponse';
+import { ChangeEvent, useEffect, useState } from "react";
+import { ApiResponse } from "../types/ApiResponse";
+import { ValidationFailure } from "../types/ValidationFailure";
+import { ApiError } from "../util/errors";
+import { useResponse } from "./useResponse";
+import { useErrorsStore } from "../store/useErrorsStore";
 
 export interface ErrorObject {
   [key: string]: string | undefined;
 }
 
-export const useForm = <T,U>(
-  initialForm : T,
-  validateForm : (form : T) => ErrorObject,
-  peticion : (form : T) => Promise<ApiResponse<U | ValidationFailure[]>>,
-  reboot? : boolean
+export const useForm = <T, U>(
+  initialForm: T,
+  validateForm: (form: T) => ErrorObject,
+  peticion: (form: T) => Promise<ApiResponse<U | ValidationFailure[]>>,
+  reboot?: boolean,
 ) => {
-  const navigate = useNavigate();
+  const { setError } = useErrorsStore();
   const [form, setForm] = useState<T>(initialForm);
   const [loading, setLoading] = useState<boolean>(false);
-  const {s,set,t,u,m, setU} = useResponse<U,ValidationFailure[]>();
+  const { s, set, t, u, m, setU } = useResponse<U, ValidationFailure[]>();
 
   useEffect(() => {
     setForm(initialForm);
   }, [initialForm]);
 
-  const handleChange = (e : ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     const newForm = {
@@ -36,7 +36,7 @@ export const useForm = <T,U>(
     setU(validateForm(newForm));
   };
 
-  const handleChangeFile = (e : ChangeEvent<HTMLInputElement>) => {
+  const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
 
     const newForm = {
@@ -49,11 +49,11 @@ export const useForm = <T,U>(
     setU(validateForm(newForm));
   };
 
-  const handleBlur = (e : ChangeEvent<HTMLInputElement>) => {
+  const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
     handleChange(e);
   };
 
-  const handleSubmit = async (e : ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -64,7 +64,6 @@ export const useForm = <T,U>(
     });
 
     const valErr = validateForm(form);
-    console.log(valErr);
     setU(valErr);
     setLoading(true);
 
@@ -80,22 +79,18 @@ export const useForm = <T,U>(
         }
 
         set(response);
-      } catch (error : any) {
-
-        error instanceof ApiError   
-          ? navigate('/Error', {
-            state: {
+      } catch (error: any) {
+        error instanceof ApiError
+          ? setError({
               statusCode: error.statusCode,
               message: error.message,
               name: error.name,
-            },
-          })
+            })
           : set({
-            success: false,
-            data: null,
-            message: `${error?.name} ${error?.stack}`,
-          });
-
+              success: false,
+              data: null,
+              message: `${error?.name} ${error?.stack}`,
+            });
       }
     } else {
       set({
@@ -114,7 +109,7 @@ export const useForm = <T,U>(
     handleChange,
     handleChangeFile,
     handleSubmit,
-    success : s,
+    success: s,
     response: t,
     errors: u,
     message: m,

@@ -5,3 +5,6 @@ export const transitionViewIfSupported = (updateCb: () => void) => {
     updateCb();
   }
 };
+
+
+export const retrase = async (ms: number) => new Promise((res) => setTimeout(res, ms));
