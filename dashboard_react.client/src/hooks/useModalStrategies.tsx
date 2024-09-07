@@ -29,7 +29,7 @@ export const useModalStrategies = () => {
   const { createCatalog, collectionError } = useCatalogues();
   const { create } = useCustomer();
   const { create: createProduct } = useProducts();
-  const { create: cretePilot } = usePilots();
+  const { create: createPilot } = usePilots();
   const { modal } = useModalCreateStore();
   const { setError } = useErrorsStore();
 
@@ -39,95 +39,57 @@ export const useModalStrategies = () => {
     }
   }, [collectionError, setError]);
 
-  const openCreate = () => {
-    const select = {
+  const catalogCreate = (catalogue: CatalogueRequest) =>
+    createCatalog(catalogue, {
       name: modal.title,
       selected: modal.keyForm,
-    };
+    });
 
-    const catalogCreate = (catalogue: CatalogueRequest) =>
-      createCatalog(catalogue, select);
+  const commonCatalogueForm = () => (
+    <CatalogueForm
+      collectionError={collectionError}
+      selectedCatalogue={{ name: modal.title, selected: modal.keyForm }}
+      sendForm={catalogCreate}
+      text="Crear"
+      initialForm={initialCatalogue}
+      reboot
+    />
+  );
 
-    const ModalStrategies: Record<ModalType, ReactNode> = {
-      Municipalities: (
-        <CatalogueForm
-          collectionError={collectionError}
-          selectedCatalogue={select}
-          sendForm={catalogCreate}
-          text="Crear"
-          initialForm={initialCatalogue}
-          reboot
-        />
-      ),
-      Zones: (
-        <CatalogueForm
-          collectionError={collectionError}
-          selectedCatalogue={select}
-          sendForm={catalogCreate}
-          text="Crear"
-          initialForm={initialCatalogue}
-          reboot
-        />
-      ),
-      Departments: (
-        <CatalogueForm
-          collectionError={collectionError}
-          selectedCatalogue={select}
-          sendForm={catalogCreate}
-          text="Crear"
-          initialForm={initialCatalogue}
-          reboot
-        />
-      ),
-      Customers: (
-        <CustomerForm
-          initialForm={initialCustomer}
-          sendForm={create}
-          text="Crear"
-          reboot
-        />
-      ),
-      PaymentTypes: (
-        <CatalogueForm
-          collectionError={collectionError}
-          selectedCatalogue={select}
-          sendForm={catalogCreate}
-          text="Crear"
-          initialForm={initialCatalogue}
-          reboot
-        />
-      ),
-      Families: (
-        <CatalogueForm
-          collectionError={collectionError}
-          selectedCatalogue={select}
-          sendForm={catalogCreate}
-          text="Crear"
-          initialForm={initialCatalogue}
-          reboot
-        />
-      ),
-      Products: (
-        <ProductForm
-          initialForm={initialProduct}
-          sendForm={createProduct}
-          text="Crear"
-          reboot
-        />
-      ),
-      Pilots: (
-        <PilotForm
-          initialForm={initialPilot}
-          sendForm={cretePilot}
-          text="Crear"
-          reboot
-        />
-      ),
-      "": <span>Sin Formulario</span>,
-    };
-
-    return ModalStrategies[modal.keyForm];
+  const ModalStrategies: Record<ModalType, ReactNode> = {
+    Municipalities: commonCatalogueForm(),
+    Zones: commonCatalogueForm(),
+    Departments: commonCatalogueForm(),
+    PaymentTypes: commonCatalogueForm(),
+    Families: commonCatalogueForm(),
+    Customers: (
+      <CustomerForm
+        initialForm={initialCustomer}
+        sendForm={create}
+        text="Crear"
+        reboot
+      />
+    ),
+    Products: (
+      <ProductForm
+        initialForm={initialProduct}
+        sendForm={createProduct}
+        text="Crear"
+        reboot
+      />
+    ),
+    Pilots: (
+      <PilotForm
+        initialForm={initialPilot}
+        sendForm={createPilot}
+        text="Crear"
+        reboot
+      />
+    ),
+    "": <span>Sin Formulario</span>,
   };
+
+  const openCreate = () => ModalStrategies[modal.keyForm];
 
   return { openCreate };
 };

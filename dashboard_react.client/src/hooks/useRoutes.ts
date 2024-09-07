@@ -25,6 +25,22 @@ export const useRoutes = () => {
   const create = async (
     form: RouteDtoRequest,
   ): Promise<ApiResponse<RouteDtoResponse | ValidationFailure[]>> => {
+
+    let parseDetails = routeDetailsShemaArray.safeParse(route);
+
+    if (!parseDetails.success) {
+      const detailsError = handleOneLevelZodError(parseDetails.error);
+      Object.entries(detailsError).forEach(([_, value]) => {
+        toast.error(value);
+      });
+
+      return {
+        data: [],
+        success: false,
+        message: "detalles de ruta no válidos",
+      };
+    }
+
     const routeResponse = await createRoute(form);
 
     if (!routeResponse.success) {
@@ -42,7 +58,7 @@ export const useRoutes = () => {
 
     route.forEach((detail) => (detail.routeId = routeSuccess.id));
 
-    const parseDetails = routeDetailsShemaArray.safeParse(route);
+    parseDetails = routeDetailsShemaArray.safeParse(route);
 
     if (!parseDetails.success) {
       const detailsError = handleOneLevelZodError(parseDetails.error);
@@ -131,6 +147,22 @@ export const useRoutes = () => {
   };
 
   const update = async (form: RouteDtoRequest) => {
+
+    let parseDetails = routeDetailsShemaArray.safeParse(route);
+
+    if (!parseDetails.success) {
+      const detailsError = handleOneLevelZodError(parseDetails.error);
+      Object.entries(detailsError).forEach(([_, value]) => {
+        toast.error(value);
+      });
+
+      return {
+        data: [],
+        success: false,
+        message: "detalles de ruta no válidos",
+      };
+    }
+
     const routeResponse = await updateRoute(form);
 
     if (!routeResponse.success) {
@@ -148,7 +180,7 @@ export const useRoutes = () => {
 
     route.forEach((detail) => (detail.routeId = routeSuccess.id));
 
-    const parseDetails = routeDetailsShemaArray.safeParse(route);
+    parseDetails = routeDetailsShemaArray.safeParse(route);
 
     if (!parseDetails.success) {
       const detailsError = handleOneLevelZodError(parseDetails.error);
