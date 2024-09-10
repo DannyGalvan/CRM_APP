@@ -5,7 +5,6 @@ using Entities.Response;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
-using System.Globalization;
 
 namespace Business.Mappers
 {
@@ -34,28 +33,16 @@ namespace Business.Mappers
             // mapper de clientes
             CreateMap<CustomerRequest, Customer>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Id) ? ObjectId.Parse(src.Id) : ObjectId.Empty))
-                .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.DepartmentId) ? ObjectId.Parse(src.DepartmentId) : ObjectId.Empty))
-                .ForMember(dest => dest.MunicipalityId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.MunicipalityId) ? ObjectId.Parse(src.MunicipalityId) : ObjectId.Empty))
-                .ForMember(dest => dest.ZoneId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.ZoneId) ? ObjectId.Parse(src.ZoneId) : ObjectId.Empty))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.CreatedBy) ? ObjectId.Parse(src.CreatedBy) : ObjectId.Empty))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.UpdatedBy) ? ObjectId.Parse(src.UpdatedBy) : ObjectId.Empty))
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.Department, opt => opt.Ignore())
-                .ForMember(dest => dest.Municipality, opt => opt.Ignore())
-                .ForMember(dest => dest.Zone, opt => opt.Ignore())
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.SecondName} {src.FirstLastName} {src.SecondLastName}"));
 
             CreateMap<Customer, CustomerResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
-                .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.DepartmentId.ToString()))
-                .ForMember(dest => dest.MunicipalityId, opt => opt.MapFrom(src => src.MunicipalityId.ToString()))
-                .ForMember(dest => dest.ZoneId, opt => opt.MapFrom(src => src.ZoneId.ToString()))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6).ToString("dd/MM/yyyy HH:mm:ss")))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6).ToString("dd/MM/yyyy HH:mm:ss") : null))
-                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department))
-                .ForMember(dest => dest.Municipality, opt => opt.MapFrom(src => src.Municipality))
-                .ForMember(dest => dest.Zone, opt => opt.MapFrom(src => src.Zone))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
@@ -130,6 +117,7 @@ namespace Business.Mappers
             CreateMap<OrderRequest, Order>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Id) ? ObjectId.Parse(src.Id) : ObjectId.Empty))
                 .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.CustomerId) ? ObjectId.Parse(src.CustomerId) : ObjectId.Empty))
+                .ForMember(dest => dest.CustomerDirectionId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.CustomerDirectionId) ? ObjectId.Parse(src.CustomerDirectionId) : ObjectId.Empty))
                 .ForMember(dest => dest.PaymentTypeId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.PaymentTypeId) ? ObjectId.Parse(src.PaymentTypeId) : ObjectId.Empty))
                 .ForMember(dest => dest.OrderStateId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.OrderStateId) ? ObjectId.Parse(src.OrderStateId) : ObjectId.Empty))
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.OrderDetails!.Sum(o => o.UnitPrice * o.Quantity) ?? 0M))
@@ -140,12 +128,14 @@ namespace Business.Mappers
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.OrderDate, opt => opt.Ignore())
                 .ForMember(dest => dest.Customer, opt => opt.Ignore())
+                .ForMember(dest => dest.CustomerDirection, opt => opt.Ignore())
                 .ForMember(dest => dest.PaymentType, opt => opt.Ignore())
                 .ForMember(dest => dest.OrderState, opt => opt.Ignore());
 
             CreateMap<Order, OrderResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId.ToString()))
+                .ForMember(dest => dest.CustomerDirectionId, opt => opt.MapFrom(src => src.CustomerDirectionId.ToString()))
                 .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.AddHours(-6).ToString("dd/MM/yyyy HH:mm:ss")))
                 .ForMember(dest => dest.DeliveryDate, opt => opt.MapFrom(src => src.DeliveryDate.HasValue ? src.DeliveryDate.Value.AddHours(-6).ToString("MM/dd/yyyy") : ""))
                 .ForMember(dest => dest.PaymentTypeId, opt => opt.MapFrom(src => src.PaymentTypeId.ToString()))
@@ -156,6 +146,7 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
                 .ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer))
+                .ForMember(dest => dest.CustomerDirection, opt => opt.MapFrom(src => src.CustomerDirection))
                 .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType))
                 .ForMember(dest => dest.OrderState, opt => opt.MapFrom(src => src.OrderState));
 
@@ -257,6 +248,42 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State));
+
+            // mapper de direcciones de clientes
+            CreateMap<CustomerDirectionRequest, CustomerDirection>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Id) ? ObjectId.Parse(src.Id) : ObjectId.Empty))
+                .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.CustomerId) ? ObjectId.Parse(src.CustomerId) : ObjectId.Empty))
+                .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.DepartmentId) ? ObjectId.Parse(src.DepartmentId) : ObjectId.Empty))
+                .ForMember(dest => dest.MunicipalityId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.MunicipalityId) ? ObjectId.Parse(src.MunicipalityId) : ObjectId
+                    .Empty))
+                .ForMember(dest => dest.ZoneId, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.ZoneId) ? ObjectId.Parse(src.ZoneId) : ObjectId.Empty))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.CreatedBy) ? ObjectId.Parse(src.CreatedBy) : ObjectId.Empty))
+                .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.UpdatedBy) ? ObjectId.Parse(src.UpdatedBy) : ObjectId.Empty))
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State))
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.Department, opt => opt.Ignore())
+                .ForMember(dest => dest.Municipality, opt => opt.Ignore())
+                .ForMember(dest => dest.Zone, opt => opt.Ignore())
+                .ForMember(dest => dest.Customer, opt => opt.Ignore());
+
+            CreateMap<CustomerDirection, CustomerDirectionResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId.ToString()))
+                .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.DepartmentId.ToString()))
+                .ForMember(dest => dest.MunicipalityId, opt => opt.MapFrom(src => src.MunicipalityId.ToString()))
+                .ForMember(dest => dest.ZoneId, opt => opt.MapFrom(src => src.ZoneId.ToString()))
+                .ForMember(dest => dest.ColonyCondominium, opt => opt.MapFrom(src => src.ColonyCondominium))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6).ToString("dd/MM/yyyy HH:mm:ss")))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6).ToString("dd/MM/yyyy HH:mm:ss") : null))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
+                .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
+                .ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer))
+                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department))
+                .ForMember(dest => dest.Municipality, opt => opt.MapFrom(src => src.Municipality))
+                .ForMember(dest => dest.Zone, opt => opt.MapFrom(src => src.Zone));
         }
     }
 }

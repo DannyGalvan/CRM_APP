@@ -12,11 +12,6 @@ export const initialCustomer: CustomerRequest = {
   secondLastName: "",
   firstPhone: "",
   secondPhone: "",
-  address: "",
-  zoneId: "",
-  municipalityId: "",
-  departmentId: "",
-  colony_Condominium: "",
   socialNetworks: "",
   state: 1,
 };

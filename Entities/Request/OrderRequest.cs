@@ -1,6 +1,4 @@
 ﻿
-using Entities.Models;
-
 namespace Entities.Request
 {
     public class OrderRequest
@@ -8,6 +6,7 @@ namespace Entities.Request
         public string? Id { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public string? CustomerId { get; set; }
+        public string? CustomerDirectionId { get; set; }
         public string? PaymentTypeId { get; set; }
         public string? OrderStateId { get; set; }
         public List<OrderDetailRequest>? OrderDetails { get; set; }

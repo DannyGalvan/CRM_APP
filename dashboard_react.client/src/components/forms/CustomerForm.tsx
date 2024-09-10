@@ -1,8 +1,7 @@
 import { Button } from "@nextui-org/button";
-import { Input } from "@nextui-org/input";
+import { Input, Textarea } from "@nextui-org/input";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialCustomer } from "../../pages/customer/CustomerCreatePage";
-import { useCustomerStore } from "../../store/useCustomerStore";
 import { ApiResponse } from "../../types/ApiResponse";
 import { CustomerResponse } from "../../types/CustomerResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
@@ -10,7 +9,6 @@ import { handleOneLevelZodError } from "../../util/converted";
 import { customerShema } from "../../util/validations/customerValidations";
 import { Col } from "../grid/Col";
 import { Row } from "../grid/Row";
-import { CatalogueSearch } from "../input/CatalogueSearch";
 import { Response } from "../messages/Response";
 
 interface CustomerFormProps {
@@ -27,8 +25,6 @@ const validateCustomer = (customer: CustomerRequest) => {
 
   const parce = customerShema.safeParse(customer);
 
-  console.log(parce);
-
   if (!parce.success) errors = handleOneLevelZodError(parce.error);
 
   return errors;
@@ -40,7 +36,6 @@ export const CustomerForm = ({
   sendForm,
   reboot,
 }: CustomerFormProps) => {
-  const {customer} = useCustomerStore();
   const {
     form,
     errors,
@@ -116,42 +111,6 @@ export const CustomerForm = ({
               />
             </Col>
           </Row>
-          <Input
-            type="text"
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-            label="Dirección"
-            errorMessage={errors?.address}
-            variant="underlined"
-            className="px-2"
-            isInvalid={!!errors?.address}
-            isRequired
-          />         
-          <CatalogueSearch
-            querykey="Departments"
-            entity="Departamento"
-            errorMessage={errors?.departmentId}
-            setFormValue={handleChange}
-            name="departmentId"
-            defaultValue={customer?.department?.name}
-          />
-          <CatalogueSearch
-            querykey="Municipalities"
-            entity="Municipio"
-            errorMessage={errors?.municipalityId}
-            setFormValue={handleChange}
-            name="municipalityId"
-            defaultValue={customer?.municipality?.name}
-          />
-           <CatalogueSearch
-            querykey="Zones"
-            entity="Zona"
-            errorMessage={errors?.zoneId}
-            setFormValue={handleChange}
-            name="zoneId"
-            defaultValue={customer?.zone?.name}
-          />          
           <Row>
             <Col md={6} sm={12}>
               <Input
@@ -179,33 +138,16 @@ export const CustomerForm = ({
               />
             </Col>
           </Row>
-          <Row>
-            <Col md={6} sm={12}>
-              <Input
-                type="text"
-                name="colony_Condominium"
-                value={form.colony_Condominium}
-                onChange={handleChange}
-                label="Colonia/Condominio"
-                errorMessage={errors?.colony_Condominium}
-                variant="underlined"
-                isInvalid={!!errors?.colony_Condominium}
-                isRequired
-              />
-            </Col>
-            <Col md={6} sm={12}>
-              <Input
-                type="text"
-                name="socialNetworks"
-                value={form.socialNetworks}
-                onChange={handleChange}
-                label="Redes Sociales"
-                errorMessage={errors?.socialNetworks}
-                variant="underlined"
-                isInvalid={!!errors?.socialNetworks}
-              />
-            </Col>
-          </Row>
+          <Textarea
+            type="text"
+            name="socialNetworks"
+            value={form.socialNetworks}
+            onChange={handleChange}
+            label="Redes Sociales"
+            errorMessage={errors?.socialNetworks}
+            variant="underlined"
+            isInvalid={!!errors?.socialNetworks}
+          />
           <Button
             isLoading={loading}
             type="submit"

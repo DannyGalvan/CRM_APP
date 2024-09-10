@@ -2,6 +2,7 @@
 using Business.Validations.Catalog;
 using Business.Validations.Collection;
 using Business.Validations.Customer;
+using Business.Validations.CustomerDirection;
 using Business.Validations.Event;
 using Business.Validations.Order;
 using Business.Validations.Pilot;
@@ -11,6 +12,7 @@ using Business.Validations.RouteDetail;
 using Entidades.Request;
 using Entities.Request;
 using FluentValidation;
+using PartialUpdateCustomerValidator = Business.Validations.Customer.PartialUpdateCustomerValidator;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -61,6 +63,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddKeyedScoped<IValidator<RouteDetailRequest>, CreateRouteDetailValidator>("Create");
             services.AddKeyedScoped<IValidator<RouteDetailRequest>, UpdateRouteDetailValidator>("Update");
             services.AddKeyedScoped<IValidator<RouteDetailRequest>, PartialUpdateRouteDetailValidator>("PartialUpdate");
+            //Validations of CustomerDirections
+            services.AddKeyedScoped<IValidator<CustomerDirectionRequest>, CreateCustomerDirectionValidator>("Create");
+            services.AddKeyedScoped<IValidator<CustomerDirectionRequest>, UpdateCustomerDirectionValidator>("Update");
+            services.AddKeyedScoped<IValidator<CustomerDirectionRequest>, PartialUpdateCustomerDirectionValidator>("PartialUpdate");
 
             return services;
         }

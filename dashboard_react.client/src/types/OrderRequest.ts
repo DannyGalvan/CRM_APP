@@ -3,6 +3,7 @@ export interface OrderRequest {
   id?: string;
   deliveryDate?: Date;
   customerId?: string;
+  customerDirectionId?: string;
   paymentTypeId?: string;
   orderStateId?: string;
   orderDetails?: OrderDetailRequest[];

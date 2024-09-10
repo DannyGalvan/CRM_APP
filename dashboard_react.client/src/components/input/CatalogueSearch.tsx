@@ -17,8 +17,10 @@ interface CatalogueSearchProps {
   defaultValue?: string;
   queryFn?: (filter?: string) => Promise<any>;
   keyName?: string;
+  aditionalFilter?: string;
   isForm?: boolean;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export const CatalogueSearch = ({
@@ -30,19 +32,21 @@ export const CatalogueSearch = ({
   defaultValue,
   queryFn,
   keyName = "name",
+  aditionalFilter = "",
   isForm = true,
   required = true,
+  disabled = false,
 }: CatalogueSearchProps) => {
   const { setError } = useErrorsStore();
   const [search, setSearch] = useState<string>("");
   const { open } = useModalCreateStore();
 
   const { data, isPending, error } = useQuery<any, ApiError>({
-    queryKey: [querykey, "search", search],
+    queryKey: [querykey, "search", search, aditionalFilter],
     queryFn: () =>
       queryFn
-        ? queryFn(`${keyName}:like:${search}`)
-        : getAllCatalogues(querykey, `Description:like:${search}`),
+        ? queryFn(`${keyName}:like:${search} ${aditionalFilter}`)
+        : getAllCatalogues(querykey, `Description:like:${search} ${aditionalFilter}`),
   });
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -89,6 +93,7 @@ export const CatalogueSearch = ({
         errorMessage={errorMessage}
         label={entity}
         required={required}
+        disabled={disabled}
         isForm={false}
         defaultValue={defaultValue}
         keyname={toCamelCase(keyName)}

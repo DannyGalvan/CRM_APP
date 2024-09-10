@@ -1,10 +1,12 @@
 import { CatalogueResponse } from "./CatalogueResponse";
+import { CustomerAddressResponse } from "./CustomerAddressResponse";
 import { CustomerResponse } from "./CustomerResponse";
 import { ProductResponse } from "./ProductResponse";
 
 export interface OrderResponse {
   id?: string;
   customerId: string;
+  customerDirectionId: string;
   orderDate: Date;
   deliveryDate: any;
   paymentTypeId: string;
@@ -16,6 +18,7 @@ export interface OrderResponse {
   createdBy: string | null;
   updatedBy?: string | null;
   customer: CustomerResponse;
+  customerDirection: CustomerAddressResponse;
   paymentType: CatalogueResponse;
   orderState: CatalogueResponse;
 }

@@ -3,9 +3,9 @@
 
 namespace Entities.Interfaces
 {
-    public interface IEntity<IdEntity>
+    public interface IEntity<TIdEntity>
     {
-        IdEntity Id { get; set; }
+        TIdEntity Id { get; set; }
         DateTime CreatedAt { get; set; }
         ObjectId CreatedBy { get; set; }
         ObjectId? UpdatedBy { get; set; }

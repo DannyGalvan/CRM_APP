@@ -14,6 +14,7 @@ interface InputSearchProps {
   data: any[];
   isForm?: boolean;
   required?: boolean;
+  disabled?: boolean;
   keyname?: string;
   keyid?: string;
   errorMessage?: string;
@@ -56,7 +57,7 @@ const SearchResults = React.memo(
               }}
             >
               <p className="text-sm">{item[keyname]}</p>
-              <p className="text-sm">{item[keyid].substring(0, 6)}</p>
+              <p className="text-sm">{item[keyid]?.substring(0, 6) ?? ""}</p>
             </li>
           ))}
         </ul>
@@ -76,6 +77,7 @@ export const InputSearch = ({
   data,
   isForm = true,
   required = false,
+  disabled = false,
   keyname = "name",
   keyid = "id",
   setSearchInput,
@@ -104,6 +106,11 @@ export const InputSearch = ({
     if (event.key === "Escape") {
       setOpen(false);
     }
+
+    if (event.key === "Tab") {
+      data && handleSelect(data[0]);
+      setOpen(false);
+    }
   };
 
   return (
@@ -121,6 +128,7 @@ export const InputSearch = ({
           onKeyDown={handleKeyPress}
           onFocus={handleFocus}
           autoFocus={false}
+          disabled={disabled}
           isInvalid={!!errorMessage}
           isRequired={required}
           autoComplete="off"

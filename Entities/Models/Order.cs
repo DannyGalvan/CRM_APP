@@ -8,6 +8,7 @@ namespace Entities.Models
     {
         public ObjectId Id { get; set; }
         public ObjectId CustomerId { get; set; }
+        public ObjectId CustomerDirectionId { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
         public DateTime? DeliveryDate { get; set; }
         public ObjectId PaymentTypeId { get; set; }
@@ -20,6 +21,7 @@ namespace Entities.Models
         public ObjectId? UpdatedBy { get; set; }
 
         public virtual Customer? Customer { get; set; }
+        public virtual CustomerDirection? CustomerDirection { get; set; }
         public virtual Catalogue? PaymentType { get; set; }
         public virtual Catalogue? OrderState { get; set; }
     }

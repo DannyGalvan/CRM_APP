@@ -34,6 +34,7 @@ export const nameRoutes = {
   order: "/order",
   pilot: "/pilot",
   route: "/route",
+  address: "/direction",
   create: "create",
 };
 

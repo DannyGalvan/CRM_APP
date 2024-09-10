@@ -5,6 +5,7 @@ namespace Entities.Response
     {
         public string Id { get; set; } = string.Empty;
         public string CustomerId { get; set; } = string.Empty;
+        public string CustomerDirectionId { get; set; } = string.Empty;
         public string OrderDate { get; set; } = string.Empty;
         public string DeliveryDate { get; set; } = string.Empty;
         public string PaymentTypeId { get; set; } = string.Empty;
@@ -17,6 +18,7 @@ namespace Entities.Response
         public string? UpdatedBy { get; set; }
 
         public virtual CustomerResponse? Customer { get; set; }
+        public virtual CustomerDirectionResponse? CustomerDirection { get; set; }
         public virtual CatalogueResponse? PaymentType { get; set; }
         public virtual CatalogueResponse? OrderState { get; set; }
     }

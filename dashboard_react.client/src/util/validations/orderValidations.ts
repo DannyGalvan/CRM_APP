@@ -14,6 +14,11 @@ export const orderSchema = z.object({
     .refine((data) => data.trim() !== "", {
       message: "El cliente no puede estar vacio",
     }),
+  customerDirectionId: z
+    .string({ invalid_type_error, required_error })
+    .refine((data) => data.trim() !== "", {
+      message: "La direccion del cliente no puede estar vacia",
+    }),
   paymentTypeId: z
     .string({ invalid_type_error, required_error })
     .refine((data) => data.trim() !== "", {

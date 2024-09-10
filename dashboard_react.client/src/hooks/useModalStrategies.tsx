@@ -13,6 +13,8 @@ import { PilotForm } from "../components/forms/PilotForm";
 import { initialPilot } from "../pages/pilots/CreatePilotPage";
 import { usePilots } from "./usePilots";
 import { useErrorsStore } from "../store/useErrorsStore";
+import { CustomerAddressForm } from "../components/forms/CustomerAddressForm";
+import { useCustomerAddress } from "./useCustomerAddress";
 
 export type ModalType =
   | "Municipalities"
@@ -20,6 +22,7 @@ export type ModalType =
   | "Departments"
   | ""
   | "Customers"
+  | "CustomerDirections"
   | "PaymentTypes"
   | "Products"
   | "Families"
@@ -28,6 +31,7 @@ export type ModalType =
 export const useModalStrategies = () => {
   const { createCatalog, collectionError } = useCatalogues();
   const { create } = useCustomer();
+  const { create: createCustomerAddress } = useCustomerAddress();
   const { create: createProduct } = useProducts();
   const { create: createPilot } = usePilots();
   const { modal } = useModalCreateStore();
@@ -66,6 +70,14 @@ export const useModalStrategies = () => {
       <CustomerForm
         initialForm={initialCustomer}
         sendForm={create}
+        text="Crear"
+        reboot
+      />
+    ),
+    CustomerDirections: (
+      <CustomerAddressForm
+        initialForm={initialCustomer}
+        sendForm={createCustomerAddress}
         text="Crear"
         reboot
       />

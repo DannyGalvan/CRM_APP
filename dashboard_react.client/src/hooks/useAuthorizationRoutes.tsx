@@ -11,6 +11,7 @@ import { PublicRoutes } from "../routes/PublicRoutes";
 import { useAuth } from "./useAuth";
 import { PilotRoutes } from "../routes/PilotRoutes";
 import { RouteRoutes } from "../routes/RouteRoutes";
+import { CustomerAddressRoutes } from "../routes/CustomerAddressRoutes";
 
 export const useAuthorizationRoutes = () => {
   const { allOperations } = useAuth();
@@ -27,6 +28,7 @@ export const useAuthorizationRoutes = () => {
         ...OrderRoutes,
         ...PilotRoutes,
         ...RouteRoutes,
+        ...CustomerAddressRoutes,
       ],
     },
     {

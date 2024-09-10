@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 
 interface ColProps {
-  children: ReactNode;
+  children?: ReactNode;
   xs?: number;
   sm?: number;
   md?: number;

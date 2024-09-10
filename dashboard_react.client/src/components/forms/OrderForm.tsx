@@ -1,5 +1,4 @@
 import { Button } from "@nextui-org/button";
-import { TableColumn } from "react-data-table-component";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialOrder } from "../../pages/orders/CreateOrderPage";
 import { getCustomers } from "../../services/customerService";
@@ -9,19 +8,19 @@ import { useOrderStore } from "../../store/useOrderStore";
 import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
 import { OrderRequest } from "../../types/OrderRequest";
-import { OrderDetailLine, OrderResponse } from "../../types/OrderResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
 import { handleOneLevelZodError } from "../../util/converted";
 import { orderSchema } from "../../util/validations/orderValidations";
 import { Col } from "../grid/Col";
 import { CatalogueSearch } from "../input/CatalogueSearch";
-import { InputDeleteLine } from "../input/InputDeleteLine";
-import { InputQuantity } from "../input/InputQuantity";
 import { Response } from "../messages/Response";
 import { TableRoot } from "../table/TableRoot";
 import { Row } from "../grid/Row";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Input } from "@nextui-org/input";
+import { getCustomerAddress } from "../../services/customerAddressService";
+import { OrderDetailLineColumns } from "../columns/OrderDetailLineColumns";
+import { OrderResponse } from "../../types/OrderResponse";
 
 interface OrderFormProps {
   initialForm: OrderRequest | OrderResponse;
@@ -32,66 +31,10 @@ interface OrderFormProps {
   reboot?: boolean;
 }
 
-const columns: TableColumn<OrderDetailLine>[] = [
-  {
-    name: "ID",
-    selector: (data) => data.id,
-    sortable: true,
-    omit: true,
-  },
-  {
-    id: "number",
-    name: "Línea",
-    selector: (data) => data.numberLine,
-    sortable: true,
-    omit: false,
-    width: "90px",
-  },
-  {
-    id: "product",
-    name: "Producto",
-    selector: (data) => data.productName,
-    sortable: true,
-    omit: false,
-  },
-  {
-    id: "quantity",
-    name: "Cantidad",
-    cell: (data) => <InputQuantity data={data} />,
-    sortable: false,
-    omit: false,
-    width: "90px",
-  },
-  {
-    id: "Price",
-    name: "Precio Unitario",
-    selector: (data) => data.unitPrice,
-    sortable: true,
-    omit: false,
-  },
-  {
-    id: "Total",
-    name: "Total de Linea",
-    selector: (data) => data.totalLine,
-    sortable: true,
-    omit: false,
-  },
-  {
-    id: "actions",
-    name: "Acciones",
-    cell: (data) => <InputDeleteLine data={data} />,
-    sortable: false,
-    omit: false,
-    center: true,
-  },
-];
-
 const validateOrder = (order: OrderRequest) => {
   let errors: ErrorObject = {};
 
   const parce = orderSchema.safeParse(order);
-
-  console.log(parce);
 
   if (!parce.success) errors = handleOneLevelZodError(parce.error);
 
@@ -138,7 +81,6 @@ export const OrderForm = ({
     timeZone: getLocalTimeZone(),
   });
 
-
   return (
     <Col md={12}>
       <h1 className="text-center text-2xl font-bold">{action} Orden</h1>
@@ -178,10 +120,22 @@ export const OrderForm = ({
             querykey="Customers"
             entity="Cliente"
             setFormValue={handleChange}
-            defaultValue={order?.customer?.firstName}
+            defaultValue={order?.customer?.fullName}
             errorMessage={errors?.customerId}
             keyName="FullName"
             queryFn={getCustomers}
+          />
+          <CatalogueSearch
+            name="customerDirectionId"
+            querykey="CustomerDirections"
+            entity="Direccion del Cliente"
+            setFormValue={handleChange}
+            defaultValue={order?.customerDirection?.address}
+            errorMessage={errors?.customerDirectionId}
+            keyName="Address"
+            queryFn={getCustomerAddress}
+            disabled={form.customerId === ""}
+            aditionalFilter={`AND CustomerId:eq:${form.customerId}`}
           />
           <CatalogueSearch
             name="paymentTypeId"
@@ -204,7 +158,7 @@ export const OrderForm = ({
               required={false}
             />
             <TableRoot
-              columns={columns}
+              columns={OrderDetailLineColumns}
               data={orderDetail}
               text="de los detalles del pedido"
               styles={compactGrid}

@@ -8,11 +8,6 @@ interface CustomerRequest {
   secondLastName: string;
   firstPhone: string;
   secondPhone: string;
-  address: string;
-  departmentId: string;
-  municipalityId: string;
-  zoneId: string;
-  colony_Condominium: string;
   socialNetworks: string;
   state: number;
 }

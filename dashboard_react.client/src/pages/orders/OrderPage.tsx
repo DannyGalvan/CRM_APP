@@ -37,7 +37,7 @@ const columns: TableColumn<any>[] = [
   },
   {
     id: "name",
-    name: "Nombre",
+    name: "Cliente",
     selector: (data) => data?.customer?.fullName,
     omit: false,
     sortable: true,

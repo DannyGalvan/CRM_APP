@@ -9,6 +9,7 @@ import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 
 export const initialOrder: OrderRequest = {
   customerId: "",
+  customerDirectionId: "",
   paymentTypeId: "",
   deliveryDate: today(),
   orderStateId: "667a0b4ea82250a2c13748c2",
