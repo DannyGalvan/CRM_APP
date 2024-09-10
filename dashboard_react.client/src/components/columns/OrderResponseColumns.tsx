@@ -13,10 +13,18 @@ export const OrderResponseColumns: TableColumn<OrderResponse>[] = [
     },
     {
       id: "name",
-      name: "Nombre",
+      name: "Cliente",
       selector: (data) => data?.customer?.fullName,
       omit: false,
       sortable: true,
+    },
+    {
+      id: "address",
+      name: "Direccion",
+      selector: (data) => data?.customerDirection?.address,
+      sortable: true,
+      maxWidth: "150px",
+      omit: false,
     },
     {
       id: "total",

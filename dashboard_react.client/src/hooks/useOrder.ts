@@ -32,6 +32,12 @@ export const useOrder = (rangeOfDates?: RangeOfDates) => {
       clear();
     }
 
+    await client.invalidateQueries({
+      queryKey: ["orders"],
+      type: "all",
+      exact: false,
+    });
+
     await client.refetchQueries({
       queryKey: ["ordersFiltered"],
       type: "all",
@@ -59,7 +65,7 @@ export const useOrder = (rangeOfDates?: RangeOfDates) => {
 
     await client.invalidateQueries({
       queryKey: ["orders"],
-      type: "active",
+      type: "all",
       exact: false,
     });
 
