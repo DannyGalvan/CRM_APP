@@ -55,6 +55,7 @@ export const CatalogueSearch = ({
 
   const handleSelect = (selected: any) => {
     setSearch(selected[toCamelCase(keyName)]);
+    console.log(selected);
     isForm
       ? setFormValue({
           target: {
@@ -64,6 +65,23 @@ export const CatalogueSearch = ({
         } as any)
       : setFormValue(selected);
   };
+
+  const handleUnselect = () => {
+    setSearch("");
+    isForm
+      ? setFormValue({
+          target: {
+            name: name,
+            value: "",
+          },
+        } as any)
+      : setFormValue({
+        target: {
+          name: name,
+          value: "",
+        },
+      } as any);
+  }
 
   useEffect(() => {
     if (defaultValue) {
@@ -89,6 +107,7 @@ export const CatalogueSearch = ({
         inputSearch={search}
         handleSearchSubmit={handleSearchSubmit}
         handleSelect={handleSelect}
+        handleUnSelect={handleUnselect}
         setSearchInput={setSearch}
         errorMessage={errorMessage}
         label={entity}

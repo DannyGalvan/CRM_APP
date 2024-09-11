@@ -98,7 +98,6 @@ export const PilotForm = ({
                 value={form.license}
                 onChange={handleChange}
                 label="Licencia"
-                isRequired
                 errorMessage={errors?.license}
                 variant="underlined"
                 isInvalid={!!errors?.license}
@@ -126,7 +125,6 @@ export const PilotForm = ({
             value={form.email}
             onChange={handleChange}
             label="Correo Electrónico"
-            isRequired
             errorMessage={errors?.email}
             variant="underlined"
             isInvalid={!!errors?.email}

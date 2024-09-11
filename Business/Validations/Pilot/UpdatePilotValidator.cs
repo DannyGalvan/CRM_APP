@@ -22,10 +22,9 @@ namespace Business.Validations.Pilot
                 .Length(5, 50).WithMessage("La Licencia del piloto debe tener entre 5 y 50 caracteres");
             RuleFor(x => x.Phone)
                 .NotEmpty().WithMessage("El Teléfono del piloto es requerido")
-                .Length(10, 10).WithMessage("El Teléfono del piloto debe tener 10 caracteres");
+                .Length(8, 12).WithMessage("El Teléfono del piloto debe tener 8 caracteres");
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("El Correo del piloto es requerido")
-                .EmailAddress().WithMessage("El Correo del piloto no es valido");
+                .Must(HasValidEmail).WithMessage("El Correo del piloto no es valido");
             RuleFor(x => x.CreatedBy)
                 .Null().WithMessage("El Usuario creador no puede ser modificado");
             RuleFor(x => x.UpdatedBy)
@@ -37,6 +36,16 @@ namespace Business.Validations.Pilot
         private bool HasValidId(string? id)
         {
             return ObjectId.TryParse(id, out _);
+        }
+
+        private bool HasValidEmail(string? email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return true;
+            }
+
+            return new System.Net.Mail.MailAddress(email).Address == email;
         }
     }
 }

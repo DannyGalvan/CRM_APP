@@ -8,6 +8,7 @@ import { LoadingComponent } from "../spinner/LoadingComponent";
 interface InputSearchProps {
   handleSearchSubmit: (e: FormEvent) => void;
   handleSelect: (item: any) => void;
+  handleUnSelect?: () => void;
   setSearchInput: (value: string) => void;
   inputSearch: string;
   isLoading: boolean;
@@ -57,7 +58,6 @@ const SearchResults = React.memo(
               }}
             >
               <p className="text-sm">{item[keyname]}</p>
-              <p className="text-sm">{item[keyid]?.substring(0, 6) ?? ""}</p>
             </li>
           ))}
         </ul>
@@ -72,6 +72,7 @@ const SearchResults = React.memo(
 export const InputSearch = ({
   handleSearchSubmit,
   handleSelect,
+  handleUnSelect,
   inputSearch,
   isLoading,
   data,
@@ -105,6 +106,7 @@ export const InputSearch = ({
 
     if (event.key === "Escape") {
       setOpen(false);
+      handleUnSelect && handleUnSelect();
     }
 
     if (event.key === "Tab") {

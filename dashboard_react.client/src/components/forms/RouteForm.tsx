@@ -101,9 +101,9 @@ export const RouteForm = ({
             querykey="Pilots"
             entity="Pilotos"
             setFormValue={handleChange}
-            defaultValue={route?.pilot?.name}
+            defaultValue={route?.pilot?.fullName}
             errorMessage={errors?.pilotId}
-            keyName="Name"
+            keyName="FullName"
             queryFn={getPilots}
           />
           <Textarea
