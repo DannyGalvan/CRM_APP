@@ -22,9 +22,9 @@ namespace Dashboard_React.Server.Controllers
 
         [HttpGet]
         [Authorize(Policy = "Order.List")]
-        public IActionResult GetAll(string? filters)
+        public IActionResult GetAll(string? filters, bool? thenInclude)
         {
-            var response = _orderService.GetAll(filters);
+            var response = _orderService.GetAll(filters, thenInclude ?? false);
 
             if(response.Success)
             {

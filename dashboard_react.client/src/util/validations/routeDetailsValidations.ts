@@ -26,3 +26,16 @@ export const routeDetailsShemaArray = z
     message: "Debes agregar al menos un detalle",
   })
   .nonempty({ message: "Debes asignar al menos una orden a esta ruta! 🤷‍♂️" });
+
+export const routeDetailsWithIdRouteShema = routeDetailsShema.omit({
+  routeId: true,
+});
+
+export const routeDetailsWithRouteShemaArray = z
+  .array(routeDetailsWithIdRouteShema, {
+    invalid_type_error,
+    required_error,
+    description: "Error en los detalles de la ruta",
+    message: "Debes agregar al menos un detalle",
+  })
+  .nonempty({ message: "Debes asignar al menos una orden a esta ruta! 🤷‍♂️" });

@@ -1,4 +1,5 @@
 import { api } from "../config/axios/interceptors";
+import { OrderStates } from "../config/contants";
 import { ApiResponse } from "../types/ApiResponse";
 import { BulkOrderRequest } from "../types/BulkOrderRequest";
 import { OrderRequest } from "../types/OrderRequest";
@@ -16,7 +17,7 @@ export const getOrders = async ({ start, end }: OrderFilters) => {
       any,
       ApiResponse<OrderResponse[]>,
       any
-    >(`/order?filters=OrderDate:gt:${end}T00 AND OrderDate:lt:${start}T23`);
+    >(`/order?filters=OrderDate:gt:${end}T00 AND OrderDate:lt:${start}T23 AND OrderStateId:ne:${OrderStates.deleted}`);
     return response;
   } else {
     const response: ApiResponse<OrderResponse[]> = await api.get<

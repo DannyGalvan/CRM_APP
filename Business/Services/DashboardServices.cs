@@ -1,10 +1,10 @@
 ﻿using Business.Interfaces;
+using Entities.Enums;
 using Entities.Interfaces;
 using Entities.Models;
 using Entities.Response;
 using Humanizer;
 using Lombok.NET;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Business.Services
@@ -19,7 +19,7 @@ namespace Business.Services
             var filter = Builders<Order>.Filter.And(
                 Builders<Order>.Filter.Gte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, 1)),
                 Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, DateTime.DaysInMonth(DateTime.Now.Year, month))),
-                Builders<Order>.Filter.Ne(o => o.OrderStateId, ObjectId.Parse("66d4e2be0cb8112b950ab12f")));
+                Builders<Order>.Filter.Ne(o => o.OrderStateId, OrderStatuses.Deleted));
 
             var orders = _crmContext.Database.GetCollection<Order>(nameof(Order).Pluralize());
 
@@ -72,7 +72,7 @@ namespace Business.Services
             var filter = Builders<Order>.Filter.And(
                 Builders<Order>.Filter.Gte(o => o.OrderDate, new DateTime(year, 1, 1)),
                 Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(year, 12, 31)),
-                Builders<Order>.Filter.Ne(o => o.OrderStateId, ObjectId.Parse("66d4e2be0cb8112b950ab12f"))
+                Builders<Order>.Filter.Ne(o => o.OrderStateId, OrderStatuses.Deleted)
             );
 
             var orders = _crmContext.Database.GetCollection<Order>(nameof(Order).Pluralize());

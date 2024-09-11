@@ -10,7 +10,7 @@ export const getRouteDetails = async (filter?: string) => {
 
   if (filter) {
     response = await api.get<any, ApiResponse<RouteDetailsResponse[]>, any>(
-      `/routeDetail?filters=${filter}`,
+      `/routeDetail?filters=${filter}&thenInclude=true`,
     );
   } else {
     response = await api.get<any, ApiResponse<RouteDetailsResponse[]>, any>(

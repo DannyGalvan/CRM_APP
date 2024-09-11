@@ -22,8 +22,6 @@ namespace Business.Services
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<CatalogueService> _logger;
-        private static readonly string[] Separator = [" AND "];
-        private static readonly string[] SeparatorArray = [" OR "];
 
         private IValidator<CatalogueRequest> GetValidator(string key)
         {
@@ -376,17 +374,22 @@ namespace Business.Services
             {
                 return Builders<Catalogue>.Filter.Empty;
             }
+
+            string[] separatorAnd = [" AND "];
+
             // Split the SQL query into parts separated by AND or OR
-            var andParts = sqlQuery.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
+            var andParts = sqlQuery.Split(separatorAnd, StringSplitOptions.RemoveEmptyEntries);
 
             // List to store individual filters
             var andFilters = new List<FilterDefinition<Catalogue>>();
+
+            string[] separatorOr = [" OR "];
 
             // Process each part of the query
             foreach (var andPart in andParts)
             {
                 // Split the AND part into parts separated by OR
-                var orParts = andPart.Split(SeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+                var orParts = andPart.Split(separatorOr, StringSplitOptions.RemoveEmptyEntries);
 
                 // List to store filters from OR parts
                 var orFilters = new List<FilterDefinition<Catalogue>>();
@@ -440,7 +443,7 @@ namespace Business.Services
                 "gt" => filterBuilder.Gt(filterDefinition.Field, filterDefinition.Value),
                 "lt" => filterBuilder.Lt(filterDefinition.Field, filterDefinition.Value),
                 "like" => filterBuilder.Regex(filterDefinition.Field, new BsonRegularExpression(filterDefinition.Value.ToString(), "i")),
-                "in" => filterBuilder.In(filterDefinition.Field, filterDefinition!.Value!.ToString()!.Split(",")),
+                "in" => filterBuilder.In(filterDefinition.Field, filterDefinition.Value.ToString()!.Split(",")),
                 _ => throw new ArgumentException($"Unsupported filter operator: {filterDefinition.Operator}"),
             };
 

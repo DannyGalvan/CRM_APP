@@ -23,9 +23,9 @@ namespace Dashboard_React.Server.Controllers
 
         [HttpGet]
         [Authorize(Policy = "CustomerDirection.List")]
-        public IActionResult GetAll(string? filters)
+        public IActionResult GetAll(string? filters, bool? thenInclude)
         {
-            var response = _customerDirectionService.GetAll(filters);
+            var response = _customerDirectionService.GetAll(filters, thenInclude ?? false);
 
             if
             (response.Success)

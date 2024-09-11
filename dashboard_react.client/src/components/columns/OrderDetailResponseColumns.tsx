@@ -13,8 +13,8 @@ export const OrderDetailResponseColumns: TableColumn<RouteDetailsResponse>[] = [
   },
   {
     id: "orderId",
-    name: "Orden",
-    selector: (data) => data.orderId,
+    name: "Cliente",
+    selector: (data) => data?.order?.customer?.fullName,
     sortable: true,
     minWidth: "250px",
     maxWidth: "250px",
@@ -23,7 +23,7 @@ export const OrderDetailResponseColumns: TableColumn<RouteDetailsResponse>[] = [
   {
     id: "total",
     name: "Total",
-    selector: (data) => data.order.total,
+    selector: (data) => data.order.total.toFixed(2),
     sortable: true,
     maxWidth: "100px",
     omit: false,

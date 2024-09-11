@@ -23,9 +23,9 @@ namespace Dashboard_React.Server.Controllers
 
         [HttpGet]
         [Authorize(Policy = "Route.List")]
-        public IActionResult GetAll(string? filters)
+        public IActionResult GetAll(string? filters, bool? thenInclude)
         {
-            var response = _routeService.GetAll(filters);
+            var response = _routeService.GetAll(filters, thenInclude ?? false);
 
             if
                 (response.Success)

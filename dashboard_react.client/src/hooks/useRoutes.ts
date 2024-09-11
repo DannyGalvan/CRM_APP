@@ -8,7 +8,10 @@ import {
 } from "../services/routeService";
 import { ValidationFailure } from "../types/ValidationFailure";
 import { ApiResponse } from "../types/ApiResponse";
-import { routeDetailsShemaArray } from "../util/validations/routeDetailsValidations";
+import {
+  routeDetailsShemaArray,
+  routeDetailsWithRouteShemaArray,
+} from "../util/validations/routeDetailsValidations";
 import { handleOneLevelZodError } from "../util/converted";
 import { toast } from "react-toastify";
 import { bulkCreateRouteDetail } from "../services/routeDetailService";
@@ -16,6 +19,7 @@ import { bulkPartialUpdateOrder } from "../services/orderService";
 import { RouteDetailsResponse } from "../types/RouteDetailsResponse";
 import { useErrorsStore } from "../store/useErrorsStore";
 import { OrderStates } from "../config/contants";
+import { ApiError } from "../util/errors";
 
 export const useRoutes = () => {
   const { route, getRouteDetailsByRouteId } = useRouteDetailStore();
@@ -25,11 +29,13 @@ export const useRoutes = () => {
   const create = async (
     form: RouteDtoRequest,
   ): Promise<ApiResponse<RouteDtoResponse | ValidationFailure[]>> => {
+    const parseDetailsWithOutRoute =
+      routeDetailsWithRouteShemaArray.safeParse(route);
 
-    let parseDetails = routeDetailsShemaArray.safeParse(route);
-
-    if (!parseDetails.success) {
-      const detailsError = handleOneLevelZodError(parseDetails.error);
+    if (!parseDetailsWithOutRoute.success) {
+      const detailsError = handleOneLevelZodError(
+        parseDetailsWithOutRoute.error,
+      );
       Object.entries(detailsError).forEach(([_, value]) => {
         toast.error(value);
       });
@@ -58,7 +64,7 @@ export const useRoutes = () => {
 
     route.forEach((detail) => (detail.routeId = routeSuccess.id));
 
-    parseDetails = routeDetailsShemaArray.safeParse(route);
+    const parseDetails = routeDetailsShemaArray.safeParse(route);
 
     if (!parseDetails.success) {
       const detailsError = handleOneLevelZodError(parseDetails.error);
@@ -147,22 +153,6 @@ export const useRoutes = () => {
   };
 
   const update = async (form: RouteDtoRequest) => {
-
-    let parseDetails = routeDetailsShemaArray.safeParse(route);
-
-    if (!parseDetails.success) {
-      const detailsError = handleOneLevelZodError(parseDetails.error);
-      Object.entries(detailsError).forEach(([_, value]) => {
-        toast.error(value);
-      });
-
-      return {
-        data: [],
-        success: false,
-        message: "detalles de ruta no válidos",
-      };
-    }
-
     const routeResponse = await updateRoute(form);
 
     if (!routeResponse.success) {
@@ -176,11 +166,25 @@ export const useRoutes = () => {
       };
     }
 
+    if (route.length === 0) {
+      await client.invalidateQueries({
+        queryKey: ["routes"],
+        type: "active",
+        exact: true,
+      });
+
+      return {
+        data: [],
+        success: true,
+        message: "La ruta no tiene detalles",
+      };
+    }
+
     const routeSuccess = routeResponse.data as RouteDtoResponse;
 
     route.forEach((detail) => (detail.routeId = routeSuccess.id));
 
-    parseDetails = routeDetailsShemaArray.safeParse(route);
+    let parseDetails = routeDetailsShemaArray.safeParse(route);
 
     if (!parseDetails.success) {
       const detailsError = handleOneLevelZodError(parseDetails.error);
@@ -271,50 +275,58 @@ export const useRoutes = () => {
   };
 
   const deleteRoute = async (id: string) => {
-    const response = await partialUpdateRoute({
-      id: id,
-      state: 0,
-    });
+    try {
+      const response = await partialUpdateRoute({
+        id: id,
+        state: 0,
+      });
 
-    if (!response.data) {
-      toast.error(`Error al eliminar la ruta ${response.message}`);
+      if (!response.data) {
+        toast.error(`Error al eliminar la ruta ${response.message}`);
+      }
+
+      const ordersToDisengage = await getRouteDetailsByRouteId(id, setError);
+
+      const bulkOrderResponse = await bulkPartialUpdateOrder({
+        orders: ordersToDisengage.map((detail) => ({
+          id: detail.orderId,
+          orderStateId: OrderStates.create,
+        })),
+        createdBy: "",
+      });
+
+      if (!bulkOrderResponse.success) {
+        toast.error(
+          `Error al desligar las ordenes de la ruta ${bulkOrderResponse.message}`,
+        );
+      } else {
+        toast.success("Ruta eliminada con éxito");
+      }
+
+      await client.refetchQueries({
+        queryKey: ["ordersFiltered"],
+        type: "all",
+        exact: true,
+      });
+
+      await client.invalidateQueries({
+        queryKey: ["orders"],
+        type: "all",
+        exact: false,
+      });
+
+      await client.invalidateQueries({
+        queryKey: ["routes"],
+        type: "all",
+        exact: true,
+      });
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setError(error);
+      } else {
+        toast.error(`Error al eliminar la ruta ${error}`);
+      }
     }
-
-    const ordersToDisengage = await getRouteDetailsByRouteId(id, setError);
-
-    const bulkOrderResponse = await bulkPartialUpdateOrder({
-      orders: ordersToDisengage.map((detail) => ({
-        id: detail.orderId,
-        orderStateId: OrderStates.create,
-      })),
-      createdBy: "",
-    });
-
-    if (!bulkOrderResponse.success) {
-      toast.error(
-        `Error al desligar las ordenes de la ruta ${bulkOrderResponse.message}`,
-      );
-    } else {
-      toast.success("Ruta eliminada con éxito");
-    }
-
-    await client.refetchQueries({
-      queryKey: ["ordersFiltered"],
-      type: "active",
-      exact: true,
-    });
-
-    await client.invalidateQueries({
-      queryKey: ["orders"],
-      type: "active",
-      exact: false,
-    });
-
-    await client.invalidateQueries({
-      queryKey: ["routes"],
-      type: "active",
-      exact: true,
-    });
   };
 
   return {

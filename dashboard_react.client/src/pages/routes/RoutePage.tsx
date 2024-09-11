@@ -7,8 +7,6 @@ import { ValidationFailure } from "../../types/ValidationFailure";
 import { ApiError } from "../../util/errors";
 import { getRoutes } from "../../services/routeService";
 import { RouteResponse } from "../../types/RouteResponse";
-import { TableColumn } from "react-data-table-component";
-import { RouteActionMenu } from "../../components/menu/RouteActionMenu";
 import { Col } from "../../components/grid/Col";
 import { Button } from "@nextui-org/button";
 import { Icon } from "../../components/Icons/Icon";
@@ -21,65 +19,9 @@ import { initialRoute } from "./CreateRoutePage";
 import { useRouteStore } from "../../store/useRouteStore";
 import { useDrawer } from "../../hooks/useDrawer";
 import { NotFound } from "../error/NotFound";
+import { RouteResponseColumns } from "../../components/columns/RouteResponseColumns";
 
-const columns: TableColumn<any>[] = [
-  {
-    id: "id",
-    name: "Id",
-    selector: (data) => data.id,
-    sortable: true,
-    maxWidth: "150px",
-    omit: true,
-  },
-  {
-    id: "pilot",
-    name: "Piloto",
-    selector: (data) => data.pilot?.name,
-    sortable: true,
-    wrap: true,
-    omit: false,
-  },
-  {
-    id: "observations",
-    name: "Observaciones",
-    selector: (data) => data.observations,
-    sortable: true,
-    wrap: true,
-    omit: false,
-  },
-  {
-    id: "state",
-    name: "Estado",
-    selector: (data) => (data.state == 1 ? "Activo" : "Inactivo"),
-    sortable: true,
-    wrap: true,
-    omit: false,
-  },
-  {
-    id: "createdAt",
-    name: "Creado",
-    selector: (data) => data.createdAt,
-    sortable: true,
-    maxWidth: "160px",
-    omit: false,
-  },
-  {
-    id: "updatedAt",
-    name: "Actualizado",
-    selector: (data) => data.updatedAt,
-    sortable: true,
-    maxWidth: "160px",
-    omit: true,
-  },
-  {
-    id: "actions",
-    name: "Acciones",
-    cell: (data) => {
-      return <RouteActionMenu data={data} />;
-    },
-    wrap: true,
-  },
-];
+
 
 export const RoutePage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
@@ -112,7 +54,7 @@ export const RoutePage = () => {
           </Button>
         </Col>
         <TableRoot
-          columns={columns}
+          columns={RouteResponseColumns}
           data={data?.data ?? []}
           hasFilters={true}
           pending={isLoading || isFetching}

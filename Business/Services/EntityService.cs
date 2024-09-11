@@ -23,8 +23,6 @@ namespace Business.Services
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<EntityService<TEntity, TRequest, TId>> _logger;
-        private static readonly string[] Separator = [" AND "];
-        private static readonly string[] SeparatorArray = [" OR "];
 
         private IValidator<TRequest> GetValidator(string key)
         {
@@ -87,7 +85,7 @@ namespace Business.Services
             }
         }
 
-        public Response<List<TEntity>, List<ValidationFailure>> GetAll(string? filters)
+        public Response<List<TEntity>, List<ValidationFailure>> GetAll(string? filters, bool? thenInclude = false)
         {
             Response<List<TEntity>, List<ValidationFailure>> response = new();
 
@@ -108,26 +106,57 @@ namespace Business.Services
                     var foreignKey = property.Name + "Id";
                     var foreignKeyProperty = typeof(TEntity).GetProperty(foreignKey);
 
-                    if (foreignKeyProperty != null)
+                    if (foreignKeyProperty == null) continue;
+
+                    var relatedCollectionName = property.Name.Pluralize();
+                    var lookupStage = new BsonDocument("$lookup", new BsonDocument
                     {
-                        var relatedCollectionName = property.Name.Pluralize();
-                        var lookupStage = new BsonDocument("$lookup", new BsonDocument
+                        { "from", relatedCollectionName },
+                        { "localField", foreignKey },
+                        { "foreignField", "_id" },
+                        { "as", property.Name }
+                    });
+                    aggregate = aggregate.AppendStage<TEntity>(lookupStage);
+
+                    // Flatten the resulting array (MongoDB $lookup returns an array)
+                    var unwindStage = new BsonDocument("$unwind", new BsonDocument
+                    {
+                        { "path", $"${property.Name}" },
+                        { "preserveNullAndEmptyArrays", true }
+                    });
+
+                    aggregate = aggregate.AppendStage<TEntity>(unwindStage);
+
+                    if (!thenInclude ?? true) continue;
+
+                    var secondLevelProperties = property.PropertyType.GetProperties()
+                        .Where(p => p.GetGetMethod()!.IsVirtual && p.PropertyType.IsClass);
+
+                    foreach (var secondLevelProperty in secondLevelProperties)
+                    {
+                        var secondLevelForeignKey = secondLevelProperty.Name + "Id";
+                        var secondLevelForeignKeyProperty = property.PropertyType.GetProperty(secondLevelForeignKey);
+
+                        if (secondLevelForeignKeyProperty == null) continue;
+
+                        var secondLevelRelatedCollectionName = secondLevelProperty.Name.Pluralize();
+                        var secondLevelLookupStage = new BsonDocument("$lookup", new BsonDocument
                         {
-                            { "from", relatedCollectionName },
-                            { "localField", foreignKey },
+                            { "from", secondLevelRelatedCollectionName },
+                            { "localField", $"{property.Name}.{secondLevelForeignKey}" },
                             { "foreignField", "_id" },
-                            { "as", property.Name }
+                            { "as", $"{property.Name}.{secondLevelProperty.Name}" }
                         });
-                        aggregate = aggregate.AppendStage<TEntity>(lookupStage);
+                        aggregate = aggregate.AppendStage<TEntity>(secondLevelLookupStage);
 
                         // Flatten the resulting array (MongoDB $lookup returns an array)
-                        var unwindStage = new BsonDocument("$unwind", new BsonDocument
+                        var secondLevelUnwindStage = new BsonDocument("$unwind", new BsonDocument
                         {
-                            { "path", $"${property.Name}" },
+                            { "path", $"${property.Name}.{secondLevelProperty.Name}" },
                             { "preserveNullAndEmptyArrays", true }
                         });
 
-                        aggregate = aggregate.AppendStage<TEntity>(unwindStage);
+                        aggregate = aggregate.AppendStage<TEntity>(secondLevelUnwindStage);
                     }
                 }
 
@@ -338,8 +367,8 @@ namespace Business.Services
 
                 Util.Util.UpdateProperties(entityExist, entity);
 
-                entity.UpdatedAt = DateTime.Now.ToUniversalTime();
-                entity.CreatedAt = createdAt;
+                entityExist.UpdatedAt = DateTime.Now.ToUniversalTime();
+                entityExist.CreatedAt = createdAt;
 
                 database.ReplaceOne(e => e.Id!.Equals(entity.Id), entityExist);
 
@@ -362,23 +391,28 @@ namespace Business.Services
             }
         }
 
-        private static FilterDefinition<TEntity> TranslateToMongoFilter(string? sqlQuery)
+        private FilterDefinition<TEntity> TranslateToMongoFilter(string? sqlQuery)
         {
             if (string.IsNullOrEmpty(sqlQuery))
             {
                 return Builders<TEntity>.Filter.Empty;
             }
+
+            string[] separatorAnd = [" AND "];
+
             // Split the SQL query into parts separated by AND or OR
-            var andParts = sqlQuery.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
+            var andParts = sqlQuery.Split(separatorAnd, StringSplitOptions.RemoveEmptyEntries);
 
             // List to store individual filters
             var andFilters = new List<FilterDefinition<TEntity>>();
+
+            string[] separatorOr = [" OR "];
 
             // Process each part of the query
             foreach (var andPart in andParts)
             {
                 // Split the AND part into parts separated by OR
-                var orParts = andPart.Split(SeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+                var orParts = andPart.Split(separatorOr, StringSplitOptions.RemoveEmptyEntries);
 
                 // List to store filters from OR parts
                 var orFilters = new List<FilterDefinition<TEntity>>();
@@ -405,7 +439,7 @@ namespace Business.Services
             return combinedAndFilter;
         }
 
-        private static FilterDefinition<TEntity> TranslateConditionToMongoFilter(string condition)
+        private FilterDefinition<TEntity> TranslateConditionToMongoFilter(string condition)
         {
             // Translate a single SQL condition to a MongoDB filter
 
@@ -443,12 +477,12 @@ namespace Business.Services
             return individualFilter;
         }
 
-        private static bool HasValidId(string? id)
+        private bool HasValidId(string? id)
         {
             return ObjectId.TryParse(id, out _);
         }
 
-        private static bool HasValidDate(string? date)
+        private bool HasValidDate(string? date)
         {
             return DateTime.TryParseExact(date, "yyyy-MM-ddTHH", CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
         }
