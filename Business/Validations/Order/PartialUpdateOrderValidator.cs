@@ -10,7 +10,7 @@ namespace Business.Validations.Order
 {
     public class PartialupdateOrderValidator : AbstractValidator<OrderRequest>
     {
-        IMongoContext _mongo;
+        private readonly IMongoContext _mongo;
         public PartialupdateOrderValidator(IMongoContext mongo)
         {
             _mongo = mongo;

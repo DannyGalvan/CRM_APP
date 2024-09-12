@@ -405,8 +405,8 @@ namespace Business.Services
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(claims.ToArray()),
-                    NotBefore = DateTime.UtcNow,
-                    Expires = DateTime.UtcNow.AddSeconds(30),
+                    NotBefore = DateTime.UtcNow.AddMinutes(appSettings.NotBefore),
+                    Expires = DateTime.UtcNow.AddHours(appSettings.TokenExpirationHrs),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
 
