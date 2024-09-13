@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using Entities.Interfaces;
 using Entities.Models;
 using Entities.Request;
@@ -13,6 +12,7 @@ namespace Business.Mappers
     public class CashReportProfile : Profile
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly Dictionary<string, object> _context = new();
         public CashReportProfile(IServiceProvider serviceProvider)
         {
             // Dependency injection
@@ -31,18 +31,24 @@ namespace Business.Mappers
                     opt => opt.MapFrom(src =>
                         !string.IsNullOrEmpty(src.UpdatedBy) ? ObjectId.Parse(src.UpdatedBy) : ObjectId.Empty))
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State))
-                .ForMember(dest => dest.OrdersQuantity, opt => opt.MapFrom((src, _, _, context) => {
+                .ForMember(dest => dest.OrdersQuantity, opt => opt.MapFrom((src, _, _, _) => {
                     var cashReportConvert = ConvertCashReport(src.Orders);
+
+                    _context.Clear();
+
+                    _context.TryAdd("Report", cashReportConvert);
+
                     return cashReportConvert.OrdersQuantity;
                 }))
-                .ForMember(dest => dest.Total, opt => opt.MapFrom((src, _, _, context) =>
-                    {
-                        var cashReportConvert = ConvertCashReport(src.Orders);
+                .ForMember(dest => dest.Total, opt => opt.MapFrom((_, _, _, _) =>
+                {
+                    CashReportConvert cashReportConvert = (CashReportConvert) _context.FirstOrDefault(x => x.Key == "Report").Value;
                         return cashReportConvert.Total;
                     }))
-                .ForMember(dest => dest.TotalByPaymentTypes, opt => opt.MapFrom((src, _, _, context) =>
-                    {
-                        var cashReportConvert = ConvertCashReport(src.Orders);
+                .ForMember(dest => dest.TotalByPaymentTypes, opt => opt.MapFrom((_, _, _, _) =>
+                    {  
+                        CashReportConvert cashReportConvert = (CashReportConvert)_context.FirstOrDefault(x => x.Key == "Report").Value;
+
                         return cashReportConvert.TotalByPaymentTypes;
                     }))
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())

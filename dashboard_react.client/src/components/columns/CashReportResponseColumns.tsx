@@ -29,9 +29,9 @@ export const CashReportResponseColumns: TableColumn<CashReportResponse>[] = [
       omit: false,
     },
     {
-      id: "state",
-      name: "Estado",
-      selector: (data) => (data.state == 1 ? "Activo" : "Inactivo"),
+      id: "total",
+      name: "Total",
+      selector: (data) => data.total.toFixed(2),
       sortable: true,
       wrap: true,
       omit: false,

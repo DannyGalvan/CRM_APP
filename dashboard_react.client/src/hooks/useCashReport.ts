@@ -50,7 +50,6 @@ export const useCashReport = () => {
   const create = async (
     form: CashReportRequest,
   ): Promise<ApiResponse<CashReportResponse | ValidationFailure[]>> => {
-
     let details: CashReportDetailsRequest[] = orders.map((order) => ({
       orderId: order.id,
       cashReportId: "",
@@ -150,10 +149,9 @@ export const useCashReport = () => {
   const update = async (
     form: CashReportRequest,
   ): Promise<ApiResponse<CashReportResponse | ValidationFailure[]>> => {
-
     const savedDetails = await getDetailsByCashReportId(form.id!, setError);
 
-    form.orders = savedDetails.map((detail) => detail.order);
+    form.orders = [...orders, ...savedDetails.map((detail) => detail.order)];
 
     const cashReportResponse = await updateCashReport(form);
 
@@ -224,9 +222,11 @@ export const useCashReport = () => {
         success: bulkOrderResponse.success,
         message: bulkOrderResponse.message,
       };
-    }
+    }    
 
     await updateDataToRefetch();
+
+    await getDetailsByCashReportId(cashReportSuccess.id, setError);
 
     return cashReportResponse;
   };
