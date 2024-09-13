@@ -4,7 +4,7 @@ import { CustomerResponse } from "./CustomerResponse";
 import { ProductResponse } from "./ProductResponse";
 
 export interface OrderResponse {
-  id?: string;
+  id: string;
   customerId: string;
   customerDirectionId: string;
   orderDate: Date;

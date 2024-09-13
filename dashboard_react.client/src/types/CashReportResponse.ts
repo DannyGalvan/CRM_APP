@@ -7,9 +7,9 @@ export interface CashReportResponse {
   orderQuantity: number;
   total: number;
   state: number;
-  [key: string]: number | string | undefined;
-  createdAt: string;
-  updatedAt?: string;
-  createdBy: string;
-  updatedBy?: string;
+  totalByPaymentTypes: Record<string, number>;
+  createdAt: string | null;
+  updatedAt?: string | null;
+  createdBy: string | null;
+  updatedBy?: string | null;
 }

@@ -35,6 +35,7 @@ export const nameRoutes = {
   pilot: "/pilot",
   route: "/route",
   address: "/direction",
+  cashReport: "/cashreport",
   create: "create",
 };
 

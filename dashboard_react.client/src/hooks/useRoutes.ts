@@ -26,6 +26,32 @@ export const useRoutes = () => {
   const client = useQueryClient();
   const { setError } = useErrorsStore();
 
+  const updateData = async () => {
+    await client.refetchQueries({
+      queryKey: ["ordersFiltered"],
+      type: "all",
+      exact: true,
+    });
+
+    await client.invalidateQueries({
+      queryKey: ["orders"],
+      type: "all",
+      exact: false,
+    });
+
+    await client.invalidateQueries({
+      queryKey: ["routes"],
+      type: "all",
+      exact: true,
+    });
+
+    await client.refetchQueries({
+      queryKey: ["ordersHasRoute"],
+      type: "all",
+      exact: true,
+    });
+  }
+
   const create = async (
     form: RouteDtoRequest,
   ): Promise<ApiResponse<RouteDtoResponse | ValidationFailure[]>> => {
@@ -114,23 +140,7 @@ export const useRoutes = () => {
       };
     }
 
-    await client.refetchQueries({
-      queryKey: ["ordersFiltered"],
-      type: "active",
-      exact: true,
-    });
-
-    await client.invalidateQueries({
-      queryKey: ["orders"],
-      type: "active",
-      exact: false,
-    });
-
-    await client.invalidateQueries({
-      queryKey: ["routes"],
-      type: "active",
-      exact: true,
-    });
+    await updateData();
 
     const response: ApiResponse<RouteDtoResponse | ValidationFailure[]> = {
       data: {
@@ -176,7 +186,7 @@ export const useRoutes = () => {
       return {
         data: [],
         success: true,
-        message: "La ruta no tiene detalles",
+        message: "Ruta actualizada con éxito",
       };
     }
 
@@ -234,23 +244,7 @@ export const useRoutes = () => {
       };
     }
 
-    await client.refetchQueries({
-      queryKey: ["ordersFiltered"],
-      type: "active",
-      exact: true,
-    });
-
-    await client.invalidateQueries({
-      queryKey: ["orders"],
-      type: "active",
-      exact: false,
-    });
-
-    await client.invalidateQueries({
-      queryKey: ["routes"],
-      type: "active",
-      exact: true,
-    });
+    await updateData();
 
     await getRouteDetailsByRouteId(routeSuccess.id, setError);
 
@@ -303,23 +297,8 @@ export const useRoutes = () => {
         toast.success("Ruta eliminada con éxito");
       }
 
-      await client.refetchQueries({
-        queryKey: ["ordersFiltered"],
-        type: "all",
-        exact: true,
-      });
-
-      await client.invalidateQueries({
-        queryKey: ["orders"],
-        type: "all",
-        exact: false,
-      });
-
-      await client.invalidateQueries({
-        queryKey: ["routes"],
-        type: "all",
-        exact: true,
-      });
+      await updateData();      
+      
     } catch (error) {
       if (error instanceof ApiError) {
         setError(error);

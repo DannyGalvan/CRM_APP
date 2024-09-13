@@ -12,7 +12,7 @@ using FluentValidation.Results;
 
 namespace Dashboard_React.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize]
     [ApiController]
     [AllArgsConstructor]

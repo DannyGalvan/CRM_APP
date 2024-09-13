@@ -7,5 +7,5 @@ export interface CashReportRequest {
   orderQuantity?: number;
   total?: number;
   state?: number;
-  orders: OrderResponse[];
+  orders?: OrderResponse[];
 }

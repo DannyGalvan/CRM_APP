@@ -12,6 +12,7 @@ import { useAuth } from "./useAuth";
 import { PilotRoutes } from "../routes/PilotRoutes";
 import { RouteRoutes } from "../routes/RouteRoutes";
 import { CustomerAddressRoutes } from "../routes/CustomerAddressRoutes";
+import { CashReportRoutes } from "../routes/CashReportRoutes";
 
 export const useAuthorizationRoutes = () => {
   const { allOperations } = useAuth();
@@ -29,6 +30,7 @@ export const useAuthorizationRoutes = () => {
         ...PilotRoutes,
         ...RouteRoutes,
         ...CustomerAddressRoutes,
+        ...CashReportRoutes,
       ],
     },
     {

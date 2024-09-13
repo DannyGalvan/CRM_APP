@@ -1,9 +1,9 @@
 import { TableColumn } from "react-data-table-component";
-import { RouteActionMenu } from "../menu/RouteActionMenu";
-import { RouteResponse } from "../../types/RouteResponse";
+import { CashReportResponse } from "../../types/CashReportResponse";
+import { CashReportActionMenu } from "../menu/CashReportActionMenu";
 
 
-export const RouteResponseColumns: TableColumn<RouteResponse>[] = [
+export const CashReportResponseColumns: TableColumn<CashReportResponse>[] = [
     {
       id: "id",
       name: "Id",
@@ -13,9 +13,9 @@ export const RouteResponseColumns: TableColumn<RouteResponse>[] = [
       omit: true,
     },
     {
-      id: "pilot",
-      name: "Piloto",
-      selector: (data) => data.pilot?.name,
+      id: "cashierName",
+      name: "Cajero",
+      selector: (data) => data.cashierName,
       sortable: true,
       wrap: true,
       omit: false,
@@ -56,7 +56,7 @@ export const RouteResponseColumns: TableColumn<RouteResponse>[] = [
       id: "actions",
       name: "Acciones",
       cell: (data) => {
-        return <RouteActionMenu data={data} />;
+        return <CashReportActionMenu data={data} />;
       },
       wrap: true,
     },

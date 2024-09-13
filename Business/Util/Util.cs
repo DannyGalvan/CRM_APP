@@ -14,32 +14,23 @@ namespace Business.Util
                 //object? existingValue = property.GetValue(existingEntity);
                 object? updatedValue = property.GetValue(updatedEntity);
 
-                if (property.Name == "CreatedBy" || property.Name == "CreatedAt" || property.Name == "Id" || property.Name == "OrderDate" || property.Name == "DeliveryDate")
+                if (property.Name is "CreatedBy" or "CreatedAt" or "Id" or "OrderDate" or "DeliveryDate")
                 {
                     continue;
                 }
 
-                if (updatedValue != null && property.CanWrite)
+                if (updatedValue == null || !property.CanWrite) continue;
+                switch (updatedValue)
                 {
-                    if (updatedValue is ObjectId && updatedValue.ToString() == ObjectId.Empty.ToString())
-                    {
+                    case ObjectId when updatedValue.ToString() == ObjectId.Empty.ToString():
+                    case decimal when decimal.Parse(updatedValue.ToString()!) == 0M:
+                    case List<OrderDetail> list when list!.IsNullOrEmpty():
+                    case Dictionary<string, decimal> { Count: 0 }:
+                    case int when int.Parse(updatedValue.ToString()!) == 0 && property.Name == "OrdersQuantity":
                         continue;
-                    }
-
-                    if (updatedValue is decimal && decimal.Parse(updatedValue.ToString()!) == 0M)
-                    {
-                        continue;
-                    }
-
-                    if (updatedValue is List<OrderDetail> list)
-                    {
-                        if (list!.IsNullOrEmpty())
-                        {
-                            continue;
-                        }
-                    }
-                    
-                    property.SetValue(existingEntity, updatedValue);
+                    default:
+                        property.SetValue(existingEntity, updatedValue);
+                        break;
                 }
             }
         }

@@ -31,6 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IValidator<RecoveryPasswordRequest>, RecoveryPasswordValidations>();
             //Validations de bulk
             services.AddScoped<IValidator<BulkRouteDetailRequest>, BulkRouteDetailValidator>();
+            services.AddScoped<IValidator<BulkUpdateOrderRequest>, BulkUpdateOrderValidator>();
             services.AddScoped<IValidator<BulkCashReportDetailRequest>, BulkCreateCashReportDetailValidator>();
             //Validations de catálogo
             services.AddKeyedScoped<IValidator<CatalogueRequest>,CreateCatalogValidator>("Create");
