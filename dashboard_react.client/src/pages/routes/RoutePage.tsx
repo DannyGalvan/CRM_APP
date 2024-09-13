@@ -21,8 +21,6 @@ import { useDrawer } from "../../hooks/useDrawer";
 import { NotFound } from "../error/NotFound";
 import { RouteResponseColumns } from "../../components/columns/RouteResponseColumns";
 
-
-
 export const RoutePage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();

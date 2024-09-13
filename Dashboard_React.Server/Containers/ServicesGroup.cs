@@ -14,11 +14,16 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddServicesGroup(this IServiceCollection services)
         {
+            //inject custom services
             services.AddScoped<ISendMail, SendEmail>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICalendarEventService, CalendarEventService>();
-            services.AddScoped<IRouteDetailService, RouteDetailService>();
+            services.AddScoped<ICatalogueService, CatalogueService>();
+            services.AddScoped<IDashboardServices, DashboardServices>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IRouteDetailService, RouteDetailService>();
+            services.AddScoped<ICashReportDetailService, CashReportDetailService>();
+            //inject EntityService
             services.AddScoped<IEntityService<Customer, CustomerRequest, ObjectId>, EntityService<Customer, CustomerRequest, ObjectId>>();
             services.AddScoped<IEntityService<Product, ProductRequest, ObjectId>, EntityService<Product, ProductRequest, ObjectId>>();
             services.AddScoped<IEntityService<Collection, CollectionRequest, ObjectId>, EntityService<Collection, CollectionRequest, ObjectId>>();
@@ -26,8 +31,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEntityService<Pilot, PilotRequest, ObjectId>, EntityService<Pilot, PilotRequest, ObjectId>>();
             services.AddScoped<IEntityService<Route, RouteRequest, ObjectId>, EntityService<Route, RouteRequest, ObjectId>>();
             services.AddScoped<IEntityService<CustomerDirection, CustomerDirectionRequest, ObjectId>, EntityService<CustomerDirection, CustomerDirectionRequest, ObjectId>>();
-            services.AddScoped<ICatalogueService, CatalogueService>();
-            services.AddScoped<IDashboardServices, DashboardServices>();
+            services.AddScoped<IEntityService<CashReport, CashReportRequest, ObjectId>, EntityService<CashReport, CashReportRequest, ObjectId>>();
+            
 
             return services;
         }

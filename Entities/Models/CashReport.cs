@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Entities.Interfaces;
+﻿using Entities.Interfaces;
 using MongoDB.Bson;
 
 namespace Entities.Models
@@ -9,7 +8,6 @@ namespace Entities.Models
         public ObjectId Id { get; set; }
         public string CashierName { get; set; } = string.Empty;
         public string Observations { get; set; } = string.Empty;
-        [JsonExtensionData]
         public Dictionary<string, decimal> TotalByPaymentTypes { get; set; } = new Dictionary<string, decimal>();
         public int OrdersQuantity { get; set; }
         public decimal Total { get; set; }

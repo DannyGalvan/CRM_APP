@@ -15,7 +15,7 @@ namespace Entities.Models
         public ObjectId CreatedBy { get; set; }
         public ObjectId? UpdatedBy { get; set; }
 
-        public virtual CashReport? Route { get; set; }
+        public virtual CashReport? CashReport { get; set; }
         public virtual Order? Order { get; set; }
     }
 }

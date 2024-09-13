@@ -1,4 +1,6 @@
 ﻿using Business.Validations.Auth;
+using Business.Validations.CashReport;
+using Business.Validations.CashReportDetail;
 using Business.Validations.Catalog;
 using Business.Validations.Collection;
 using Business.Validations.Customer;
@@ -21,12 +23,15 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddValidationsGroup(this IServiceCollection services)
         {
+            //Validations de autenticación
             services.AddScoped<IValidator<LoginRequest>, LoginValidations>();
+            //Validations de usuarios
             services.AddScoped<IValidator<ChangePasswordRequest>, ChangePasswordValidations>();
             services.AddScoped<IValidator<ResetPasswordRequest>, ResetPasswordValidations>();
             services.AddScoped<IValidator<RecoveryPasswordRequest>, RecoveryPasswordValidations>();
+            //Validations de bulk
             services.AddScoped<IValidator<BulkRouteDetailRequest>, BulkRouteDetailValidator>();
-            services.AddScoped<IValidator<BulkUpdateOrderRequest>, BulkUpdateOrderValidator>();
+            services.AddScoped<IValidator<BulkCashReportDetailRequest>, BulkCreateCashReportDetailValidator>();
             //Validations de catálogo
             services.AddKeyedScoped<IValidator<CatalogueRequest>,CreateCatalogValidator>("Create");
             services.AddKeyedScoped<IValidator<CatalogueRequest>, UpdateCatalogValidator >("Update");
@@ -67,6 +72,14 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddKeyedScoped<IValidator<CustomerDirectionRequest>, CreateCustomerDirectionValidator>("Create");
             services.AddKeyedScoped<IValidator<CustomerDirectionRequest>, UpdateCustomerDirectionValidator>("Update");
             services.AddKeyedScoped<IValidator<CustomerDirectionRequest>, PartialUpdateCustomerDirectionValidator>("PartialUpdate");
+            //Validations of CashReports
+            services.AddKeyedScoped<IValidator<CashReportRequest>, CreateCashReportValidator>("Create");
+            services.AddKeyedScoped<IValidator<CashReportRequest>, UpdateCashResportValidator>("Update");
+            services.AddKeyedScoped<IValidator<CashReportRequest>, PartialUpdateCashReportValidator>("PartialUpdate");
+            //Validations of CashReportDetails
+            services.AddKeyedScoped<IValidator<CashReportDetailRequest>, CreateCashReportDetailValidator>("Create");
+            services.AddKeyedScoped<IValidator<CashReportDetailRequest>, UpdateCashReportDetailValidator>("Update");
+            services.AddKeyedScoped<IValidator<CashReportDetailRequest>, PartialUpdateCashReportDetailValidator>("PartialUpdate");
 
             return services;
         }

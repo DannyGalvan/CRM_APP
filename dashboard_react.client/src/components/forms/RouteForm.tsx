@@ -24,6 +24,7 @@ import { useErrorsStore } from "../../store/useErrorsStore";
 import { useEffect } from "react";
 import { OrderResponseColumns } from "../columns/OrderResponseColumns";
 import { OrderDetailResponseColumns } from "../columns/OrderDetailResponseColumns";
+import { OrderStates } from "../../config/contants";
 
 interface RouteFormProps {
   initialForm: RouteDtoRequest | RouteDtoResponse;
@@ -66,7 +67,7 @@ export const RouteForm = ({
   >({
     queryKey: ["ordersFiltered"],
     queryFn: () =>
-      getFilteredOrders("OrderStateId:eq:667a0b4ea82250a2c13748c2"),
+      getFilteredOrders(`OrderStateId:eq:${OrderStates.create}`),
   });
 
   const {

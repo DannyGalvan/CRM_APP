@@ -10,7 +10,7 @@
         public string FullName { get; set;} = string.Empty;
         public string FirstPhone { get; set; } = string.Empty;
         public string SecondPhone { get; set; } = string.Empty;
-        public string SocialNetworks { get; set; } = string.Empty;
+        public string? SocialNetworks { get; set; } = string.Empty;
         public string CreatedAt { get; set; } = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         public string? UpdatedAt { get; set; }
         public string CreatedBy { get; set; } = string.Empty;

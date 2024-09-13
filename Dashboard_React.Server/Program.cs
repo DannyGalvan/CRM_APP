@@ -28,8 +28,8 @@ builder.Services.Configure<MongoConnection>(mongoConnectionSection);
 //Add services injected
 builder.Services.AddServicesGroup();
 
-//Add the Singleton services
-builder.Services.AddSingletonGroup(builder);
+//Add the HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
 //Add the DbContexts
 builder.Services.AddContextGroup();
@@ -48,6 +48,9 @@ builder.Services.AddControllersConfiguration();
 
 //Add the Swagger configuration
 builder.Services.AddSwaggerConfiguration();
+
+//Add the Singleton services
+builder.Services.AddSingletonGroup(builder);
 
 WebApplication app = builder.Build();
 

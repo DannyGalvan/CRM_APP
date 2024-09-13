@@ -1,15 +1,11 @@
-﻿using MongoDB.Bson;
-using System.Text.Json.Serialization;
-
-namespace Entities.Response
+﻿namespace Entities.Response
 {
     public class CashReportResponse
     {
         public string Id { get; set; } = string.Empty;
         public string CashierName { get; set; } = string.Empty;
         public string Observations { get; set; } = string.Empty;
-        [JsonExtensionData]
-        public Dictionary<string, decimal> TotalByPaymentTypes { get; set; } = new Dictionary<string, decimal>();
+        public Dictionary<string, object> TotalByPaymentTypes { get; set; } = new Dictionary<string, object>();
         public int OrdersQuantity { get; set; }
         public decimal Total { get; set; }
         public int State { get; set; } = 1;
