@@ -1,4 +1,5 @@
-﻿using Entities.Request;
+﻿using Business.Interfaces;
+using Entities.Request;
 using FluentValidation;
 using MongoDB.Bson;
 
@@ -6,14 +7,16 @@ namespace Business.Validations.RouteDetail
 {
     public class UpdateRouteDetailValidator : AbstractValidator<RouteDetailRequest>
     {
-        public UpdateRouteDetailValidator()
+        public UpdateRouteDetailValidator(IRouteVerification routeVerification)
         {
             RuleFor(x => x.Id)
                 .NotNull().NotEmpty().WithMessage("El id del detalle de la ruta es requerido")
                 .Must(HasValidId).WithMessage("El id del detalle de la ruta no es valido");
             RuleFor(x => x.RouteId)
                 .NotNull().NotEmpty().WithMessage("El id de la ruta es requerido")
-                .Must(HasValidId).WithMessage("El id de la ruta no es valido");
+                .Must(HasValidId).WithMessage("El id de la ruta no es valido")
+                .Must(routeVerification.VerifyStateOrderToDeleteOrUpdateRoute!)
+                .WithMessage("Las ordenes de esta ruta ya tienen un corte asignado, La ruta no puede ser modificada");
             RuleFor(x => x.OrderId)
                 .NotNull().NotEmpty().WithMessage("El id de la orden es requerido")
                 .Must(HasValidId).WithMessage("El id de la orden no es valido");

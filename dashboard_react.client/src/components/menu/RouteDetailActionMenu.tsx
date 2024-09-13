@@ -15,6 +15,7 @@ import { OrderStates } from "../../config/contants";
 import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { useErrorsStore } from "../../store/useErrorsStore";
+import { ValidationFailure } from "../../types/ValidationFailure";
 
 interface RouteDetailActionMenuProps {
   data: RouteDetailsResponse;
@@ -34,7 +35,15 @@ export const RouteDetailActionMenu = ({ data }: RouteDetailActionMenuProps) => {
     });
 
     if (!response.success) {
-      toast.error(response.message);
+      toast.warning(response.message);
+
+      const errors = response.data as ValidationFailure[];
+
+      errors.forEach((error) => {
+        toast.error(error.propertyName + " " + error.errorMessage);
+      });
+      
+      return;
     }
 
     toast.success("Detalle de ruta eliminado");
@@ -46,6 +55,8 @@ export const RouteDetailActionMenu = ({ data }: RouteDetailActionMenuProps) => {
 
     if (!updtateOrderDetail.success) {
       toast.error(updtateOrderDetail.message);
+
+      return;
     }
 
     getRouteDetailsByRouteId(data.routeId, setError);

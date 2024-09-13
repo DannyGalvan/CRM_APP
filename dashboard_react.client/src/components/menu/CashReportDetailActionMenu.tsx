@@ -16,6 +16,7 @@ import { CashReportDetailsResponse } from "../../types/CashReportDetailResponse"
 import { useCashReportStore } from "../../store/useCashReportStore";
 import { updateCashReportDetail } from "../../services/cashReportDetailService";
 import { updateCashReport } from "../../services/cashReportService";
+import { ValidationFailure } from "../../types/ValidationFailure";
 
 interface CashReportDetailActionMenuProps {
   data: CashReportDetailsResponse;
@@ -49,7 +50,15 @@ export const CashReportDetailActionMenu = ({
     });
 
     if (!response.success) {
-      toast.error(response.message);
+      toast.warning(response.message);
+
+      const errors = response.data as ValidationFailure[];
+
+      errors.forEach((error) => {
+        toast.error(error.propertyName + " " + error.errorMessage);
+      });
+
+      return;
     }
 
     toast.success("Detalle de corte de caja eliminado");
@@ -61,6 +70,7 @@ export const CashReportDetailActionMenu = ({
 
     if (!updtateOrderDetail.success) {
       toast.error(updtateOrderDetail.message);
+      return;
     }
 
     await getDetailsByCashReportId(data.cashReportId, setError);

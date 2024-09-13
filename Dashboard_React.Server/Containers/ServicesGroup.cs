@@ -1,5 +1,6 @@
 ﻿using Business.Interfaces;
 using Business.Services;
+using Business.Util;
 using Dashboard_React.Server.Filters;
 using Entities.Models;
 using Entities.Request;
@@ -16,6 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             //inject custom services
             services.AddScoped<ISendMail, SendEmail>();
+            services.AddScoped<IRouteVerification, RouteVerificationService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICalendarEventService, CalendarEventService>();
             services.AddScoped<ICatalogueService, CatalogueService>();

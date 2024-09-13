@@ -1,4 +1,5 @@
-﻿using Entities.Interfaces;
+﻿using Entities.Enums;
+using Entities.Interfaces;
 using Entities.Request;
 using FluentValidation;
 using Humanizer;
@@ -30,10 +31,10 @@ namespace Business.Validations.Order
             RuleFor(x => x)
                 .Custom((order, context) =>
                 {
-                    if (order.OrderStateId == "667a0b4ea82250a2c13748c2") return;
+                    if (order.OrderStateId == OrderStatuses.Created.ToString()) return;
                    
                     // if state order request is deleted
-                    if (order.OrderStateId == "66d4e2be0cb8112b950ab12f")
+                    if (order.OrderStateId == OrderStatuses.Deleted.ToString())
                     {
                         if (!VerifyStateOrderToDelete(order))
                         {
@@ -71,14 +72,14 @@ namespace Business.Validations.Order
             string collectionName = nameof(Order).Pluralize();
             IMongoCollection<Entities.Models.Order> database = _mongo.Database.GetCollection<Entities.Models.Order>(collectionName);
 
-            var entityExist = database.Find(e => e.Id!.Equals(ObjectId.Parse(order!.Id))).FirstOrDefault();
+            var entityExist = database.Find(e => e.Id.Equals(ObjectId.Parse(order.Id))).FirstOrDefault();
 
             if (entityExist == null)
             {
                 return false;
             }
 
-            if (entityExist.OrderStateId != ObjectId.Parse("667a0b4ea82250a2c13748c2"))
+            if (entityExist.OrderStateId != OrderStatuses.Created)
             {
                 return false;
             }

@@ -50,7 +50,7 @@ export const useRoutes = () => {
       type: "all",
       exact: true,
     });
-  }
+  };
 
   const create = async (
     form: RouteDtoRequest,
@@ -275,8 +275,16 @@ export const useRoutes = () => {
         state: 0,
       });
 
-      if (!response.data) {
-        toast.error(`Error al eliminar la ruta ${response.message}`);
+      if (!response.success) {
+        toast.warning(`Error al eliminar la ruta ${response.message}`);
+
+        const errors = response.data as ValidationFailure[];
+
+        errors.forEach((error) => {
+          toast.error(error.propertyName + " " + error.errorMessage);
+        });
+
+        return response;
       }
 
       const ordersToDisengage = await getRouteDetailsByRouteId(id, setError);
@@ -293,12 +301,13 @@ export const useRoutes = () => {
         toast.error(
           `Error al desligar las ordenes de la ruta ${bulkOrderResponse.message}`,
         );
+
+        return;
       } else {
         toast.success("Ruta eliminada con éxito");
-      }
 
-      await updateData();      
-      
+        await updateData();
+      }
     } catch (error) {
       if (error instanceof ApiError) {
         setError(error);
