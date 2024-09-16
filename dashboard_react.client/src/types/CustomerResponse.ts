@@ -9,6 +9,7 @@ export interface CustomerResponse {
   fullName: string;
   firstPhone: string;
   secondPhone: string;
+  shippingFee: string;
   socialNetworks: string;
   state: number;
   createdAt?: string | null;

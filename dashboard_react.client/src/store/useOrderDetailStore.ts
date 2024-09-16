@@ -14,7 +14,8 @@ interface OrderDetailState {
   remove: (id: string) => boolean;
   total: () => number;
   changeQuantity: (id: string, quantity: number) => boolean;
-  changeLoad: (time?:number) => void;
+  changeUnitPrice: (id: string, unitPrice: number) => boolean;
+  changeLoad: (time?: number) => void;
   clear: () => void;
   updateDetails: (orderDetails: OrderDetailRequest[]) => void;
 }
@@ -76,6 +77,23 @@ export const useOrderDetailStore = create<OrderDetailState>(
 
       return true;
     },
+    changeUnitPrice: (id, unitPrice) => {
+      const newUnitPrice = unitPrice < 0 || !unitPrice ? 0 : unitPrice;
+      const newOrderDetail = get().orderDetail.map((orderDetail) => {
+        if (orderDetail.id === id) {
+          orderDetail.unitPrice = newUnitPrice;
+          orderDetail.totalLine = parseFloat(
+            (orderDetail.quantity * orderDetail.unitPrice).toFixed(2),
+          );
+        }
+
+        return orderDetail;
+      });
+
+      set({ orderDetail: newOrderDetail });
+
+      return true;
+    },
     changeLoad: (time = 50) => {
       set({ load: !get().load });
       setTimeout(() => {
@@ -87,7 +105,7 @@ export const useOrderDetailStore = create<OrderDetailState>(
       set({ orderDetail: [] });
     },
     updateDetails: (orderDetails) => {
-      const newOrderDetail = orderDetails.map((detail,index) => ({
+      const newOrderDetail = orderDetails.map((detail, index) => ({
         ...detail,
         id: v4(),
         numberLine: index + 1,

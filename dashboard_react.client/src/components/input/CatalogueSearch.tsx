@@ -21,6 +21,7 @@ interface CatalogueSearchProps {
   isForm?: boolean;
   required?: boolean;
   disabled?: boolean;
+  selector?: (state: any) => any;
 }
 
 export const CatalogueSearch = ({
@@ -36,6 +37,7 @@ export const CatalogueSearch = ({
   isForm = true,
   required = true,
   disabled = false,
+  selector,
 }: CatalogueSearchProps) => {
   const { setError } = useErrorsStore();
   const [search, setSearch] = useState<string>("");
@@ -46,7 +48,10 @@ export const CatalogueSearch = ({
     queryFn: () =>
       queryFn
         ? queryFn(`${keyName}:like:${search} ${aditionalFilter}`)
-        : getAllCatalogues(querykey, `Description:like:${search} ${aditionalFilter}`),
+        : getAllCatalogues(
+            querykey,
+            `Description:like:${search} ${aditionalFilter}`,
+          ),
   });
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -55,7 +60,6 @@ export const CatalogueSearch = ({
 
   const handleSelect = (selected: any) => {
     setSearch(selected[toCamelCase(keyName)]);
-    console.log(selected);
     isForm
       ? setFormValue({
           target: {
@@ -64,6 +68,8 @@ export const CatalogueSearch = ({
           },
         } as any)
       : setFormValue(selected);
+
+    selector && selector(selected);
   };
 
   const handleUnselect = () => {
@@ -76,12 +82,12 @@ export const CatalogueSearch = ({
           },
         } as any)
       : setFormValue({
-        target: {
-          name: name,
-          value: "",
-        },
-      } as any);
-  }
+          target: {
+            name: name,
+            value: "",
+          },
+        } as any);
+  };
 
   useEffect(() => {
     if (defaultValue) {
@@ -89,7 +95,7 @@ export const CatalogueSearch = ({
     }
   }, [defaultValue]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (error) {
       setError({
         statusCode: error.statusCode,

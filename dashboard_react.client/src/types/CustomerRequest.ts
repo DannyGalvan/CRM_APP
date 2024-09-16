@@ -8,6 +8,7 @@ interface CustomerRequest {
   secondLastName: string;
   firstPhone: string;
   secondPhone: string;
+  shippingFee: string;
   socialNetworks: string;
   state: number;
 }

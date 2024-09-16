@@ -12,6 +12,7 @@ export const initialCustomer: CustomerRequest = {
   secondLastName: "",
   firstPhone: "",
   secondPhone: "",
+  shippingFee: "0.00",
   socialNetworks: "",
   state: 1,
 };

@@ -2,6 +2,7 @@ import { TableColumn } from "react-data-table-component";
 import { OrderDetailLine } from "../../types/OrderResponse";
 import { InputQuantity } from "../input/InputQuantity";
 import { InputDeleteLine } from "../input/InputDeleteLine";
+import { InputPrice } from "../input/InputPrice";
 
 export const OrderDetailLineColumns: TableColumn<OrderDetailLine>[] = [
   {
@@ -36,7 +37,7 @@ export const OrderDetailLineColumns: TableColumn<OrderDetailLine>[] = [
   {
     id: "Price",
     name: "Precio Unitario",
-    selector: (data) => data.unitPrice,
+    cell: (data) => <InputPrice data={data} />,
     sortable: true,
     omit: false,
   },

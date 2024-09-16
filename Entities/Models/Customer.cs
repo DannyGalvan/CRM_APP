@@ -13,6 +13,7 @@ namespace Entities.Models
         public string FullName { get; set; } = string.Empty;
         public string FirstPhone { get; set; } = string.Empty;
         public string SecondPhone { get; set; } = string.Empty;
+        public decimal ShippingFee { get; set; } = 0.0m;
         public string SocialNetworks { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }

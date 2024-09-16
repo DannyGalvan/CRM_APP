@@ -138,6 +138,18 @@ export const CustomerForm = ({
               />
             </Col>
           </Row>
+          <Input
+            type="number"
+            name="shippingFee"
+            step={0.01}
+            min={0}
+            value={form.shippingFee}
+            onChange={handleChange}
+            label="Costo de Envío"
+            errorMessage={errors?.shippingFee}
+            variant="underlined"
+            isInvalid={!!errors?.shippingFee}
+          />
           <Textarea
             type="text"
             name="socialNetworks"

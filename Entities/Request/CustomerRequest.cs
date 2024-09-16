@@ -13,6 +13,7 @@ namespace Entities.Request
         public string? FirstPhone { get; set; }
         [Phone]
         public string? SecondPhone { get; set; }
+        public decimal? ShippingFee { get; set; }
         public string? SocialNetworks { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }

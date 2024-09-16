@@ -21,6 +21,7 @@ import { Input } from "@nextui-org/input";
 import { getCustomerAddress } from "../../services/customerAddressService";
 import { OrderDetailLineColumns } from "../columns/OrderDetailLineColumns";
 import { OrderResponse } from "../../types/OrderResponse";
+import { useState } from "react";
 
 interface OrderFormProps {
   initialForm: OrderRequest | OrderResponse;
@@ -47,6 +48,7 @@ export const OrderForm = ({
   sendForm,
   reboot,
 }: OrderFormProps) => {
+  const [reminder, setReminder] = useState<string>("");
   const { order } = useOrderStore();
   const { orderDetail, add, load, changeLoad, total } = useOrderDetailStore();
   const {
@@ -123,6 +125,7 @@ export const OrderForm = ({
             defaultValue={order?.customer?.fullName}
             errorMessage={errors?.customerId}
             keyName="FullName"
+            selector={(selected) => setReminder(selected.shippingFee.toFixed(2))}
             queryFn={getCustomers}
           />
           <CatalogueSearch
@@ -145,6 +148,9 @@ export const OrderForm = ({
             defaultValue={order?.paymentType?.name}
             errorMessage={errors?.paymentTypeId}
           />
+          <span className="text-md text-right font-bold text-cyan-500">
+            Recordatorio Envio {reminder}
+          </span>
           <h2 className="text-center text-xl font-bold">Detalle del pedido</h2>
           <div>
             <CatalogueSearch
