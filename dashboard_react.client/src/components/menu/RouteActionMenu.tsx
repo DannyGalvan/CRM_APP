@@ -4,6 +4,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
+import { Spinner } from "@nextui-org/spinner";
 import { Button } from "@nextui-org/button";
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
@@ -13,12 +14,15 @@ import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
 import { useDrawer } from "../../hooks/useDrawer";
 import { useErrorsStore } from "../../store/useErrorsStore";
 import { useRoutes } from "../../hooks/useRoutes";
+import { downloadFile } from "../../services/reportService";
+import { useState } from "react";
 
 interface CatalogueActionMenuProps {
   data: RouteResponse;
 }
 
 export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
+  const [load, setLoad] = useState(false);
   const { setOpenUpdate } = useDrawer();
   const { setError } = useErrorsStore();
   const { getRouteDetailsByRouteId } = useRouteDetailStore();
@@ -44,6 +48,12 @@ export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
     await deleteRoute(data.id!);
   };
 
+  const handlePrint = async () => {
+    setLoad(true);
+    await downloadFile(`/Route?id=${data.id}`, `reporte_${data.id}.pdf`);
+    setLoad(false);
+  };
+
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -67,6 +77,15 @@ export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
           startContent={<Icon name="bi bi-pen" />}
         >
           Editar
+        </DropdownItem>
+        <DropdownItem
+          key="print"
+          className="text-primary"
+          color="primary"
+          onClick={handlePrint}
+          startContent={<Icon name="bi bi-printer" />}
+        >
+          Ver Reporte {load && <Spinner size="sm" color="warning" />}
         </DropdownItem>
         <DropdownItem
           key="delete"

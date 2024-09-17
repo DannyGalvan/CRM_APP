@@ -1,10 +1,12 @@
-import { InitialAuth } from "../types/InitialAuth";
+import { InitialAuth, ReportState } from "../types/InitialAuth";
 
 export const URL_FETCH_EVENTS = "/api/v1/event";
 
 export const URL_LOGO = "/OIG3.webp";
 
 export const URL_API = "/api/v1";
+
+export const URl_REPORTS = "/reports";
 
 export const authInitialState: InitialAuth = {
   isLoggedIn: false,
@@ -15,6 +17,14 @@ export const authInitialState: InitialAuth = {
   name: "",
   userId: "",
   operations: [],
+};
+
+export const reportInitialState: ReportState = {
+  name: "",
+  userName: "",
+  email: "",
+  token: "",
+  userId: "",
 };
 
 export const nameRoutes = {

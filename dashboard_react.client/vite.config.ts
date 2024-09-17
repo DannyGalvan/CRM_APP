@@ -95,7 +95,13 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
-    },
+      "/reports": {
+        target: "https://localhost:44321",
+        secure: false,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/reports/, ""),
+      },
+    },    
     port: 5173,
     https: {
       key: fs.readFileSync(keyFilePath),

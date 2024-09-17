@@ -10,3 +10,11 @@ export interface InitialAuth {
   userId: string;
   operations: Authorizations[];
 }
+
+export interface ReportState {
+  name: string;
+  userName: string;
+  email: string;
+  token: string;
+  userId: string;
+}

@@ -37,10 +37,12 @@ const validateForm = (form: LoginForm) => {
 };
 
 export function Component() {
-  const { signIn } = useAuth();
-  const {open, toggle} = useToggle();
+  const { signIn, singnInReports } = useAuth();
+  const { open, toggle } = useToggle();
 
   const petition = async (form: LoginForm) => {
+    await singnInReports(form);
+
     const response = await login(form);
 
     if (!response.success) {

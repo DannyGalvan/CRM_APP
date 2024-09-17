@@ -1,18 +1,24 @@
-import { InitialAuth } from "../types/InitialAuth";
-import { authInitialState } from "../config/contants";
+import { InitialAuth, ReportState } from "../types/InitialAuth";
+import { authInitialState, reportInitialState } from "../config/contants";
 import { setAuthorization } from "../config/axios/interceptors";
 import { create } from "zustand";
 import { retrase } from "../util/viewTransition";
+import { setReportAuthorization } from "../config/axios/axiosReports";
+import { loginReport } from "../services/reportService";
+import { LoginForm } from "../pages/auth/LoginPage";
 
 interface AuthState {
+  reportState: ReportState;
   authState: InitialAuth;
   loading: boolean;
   syncAuth: () => void;
   signIn: (login: InitialAuth) => void;
+  singnInReports: (login: LoginForm) => Promise<void>;
   logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
+  reportState: reportInitialState,
   authState: authInitialState,
   loading: false,
   syncAuth: async () => {
@@ -24,6 +30,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const initialState: InitialAuth = JSON.parse(storedState);
         setAuthorization(initialState.token);
         set({ authState: initialState });
+      }
+      const storedReportState = window.localStorage.getItem("@authReport");
+      if (storedReportState) {
+        const initialState: ReportState = JSON.parse(storedReportState);
+        setReportAuthorization(initialState.token);
+        set({ reportState: initialState });
       }
       set({ loading: false });
     } catch (error) {
@@ -40,13 +52,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     window.localStorage.setItem("@auth", JSON.stringify(newState));
     return newState;
   },
+  singnInReports: async (auth) => {
+    const response = await loginReport(auth);
+
+    console.log({ res: response.success, response });
+
+    if(!response.success) return
+
+    const authState = response.data! as ReportState;
+
+    const newState = {
+      ...get().reportState,
+      ...authState,
+    };
+
+    set({ reportState: newState });
+    setReportAuthorization(authState.token);
+    window.localStorage.setItem("@authReport", JSON.stringify(newState));
+  },
   logout: async () => {
     try {
       set({ loading: true });
       await retrase(1000);
       window.localStorage.clear();
       setAuthorization("");
-      set({ authState: authInitialState });
+      setReportAuthorization("");
+      set({ authState: authInitialState, reportState: reportInitialState });
       set({ loading: false });
       return authInitialState;
     } catch (error) {

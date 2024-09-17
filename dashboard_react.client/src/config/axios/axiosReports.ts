@@ -4,11 +4,11 @@ import {
   InternalServerError,
   UnauthorizedError,
 } from "../../util/errors";
-import { URL_API } from "../contants";
+import { URl_REPORTS } from "../contants";
 import { InitialAuth } from "../../types/InitialAuth";
 
-export const api = axios.create({
-  baseURL: URL_API,
+export const reports = axios.create({
+  baseURL: URl_REPORTS,
   headers: {
     "Content-Type": "application/json",
     common: {
@@ -20,7 +20,7 @@ export const api = axios.create({
   },
 });
 
-export const authorization = api.interceptors.response.use(
+reports.interceptors.response.use(
   async (response) => {
     return response.data;
   },
@@ -43,11 +43,11 @@ export const authorization = api.interceptors.response.use(
       );
     }
 
-    return response.data;
+    return response;
   },
 );
 
-api.interceptors.request.use((config) => {
+reports.interceptors.request.use((config) => {
   if (
     config.headers.Authorization === undefined ||
     config.headers.Authorization === "" ||
@@ -66,12 +66,12 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export const setAuthorization = (token: string) => {
+export const setReportAuthorization = (token: string) => {
   if (token !== undefined || token !== null) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+    reports.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    reports.defaults.headers.Authorization = `Bearer ${token}`;
   } else {
-    api.defaults.headers.common["Authorization"] = token;
-    api.defaults.headers.Authorization = token;
+    reports.defaults.headers.common["Authorization"] = token;
+    reports.defaults.headers.Authorization = token;
   }
 };
