@@ -1,5 +1,6 @@
 ﻿using Entities.Enums;
 using Entities.Interfaces;
+using Entities.Models;
 using Entities.Request;
 using FluentValidation;
 using Humanizer;
@@ -34,7 +35,9 @@ namespace Business.Validations.Order
                 .NotEmpty().WithMessage("El estado es requerido")
                 .Must(HasValidId).WithMessage("El estado no es valido");
             RuleFor(x => x.OrderDetails)
-                .NotEmpty().WithMessage("Order Items are required");
+                .NotEmpty().WithMessage("Los productos de la orden son requeridos");
+            RuleFor(x => x.OrderDetails)
+                .Must(ContainsDeliveryItem).WithMessage("La orden debe contener el costo de envio");
             RuleForEach(x => x.OrderDetails).ChildRules(orderDetail =>
             {
                 orderDetail.RuleFor(x => x.NumberLine)
@@ -65,6 +68,25 @@ namespace Business.Validations.Order
                 .Null().WithMessage("El usuario creador no puede ser actualizado");
 
             RuleFor(x => x)
+                .Custom((updatedOrder, context) =>
+                {
+                    var orders = _mongo.Database.GetCollection<Entities.Models.Order>(nameof(Order).Pluralize());
+
+                    var order = orders.Find(x => x.Id.Equals(ObjectId.Parse(updatedOrder.Id))).FirstOrDefault();
+
+                    if (order == null)
+                    {
+                        context.AddFailure("OrderDetails", "La orden no existe");
+
+                        return;
+                    }
+
+                    if (HasValidUpdatedStock(order.OrderDetails, updatedOrder.OrderDetails!, out string message)) return;
+
+                    context.AddFailure("OrderDetails", message);
+                });
+
+            RuleFor(x => x)
                 .Custom((order, context) =>
                 {
                     if (order.OrderStateId == OrderStatuses.Created.ToString()) return;
@@ -74,7 +96,7 @@ namespace Business.Validations.Order
                     {
                         if (!VerifyStateOrderToDelete(order))
                         {
-                            context.AddFailure("La orden debe estar en estado creado para ser eliminada");
+                            context.AddFailure("OrderDetails","La orden debe estar en estado creado para ser eliminada");
                         }
                     }
                     else
@@ -102,6 +124,10 @@ namespace Business.Validations.Order
         {
             return ObjectId.TryParse(id, out _);
         }
+        private bool ContainsDeliveryItem(List<OrderDetailRequest>? details)
+        {
+            return details != null && details.Any(x => x.ProductName!.ToLower().Contains("envio"));
+        }
 
         private bool VerifyStateOrderToDelete(OrderRequest order)
         {
@@ -121,6 +147,48 @@ namespace Business.Validations.Order
             }
 
             return true;
+        }
+
+        private bool HasValidUpdatedStock(List<OrderDetail> prevDetails, List<OrderDetailRequest> updatedDetails, out string message)
+        {
+            bool isValid = true;
+            message = "No hay stock suficiente para los siguientes productos: ";
+
+            var products = _mongo.Database.GetCollection<Entities.Models.Product>(nameof(Product).Pluralize());
+
+            foreach (var updateDetail in updatedDetails.Where(x => !x.ProductName!.ToLower().Contains("envio")))
+            {
+                var product = products.Find(x => x.Id.Equals(ObjectId.Parse(updateDetail.ProductId))).FirstOrDefault();
+
+                if (product == null)
+                {
+                    isValid = false;
+                    break;
+                }
+
+                var prevDetail = prevDetails.FirstOrDefault(x => x.ProductId.Equals(ObjectId.Parse(updateDetail.ProductId)));
+
+                if (prevDetail != null)
+                {
+                    int stock = product.Stock + prevDetail.Quantity;
+
+                    if (stock >= updateDetail.Quantity) continue;
+
+                    isValid = false;
+                    message += $"{product.Name}, ";
+                    break;
+                }
+                else
+                {
+                    if (product.Stock >= updateDetail.Quantity) continue;
+
+                    isValid = false;
+                    message += $"{product.Name}, ";
+                    break;
+                }
+            }
+
+            return isValid;
         }
     }
 }

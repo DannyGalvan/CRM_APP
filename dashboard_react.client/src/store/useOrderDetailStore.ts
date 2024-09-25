@@ -5,7 +5,6 @@ import {
   OrderDetailLine,
   OrderDetailLineRequest,
 } from "../types/OrderResponse";
-import { logger } from "./logger";
 
 interface OrderDetailState {
   load: boolean;
@@ -20,99 +19,101 @@ interface OrderDetailState {
   updateDetails: (orderDetails: OrderDetailRequest[]) => void;
 }
 
-export const useOrderDetailStore = create<OrderDetailState>(
-  logger((set, get) => ({
-    orderDetail: [],
-    add: (orderDetailRequest) => {
-      const orderDetail: OrderDetailLine = {
-        ...orderDetailRequest,
-        id: v4(),
-        numberLine: get().orderDetail.length + 1,
-        totalLine: orderDetailRequest.quantity * orderDetailRequest.unitPrice,
-      };
+export const useOrderDetailStore = create<OrderDetailState>((set, get) => ({
+  orderDetail: [],
+  add: (orderDetailRequest) => {
+    if (orderDetailRequest.productId === undefined) {
+      return false;
+    }
 
-      if (
-        get().orderDetail.find((od) => od.productId === orderDetail.productId)
-      ) {
-        return false;
+    const orderDetail: OrderDetailLine = {
+      ...orderDetailRequest,
+      id: v4(),
+      numberLine: get().orderDetail.length + 1,
+      totalLine: orderDetailRequest.quantity * orderDetailRequest.unitPrice,
+    };
+
+    if (
+      get().orderDetail.find((od) => od.productId === orderDetail.productId)
+    ) {
+      return false;
+    }
+
+    const newOrderDetail = [...get().orderDetail, orderDetail];
+
+    set({ orderDetail: newOrderDetail });
+
+    return true;
+  },
+  remove: (id) => {
+    const newOrderDetail = get().orderDetail.filter(
+      (orderDetail) => orderDetail.id !== id,
+    );
+
+    set({ orderDetail: newOrderDetail });
+
+    return true;
+  },
+  total: () => {
+    return get().orderDetail.reduce(
+      (acc: number, orderDetail: OrderDetailLine) => {
+        return acc + orderDetail.totalLine;
+      },
+      0,
+    );
+  },
+  changeQuantity: (id, quantity) => {
+    const newQuantity = quantity < 0 || !quantity ? 0 : quantity;
+    const newOrderDetail = get().orderDetail.map((orderDetail) => {
+      if (orderDetail.id === id) {
+        orderDetail.quantity = newQuantity;
+        orderDetail.totalLine = parseFloat(
+          (orderDetail.quantity * orderDetail.unitPrice).toFixed(2),
+        );
       }
 
-      const newOrderDetail = [...get().orderDetail, orderDetail];
+      return orderDetail;
+    });
 
-      set({ orderDetail: newOrderDetail });
+    set({ orderDetail: newOrderDetail });
 
-      return true;
-    },
-    remove: (id) => {
-      const newOrderDetail = get().orderDetail.filter(
-        (orderDetail) => orderDetail.id !== id,
-      );
+    return true;
+  },
+  changeUnitPrice: (id, unitPrice) => {
+    const newUnitPrice = unitPrice < 0 || !unitPrice ? 0 : unitPrice;
+    const newOrderDetail = get().orderDetail.map((orderDetail) => {
+      if (orderDetail.id === id) {
+        orderDetail.unitPrice = newUnitPrice;
+        orderDetail.totalLine = parseFloat(
+          (orderDetail.quantity * orderDetail.unitPrice).toFixed(2),
+        );
+      }
 
-      set({ orderDetail: newOrderDetail });
+      return orderDetail;
+    });
 
-      return true;
-    },
-    total: () => {
-      return get().orderDetail.reduce(
-        (acc: number, orderDetail: OrderDetailLine) => {
-          return acc + orderDetail.totalLine;
-        },
-        0,
-      );
-    },
-    changeQuantity: (id, quantity) => {
-      const newQuantity = quantity < 0 || !quantity ? 0 : quantity;
-      const newOrderDetail = get().orderDetail.map((orderDetail) => {
-        if (orderDetail.id === id) {
-          orderDetail.quantity = newQuantity;
-          orderDetail.totalLine = parseFloat(
-            (orderDetail.quantity * orderDetail.unitPrice).toFixed(2),
-          );
-        }
+    set({ orderDetail: newOrderDetail });
 
-        return orderDetail;
-      });
-
-      set({ orderDetail: newOrderDetail });
-
-      return true;
-    },
-    changeUnitPrice: (id, unitPrice) => {
-      const newUnitPrice = unitPrice < 0 || !unitPrice ? 0 : unitPrice;
-      const newOrderDetail = get().orderDetail.map((orderDetail) => {
-        if (orderDetail.id === id) {
-          orderDetail.unitPrice = newUnitPrice;
-          orderDetail.totalLine = parseFloat(
-            (orderDetail.quantity * orderDetail.unitPrice).toFixed(2),
-          );
-        }
-
-        return orderDetail;
-      });
-
-      set({ orderDetail: newOrderDetail });
-
-      return true;
-    },
-    changeLoad: (time = 50) => {
+    return true;
+  },
+  changeLoad: (time = 50) => {
+    set({ load: !get().load });
+    setTimeout(() => {
       set({ load: !get().load });
-      setTimeout(() => {
-        set({ load: !get().load });
-      }, time);
-    },
-    load: false,
-    clear: () => {
-      set({ orderDetail: [] });
-    },
-    updateDetails: (orderDetails) => {
-      const newOrderDetail = orderDetails.map((detail, index) => ({
-        ...detail,
-        id: v4(),
-        numberLine: index + 1,
-        totalLine: parseFloat((detail.quantity * detail.unitPrice).toFixed(2)),
-      }));
+    }, time);
+  },
+  load: false,
+  clear: () => {
+    set({ orderDetail: [] });
+  },
+  updateDetails: (orderDetails) => {
+    const newOrderDetail = orderDetails.map((detail, index) => ({
+      ...detail,
+      id: v4(),
+      numberLine: index + 1,
+      totalLine: parseFloat((detail.quantity * detail.unitPrice).toFixed(2)),
+    }));
 
-      set({ orderDetail: newOrderDetail });
-    },
-  })),
-);
+    set({ orderDetail: newOrderDetail });
+  },
+}));

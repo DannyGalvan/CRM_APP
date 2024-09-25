@@ -1,13 +1,19 @@
-﻿using Entities.Request;
+﻿using Entities.Interfaces;
+using Entities.Request;
 using FluentValidation;
 using MongoDB.Bson;
+using Humanizer;
+using MongoDB.Driver;
 
 namespace Business.Validations.Order
 {
     public class CreateOrderValidator : AbstractValidator<OrderRequest>
     {
-        public CreateOrderValidator()
+        private readonly IMongoContext _context;
+        public CreateOrderValidator(IMongoContext context)
         {
+            _context = context;
+
             RuleFor(x => x.CustomerId)
                 .NotEmpty().WithMessage("El Cliente es requerido")
                 .Must(HasValidId).WithMessage("El Cliente no es valido");
@@ -22,6 +28,8 @@ namespace Business.Validations.Order
                 .Must(HasValidId).WithMessage("El estado no es valido");
             RuleFor(x => x.OrderDetails)
                 .NotEmpty().WithMessage("Order Items are required");
+            RuleFor(x => x.OrderDetails)
+                .Must(ContainsDeliveryItem).WithMessage("La orden debe contener el costo de envio");
             RuleForEach(x => x.OrderDetails).ChildRules(orderDetail =>
             {
                 orderDetail.RuleFor(x => x.NumberLine)
@@ -47,11 +55,55 @@ namespace Business.Validations.Order
                .NotNull().WithMessage("El Usuario creador no puede ser nulo")
                .NotEmpty().WithMessage("El Usuario creador no puede ser vacio")
                .Must(HasValidId).WithMessage("El Usuario creador no es valido");
+            RuleFor(x => x.OrderDetails).Custom((orderDetails, validationContext) =>
+            {
+                if (!VerifyProductStock(orderDetails, out string message))
+                {
+                    validationContext.AddFailure("OrderDetails", message);
+                }
+            });
         }
 
         private bool HasValidId(string? id)
         {
             return ObjectId.TryParse(id, out _);
+        }
+
+        private bool ContainsDeliveryItem(List<OrderDetailRequest>? details)
+        {
+            return details != null && details.Any(x => x.ProductName!.ToLower().Contains("envio"));
+        }
+
+        private bool VerifyProductStock(List<OrderDetailRequest>? details, out string message)
+        {
+            message = "No hay stock suficiente para los siguientes productos: ";
+            int countWithoutStock = 0;
+
+            if (details == null)
+            {
+                return false;
+            }
+
+            foreach (var detail in details)
+            {
+                var products = _context.Database.GetCollection<Entities.Models.Product>(nameof(Product).Pluralize());
+                var product = products.Find(x => x.Id.Equals(ObjectId.Parse(detail.ProductId))).FirstOrDefault();
+
+                if (product == null)
+                {
+                    continue;
+                }
+
+                if (product.Name.ToLower().Contains("envio")) continue;
+
+                if (!(product.Stock < detail.Quantity)) continue;
+
+                countWithoutStock++;
+
+                message += $"{product.Name}, ";
+            }
+            
+            return countWithoutStock == 0;
         }
     }
 }

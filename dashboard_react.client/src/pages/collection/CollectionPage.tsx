@@ -8,6 +8,7 @@ import { ApiResponse } from "../../types/ApiResponse";
 import { CollectionResponse } from "../../types/CollectionResponse";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
+import { QueryKeys } from "../../config/contants";
 
 const columns: TableColumn<any>[] = [
   {
@@ -73,7 +74,7 @@ export const CollectionPage = () => {
     ApiResponse<CollectionResponse[]>,
     ApiError
   >({
-    queryKey: ["collections"],
+    queryKey: [QueryKeys.Collections],
     queryFn: getCollections,
   });
 
@@ -82,19 +83,19 @@ export const CollectionPage = () => {
   }
 
   return (
-   <Protected>
-     <div className="mt-20 md:mt-0">
-      <TableRoot
-        columns={columns}
-        data={data?.data ?? []}
-        hasFilters={true}
-        pending={isLoading || isFetching}
-        text="de las listas"
-        styles={compactGrid}
-        title="Tablas"
-        width={false}
-      />
-    </div>
-   </Protected>
+    <Protected>
+      <div className="mt-20 md:mt-0">
+        <TableRoot
+          columns={columns}
+          data={data?.data ?? []}
+          hasFilters={true}
+          pending={isLoading || isFetching}
+          text="de las listas"
+          styles={compactGrid}
+          title="Tablas"
+          width={false}
+        />
+      </div>
+    </Protected>
   );
 };

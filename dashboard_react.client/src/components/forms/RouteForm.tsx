@@ -24,7 +24,8 @@ import { useErrorsStore } from "../../store/useErrorsStore";
 import { useEffect } from "react";
 import { OrderResponseColumns } from "../columns/OrderResponseColumns";
 import { OrderDetailResponseColumns } from "../columns/OrderDetailResponseColumns";
-import { OrderStates } from "../../config/contants";
+import { OrderStates, QueryKeys } from "../../config/contants";
+import { ModalType } from "../../hooks/useModalStrategies";
 
 interface RouteFormProps {
   initialForm: RouteDtoRequest | RouteDtoResponse;
@@ -65,9 +66,8 @@ export const RouteForm = ({
     ApiResponse<OrderResponse[]>,
     ApiError | undefined
   >({
-    queryKey: ["ordersFiltered"],
-    queryFn: () =>
-      getFilteredOrders(`OrderStateId:eq:${OrderStates.create}`),
+    queryKey: [QueryKeys.OrdersFiltered],
+    queryFn: () => getFilteredOrders(`OrderStateId:eq:${OrderStates.create}`),
   });
 
   const {
@@ -99,7 +99,7 @@ export const RouteForm = ({
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <CatalogueSearch
             name="pilotId"
-            querykey="Pilots"
+            querykey={QueryKeys.Pilots as ModalType}
             entity="Pilotos"
             setFormValue={handleChange}
             defaultValue={route?.pilot?.fullName}

@@ -7,7 +7,7 @@ import { toCamelCase } from "../../util/converted";
 import { ApiError } from "../../util/errors";
 import { InputSearch } from "./InputSearch";
 import { useErrorsStore } from "../../store/useErrorsStore";
-
+import { onSearchUpdate } from "../../obsevables/searchObservable";
 interface CatalogueSearchProps {
   querykey: ModalType;
   entity: string;
@@ -17,11 +17,13 @@ interface CatalogueSearchProps {
   defaultValue?: string;
   queryFn?: (filter?: string) => Promise<any>;
   keyName?: string;
+  keyAdd?: string;
   aditionalFilter?: string;
   isForm?: boolean;
   required?: boolean;
   disabled?: boolean;
   selector?: (state: any) => any;
+  unSelector?: () => void;
 }
 
 export const CatalogueSearch = ({
@@ -38,6 +40,8 @@ export const CatalogueSearch = ({
   required = true,
   disabled = false,
   selector,
+  unSelector,
+  keyAdd
 }: CatalogueSearchProps) => {
   const { setError } = useErrorsStore();
   const [search, setSearch] = useState<string>("");
@@ -74,19 +78,13 @@ export const CatalogueSearch = ({
 
   const handleUnselect = () => {
     setSearch("");
-    isForm
-      ? setFormValue({
-          target: {
-            name: name,
-            value: "",
-          },
-        } as any)
-      : setFormValue({
-          target: {
-            name: name,
-            value: "",
-          },
-        } as any);
+    setFormValue({
+      target: {
+        name: name,
+        value: "",
+      },
+    } as any);
+    unSelector && unSelector();
   };
 
   useEffect(() => {
@@ -105,6 +103,16 @@ export const CatalogueSearch = ({
     }
   }, [error, setError]);
 
+  useEffect(() => {
+    const subscription = onSearchUpdate(querykey).subscribe((event) => {
+      setSearch(event.value);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <div>
       <InputSearch
@@ -122,7 +130,9 @@ export const CatalogueSearch = ({
         isForm={false}
         defaultValue={defaultValue}
         keyname={toCamelCase(keyName)}
+        entity={entity}
         createItemFn={() => open(querykey, entity)}
+        keyAdd={keyAdd}
       />
     </div>
   );

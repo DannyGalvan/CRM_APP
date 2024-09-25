@@ -21,6 +21,7 @@ import { initialCustomer } from "./CustomerCreatePage";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 import { useDrawer } from "../../hooks/useDrawer";
 import { CustomerResponseColumns } from "../../components/columns/CustomerResponseColumns";
+import { QueryKeys } from "../../config/contants";
 
 const ModalCreateItem = lazy(() =>
   import("../../components/modals/ModalCreateItem").then((module) => ({
@@ -38,7 +39,7 @@ export const CustomerPage = () => {
     ApiResponse<CustomerResponse[] | ValidationFailure[]>,
     ApiError | undefined
   >({
-    queryKey: ["customers"],
+    queryKey: [QueryKeys.Customers],
     queryFn: () => getCustomers(),
   });
 

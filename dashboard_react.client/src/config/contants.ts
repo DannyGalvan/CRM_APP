@@ -1,3 +1,4 @@
+import { ModalType } from "../hooks/useModalStrategies";
 import { InitialAuth, ReportState } from "../types/InitialAuth";
 
 export const URL_FETCH_EVENTS = "/api/v1/event";
@@ -47,6 +48,36 @@ export const nameRoutes = {
   address: "/direction",
   cashReport: "/cashreport",
   create: "create",
+};
+
+export type KeyType =
+  | "Catalogues"
+  | "Orders"
+  | "Routes"
+  | "CashReports"
+  | "OrdersHasRoute"
+  | "Collections"
+  | "OrdersFiltered";
+
+
+export const QueryKeys : Record<ModalType | KeyType, ModalType | KeyType> = {
+  Customers: "Customers",
+  Pilots: "Pilots",
+  Catalogues: "Catalogues",
+  Products: "Products",
+  Municipalities: "Municipalities",
+  Zones: "Zones",
+  Departments : "Departments",
+  CustomerDirections: "CustomerDirections",
+  PaymentTypes: "PaymentTypes",
+  Families: "Families",
+  Orders: "Orders",
+  Routes: "Routes",
+  CashReports: "CashReports",
+  OrdersHasRoute: "OrdersHasRoute",
+  OrdersFiltered: "OrdersFiltered",
+  Collections: "Collections",
+  "": "",
 };
 
 export const OrderStates = {

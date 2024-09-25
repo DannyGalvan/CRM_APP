@@ -5,6 +5,7 @@ import { ApiResponse } from "../types/ApiResponse";
 import { CatalogueResponse } from "../types/CatalogueResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 import { SelectedCatalogue, useListCollections } from "./useListCollections";
+import { QueryKeys } from "../config/contants";
 
 export const useCatalogues = () => {
   const client = useQueryClient();
@@ -22,16 +23,19 @@ export const useCatalogues = () => {
     catalogue: CatalogueRequest,
     forceSelected?: SelectedCatalogue, 
   ): Promise<ApiResponse<CatalogueResponse | ValidationFailure[]>> => {
+
     const response = await createCatalogue(
       forceSelected?.selected ?? selectedCatalogue.selected,
       catalogue,
     );
 
-    client.refetchQueries({
-      queryKey: ["catalogues", forceSelected?.selected ?? selectedCatalogue.selected],
-      type: "active",
-      exact: true,
-    });
+    if (response.success) {
+      client.refetchQueries({
+        queryKey: [QueryKeys.Catalogues, forceSelected?.selected ?? selectedCatalogue.selected],
+        type: "all",
+        exact: true,
+      });
+    }
 
     return response;
   };
@@ -47,8 +51,8 @@ export const useCatalogues = () => {
     add(catalogue);
 
     client.refetchQueries({
-      queryKey: ["catalogues", selectedCatalogue.selected],
-      type: "active",
+      queryKey: [QueryKeys.Catalogues, selectedCatalogue.selected],
+      type: "all",
       exact: true,
     });
 

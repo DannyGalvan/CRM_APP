@@ -21,7 +21,12 @@ import { Input } from "@nextui-org/input";
 import { getCustomerAddress } from "../../services/customerAddressService";
 import { OrderDetailLineColumns } from "../columns/OrderDetailLineColumns";
 import { OrderResponse } from "../../types/OrderResponse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { nameRoutes, QueryKeys } from "../../config/contants";
+import { ModalType } from "../../hooks/useModalStrategies";
+import { Icon } from "../Icons/Icon";
+import { useNavigate } from "react-router-dom";
+import { onSearchUpdate } from "../../obsevables/searchObservable";
 
 interface OrderFormProps {
   initialForm: OrderRequest | OrderResponse;
@@ -48,7 +53,8 @@ export const OrderForm = ({
   sendForm,
   reboot,
 }: OrderFormProps) => {
-  const [reminder, setReminder] = useState<string>("");
+  const nav = useNavigate();
+  const [reminder, setReminder] = useState<string>("0.00");
   const { order } = useOrderStore();
   const { orderDetail, add, load, changeLoad, total } = useOrderDetailStore();
   const {
@@ -66,13 +72,32 @@ export const OrderForm = ({
     reboot,
   );
 
-  const handleAddOrderDetail = (selected: any) => {
-    add({
-      productId: selected.id,
-      productName: selected.name,
-      quantity: 1,
-      unitPrice: selected.salePrice,
+  useEffect(() => {
+    const subscription = onSearchUpdate("Reminder").subscribe((event) => {
+      setReminder(event.value);
     });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleAddOrderDetail = (selected: any) => {
+    if (selected.name?.toLowerCase().includes("envio")) {
+      add({
+        productId: selected.id,
+        productName: selected.name,
+        quantity: 1,
+        unitPrice: parseFloat(reminder),
+      });
+    } else {
+      add({
+        productId: selected.id,
+        productName: selected.name,
+        quantity: 1,
+        unitPrice: selected.salePrice,
+      });
+    }
     changeLoad();
   };
 
@@ -93,6 +118,14 @@ export const OrderForm = ({
           onSubmit={handleSubmit}
         >
           <Row className="justify-end">
+            <Col md={6}>
+              <Button
+                color={"secondary"}
+                onClick={() => nav(`${nameRoutes.route}/${nameRoutes.create}`)}
+              >
+                <Icon name={"bi bi-sign-turn-right"} /> Crear Rutas
+              </Button>
+            </Col>
             <Col md={6}>
               <Input
                 min={today(getLocalTimeZone()).toString()}
@@ -119,18 +152,21 @@ export const OrderForm = ({
           </Row>
           <CatalogueSearch
             name="customerId"
-            querykey="Customers"
+            querykey={QueryKeys.Customers as ModalType}
             entity="Cliente"
             setFormValue={handleChange}
             defaultValue={order?.customer?.fullName}
             errorMessage={errors?.customerId}
             keyName="FullName"
-            selector={(selected) => setReminder(selected.shippingFee.toFixed(2))}
+            selector={(selected) =>
+              setReminder(selected.shippingFee.toFixed(2))
+            }
+            unSelector={() => setReminder("0.00")}
             queryFn={getCustomers}
           />
           <CatalogueSearch
             name="customerDirectionId"
-            querykey="CustomerDirections"
+            querykey={QueryKeys.CustomerDirections as ModalType}
             entity="Direccion del Cliente"
             setFormValue={handleChange}
             defaultValue={order?.customerDirection?.address}
@@ -142,26 +178,29 @@ export const OrderForm = ({
           />
           <CatalogueSearch
             name="paymentTypeId"
-            querykey="PaymentTypes"
+            querykey={QueryKeys.PaymentTypes as ModalType}
             entity="Tipo de Pago"
             setFormValue={handleChange}
             defaultValue={order?.paymentType?.name}
             errorMessage={errors?.paymentTypeId}
           />
           <span className="text-md text-right font-bold text-cyan-500">
-            Recordatorio Envio {reminder}
+            Recordatorio Envio: Q {reminder}
           </span>
+          <p className="font-bold text-red-600">{errors?.orderDetails}</p>
           <h2 className="text-center text-xl font-bold">Detalle del pedido</h2>
           <div>
             <CatalogueSearch
               name="productId"
-              querykey="Products"
+              querykey={QueryKeys.Products as ModalType}
               entity="Agregar Producto"
               setFormValue={handleAddOrderDetail}
               queryFn={getProducts}
               isForm={false}
               keyName="Name"
+              keyAdd="stock"
               required={false}
+              errorMessage={errors?.productId}
             />
             <TableRoot
               columns={OrderDetailLineColumns}
@@ -174,7 +213,7 @@ export const OrderForm = ({
               pending={load}
             />
             <p className="bg-black text-end text-2xl font-bold text-white">
-              Total: {total().toFixed(2)}
+              Total: Q {total().toFixed(2)}
             </p>
           </div>
           <Button

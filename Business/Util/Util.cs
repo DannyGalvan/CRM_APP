@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text.Json;
 using Entities.Models;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
@@ -33,6 +34,12 @@ namespace Business.Util
                         break;
                 }
             }
+        }
+
+        public static T DeepCopy<T>(T obj)
+        {
+            var json = JsonSerializer.Serialize(obj);
+            return JsonSerializer.Deserialize<T>(json)!;
         }
     }
 }

@@ -20,6 +20,7 @@ import { initialCustomerAddress } from "./AddressCreatePage";
 import { useDrawer } from "../../../hooks/useDrawer";
 import { useCustomerAddress } from "../../../hooks/useCustomerAddress";
 import { useCustomerAddressStore } from "../../../store/useCustomerAddressStore";
+import { QueryKeys } from "../../../config/contants";
 
 export const AddressPage = () => {
   const { create, update } = useCustomerAddress();
@@ -31,7 +32,7 @@ export const AddressPage = () => {
     ApiResponse<CustomerAddressResponse[] | ValidationFailure[]>,
     ApiError | undefined
   >({
-    queryKey: ["customersAddress"],
+    queryKey: [QueryKeys.CustomerDirections],
     queryFn: () => getCustomerAddress(),
   });
 

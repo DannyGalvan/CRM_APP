@@ -1,11 +1,12 @@
-﻿using Business.Interfaces;
+﻿using Business.Interceptors.Orders;
+using Business.Interfaces;
+using Business.Interfaces.Interceptors;
 using Business.Services;
 using Business.Util;
-using Dashboard_React.Server.Filters;
 using Entities.Models;
 using Entities.Request;
-using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson;
+using ReduceStock = Business.Interceptors.Orders.ReduceStock;
 using Route = Entities.Models.Route;
 
 // ReSharper disable once CheckNamespace
@@ -34,7 +35,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEntityService<Route, RouteRequest, ObjectId>, EntityService<Route, RouteRequest, ObjectId>>();
             services.AddScoped<IEntityService<CustomerDirection, CustomerDirectionRequest, ObjectId>, EntityService<CustomerDirection, CustomerDirectionRequest, ObjectId>>();
             services.AddScoped<IEntityService<CashReport, CashReportRequest, ObjectId>, EntityService<CashReport, CashReportRequest, ObjectId>>();
-            
+            //inject EntityService with Interceptors//
+            //Order
+            services.AddScoped<IEntityAfterCreateInterceptor<Order,OrderRequest>,ReduceStock>();
+            services.AddScoped<IEntityAfterUpdateInterceptor<Order, OrderRequest>, ReturnAndReduceStock>();
+            services.AddScoped<IEntityAfterPartialUpdateInterceptor<Order, OrderRequest>, ReturnStock>();
 
             return services;
         }

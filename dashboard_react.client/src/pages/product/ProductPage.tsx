@@ -22,6 +22,7 @@ import { NotFound } from "../error/NotFound";
 import { initialProduct } from "./CreateProductPage";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 import { useDrawer } from "../../hooks/useDrawer";
+import { QueryKeys } from "../../config/contants";
 
 const columns: TableColumn<any>[] = [
   {
@@ -130,7 +131,7 @@ export const ProductPage = () => {
     ApiResponse<ProductResponse[] | ValidationFailure[]>,
     ApiError | undefined
   >({
-    queryKey: ["products"],
+    queryKey: [QueryKeys.Products],
     queryFn: () => getProducts(),
   });
 

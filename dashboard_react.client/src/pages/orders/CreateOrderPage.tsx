@@ -27,7 +27,7 @@ export const CreateOrderPage = () => {
 
   return (
     <Protected>
-      <div className="page-view flex flex-col flex-wrap items-center justify-center">
+      <div className="page-view flex flex-col flex-wrap items-center justify-center">      
         <Col md={12}>
           <OrderForm
             initialForm={initialOrder}

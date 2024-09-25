@@ -20,6 +20,7 @@ import { useRouteStore } from "../../store/useRouteStore";
 import { useDrawer } from "../../hooks/useDrawer";
 import { NotFound } from "../error/NotFound";
 import { RouteResponseColumns } from "../../components/columns/RouteResponseColumns";
+import { QueryKeys } from "../../config/contants";
 
 export const RoutePage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
@@ -31,7 +32,7 @@ export const RoutePage = () => {
     ApiResponse<RouteResponse[] | ValidationFailure[]>,
     ApiError | undefined
   >({
-    queryKey: ["routes"],
+    queryKey: [QueryKeys.Routes],
     queryFn: () => getRoutes("State:eq:1"),
   });
 
@@ -67,6 +68,7 @@ export const RoutePage = () => {
             setIsOpen={setOpenCreate}
             title={`Crear Ruta`}
             size="2xl"
+            id="create"
           >
             <div className="p-5">
               <RouteForm
@@ -87,6 +89,7 @@ export const RoutePage = () => {
             }}
             title={`Editar Ruta`}
             size="2xl"
+            id="update"
           >
             <div className="p-5">
               <RouteForm initialForm={route!} sendForm={update} text="Editar" />

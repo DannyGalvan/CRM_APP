@@ -19,8 +19,9 @@ import {
 import { CashReportDetailsRequest } from "../types/CashReportDetailRequest";
 import { bulkCreateCashReportDetail } from "../services/cashReportDetailService";
 import { bulkPartialUpdateOrder } from "../services/orderService";
-import { OrderStates } from "../config/contants";
+import { OrderStates, QueryKeys } from "../config/contants";
 import { ApiError } from "../util/errors";
+import { rebootScroll } from "../util/viewTransition";
 
 export const useCashReport = () => {
   const { orders, getDetailsByCashReportId } = useCashReportStore();
@@ -29,22 +30,24 @@ export const useCashReport = () => {
 
   const updateDataToRefetch = async () => {
     await client.refetchQueries({
-      queryKey: ["ordersHasRoute"],
+      queryKey: [QueryKeys.OrdersHasRoute],
       type: "all",
       exact: true,
     });
 
     await client.invalidateQueries({
-      queryKey: ["orders"],
+      queryKey: [QueryKeys.Orders],
       type: "all",
       exact: false,
     });
 
     await client.invalidateQueries({
-      queryKey: ["cashReports"],
+      queryKey: [QueryKeys.CashReports],
       type: "all",
       exact: true,
     });
+
+    rebootScroll();
   };
 
   const create = async (

@@ -53,22 +53,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return newState;
   },
   singnInReports: async (auth) => {
-    const response = await loginReport(auth);
+    try {
+      set({ loading: true });
+      const response = await loginReport(auth);
 
-    console.log({ res: response.success, response });
+      if (!response.success) return;
 
-    if(!response.success) return
+      const authState = response.data! as ReportState;
 
-    const authState = response.data! as ReportState;
+      const newState = {
+        ...get().reportState,
+        ...authState,
+      };
 
-    const newState = {
-      ...get().reportState,
-      ...authState,
-    };
-
-    set({ reportState: newState });
-    setReportAuthorization(authState.token);
-    window.localStorage.setItem("@authReport", JSON.stringify(newState));
+      set({ reportState: newState });
+      setReportAuthorization(authState.token);
+      window.localStorage.setItem("@authReport", JSON.stringify(newState));
+    } catch (error) {
+      console.error({ error });
+      set({ loading: false, reportState: reportInitialState });
+    }
   },
   logout: async () => {
     try {

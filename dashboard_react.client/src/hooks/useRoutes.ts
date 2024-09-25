@@ -18,8 +18,9 @@ import { bulkCreateRouteDetail } from "../services/routeDetailService";
 import { bulkPartialUpdateOrder } from "../services/orderService";
 import { RouteDetailsResponse } from "../types/RouteDetailsResponse";
 import { useErrorsStore } from "../store/useErrorsStore";
-import { OrderStates } from "../config/contants";
+import { OrderStates, QueryKeys } from "../config/contants";
 import { ApiError } from "../util/errors";
+import { updateSearch } from "../obsevables/searchObservable";
 
 export const useRoutes = () => {
   const { route, getRouteDetailsByRouteId } = useRouteDetailStore();
@@ -28,28 +29,30 @@ export const useRoutes = () => {
 
   const updateData = async () => {
     await client.refetchQueries({
-      queryKey: ["ordersFiltered"],
+      queryKey: [QueryKeys.OrdersFiltered],
       type: "all",
       exact: true,
     });
 
     await client.invalidateQueries({
-      queryKey: ["orders"],
+      queryKey: [QueryKeys.Orders],
       type: "all",
       exact: false,
     });
 
     await client.invalidateQueries({
-      queryKey: ["routes"],
+      queryKey: [QueryKeys.Routes],
       type: "all",
       exact: true,
     });
 
     await client.refetchQueries({
-      queryKey: ["ordersHasRoute"],
+      queryKey: [QueryKeys.OrdersHasRoute],
       type: "all",
       exact: true,
     });
+
+    updateSearch(QueryKeys.Pilots, "");
   };
 
   const create = async (

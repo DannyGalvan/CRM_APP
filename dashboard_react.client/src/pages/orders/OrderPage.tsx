@@ -24,6 +24,7 @@ import { parseDate } from "@internationalized/date";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 import { useDrawer } from "../../hooks/useDrawer";
 import { OrderResponseFilteredColumns } from "../../components/columns/OrderResponseFilteredColumns";
+import { QueryKeys } from "../../config/contants";
 
 const dateRange = minDateMaxDate();
 
@@ -48,7 +49,7 @@ export const OrderPage = () => {
     ApiResponse<OrderResponse[]>,
     ApiError | undefined
   >({
-    queryKey: ["orders", rageOfDate.start, rageOfDate.end],
+    queryKey: [QueryKeys.Orders, rageOfDate.start, rageOfDate.end],
     queryFn: () => getOrders(rageOfDate),
   });
 
@@ -66,7 +67,7 @@ export const OrderPage = () => {
         <Col className="mt-5 flex justify-end">
           <Button color={"secondary"} onClick={setOpenCreate}>
             <Icon name={"bi bi-person-plus"} /> Crear Orden
-          </Button>
+          </Button>         
         </Col>
         <DateRangePicker
           label="Rango de Fechas de Ordenes"
@@ -99,6 +100,7 @@ export const OrderPage = () => {
           setIsOpen={setOpenCreate}
           title={`Crear Orden`}
           size="5xl"
+          id="create"
         >
           <div className="p-5">
             <OrderForm
@@ -118,8 +120,9 @@ export const OrderPage = () => {
             add(null);
             updateDetails([]);
           }}
-          title={`Editar Cliente`}
+          title={`Editar Orden`}
           size="5xl"
+          id="update"
         >
           <div className="p-5">
             <OrderForm initialForm={order!} sendForm={update} action="Editar" />

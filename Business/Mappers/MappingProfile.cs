@@ -30,6 +30,10 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty));
 
+            CreateMap<Event, Event>()
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.AddHours(-6)))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.AddHours(-6)));
+
             // mapper de clientes
             CreateMap<CustomerRequest, Customer>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Id) ? ObjectId.Parse(src.Id) : ObjectId.Empty))
@@ -48,6 +52,12 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
+
+            CreateMap<Customer, Customer>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
 
             // mapper de productos
             CreateMap<ProductRequest, Product>()
@@ -74,6 +84,12 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty));
 
+            CreateMap<Product, Product>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
+
             // mapper de catalogos
             CreateMap<CatalogueRequest, Catalogue>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Id) ? ObjectId.Parse(src.Id) : ObjectId.Empty))
@@ -88,6 +104,12 @@ namespace Business.Mappers
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6).ToString("dd/MM/yyyy HH:mm:ss") : null))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty));
+
+            CreateMap<Catalogue, Catalogue>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
 
             // mapper de operaciones
             CreateMap<Operation, OperationResponse>()
@@ -114,6 +136,12 @@ namespace Business.Mappers
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6).ToString("dd/MM/yyyy HH:mm:ss") : null))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty));
+
+            CreateMap<Collection, Collection>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
 
             // mapper de ordenes
             CreateMap<OrderRequest, Order>()
@@ -151,6 +179,16 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CustomerDirection, opt => opt.MapFrom(src => src.CustomerDirection))
                 .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType))
                 .ForMember(dest => dest.OrderState, opt => opt.MapFrom(src => src.OrderState));
+
+            CreateMap<Order, Order>()
+                .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.AddHours(-6)))
+                .ForMember(dest => dest.DeliveryDate,
+                    opt => opt.MapFrom(src =>
+                        src.DeliveryDate.HasValue ? src.DeliveryDate.Value.AddHours(-6) : src.DeliveryDate))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
 
             // mapper de detalles de orden
             CreateMap<OrderDetailRequest, OrderDetail>()
@@ -195,6 +233,12 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty));
 
+            CreateMap<Pilot, Pilot>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
+
             // mapper de rutas
             CreateMap<RouteRequest, Route>()
                 .ForMember(dest => dest.Id,
@@ -220,6 +264,12 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
                 .ForMember(dest => dest.Pilot, opt => opt.MapFrom(src => src.Pilot));
+
+            CreateMap<Route, Route>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
 
             // mapper de detalles de rutas
             CreateMap<RouteDetailRequest, RouteDetail>()
@@ -251,6 +301,12 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State));
+
+            CreateMap<RouteDetail, RouteDetail>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
 
             // mapper de direcciones de clientes
             CreateMap<CustomerDirectionRequest, CustomerDirection>()
@@ -287,6 +343,12 @@ namespace Business.Mappers
                 .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department))
                 .ForMember(dest => dest.Municipality, opt => opt.MapFrom(src => src.Municipality))
                 .ForMember(dest => dest.Zone, opt => opt.MapFrom(src => src.Zone));
+
+            CreateMap<CustomerDirection, CustomerDirection>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.AddHours(-6)))
+                .ForMember(dest => dest.UpdatedAt,
+                    opt => opt.MapFrom(src =>
+                        src.UpdatedAt.HasValue ? src.UpdatedAt.Value.AddHours(-6) : src.UpdatedAt));
         }
     }
 }

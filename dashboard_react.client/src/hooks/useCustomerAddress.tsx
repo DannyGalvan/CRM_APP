@@ -6,18 +6,32 @@ import {
 import { useCustomerAddressStore } from "../store/useCustomerAddressStore";
 import { ApiResponse } from "../types/ApiResponse";
 import { CustomerAddressResponse } from "../types/CustomerAddressResponse";
+import { updateSearch } from "../obsevables/searchObservable";
+import { QueryKeys } from "../config/contants";
 
 export const useCustomerAddress = () => {
   const client = useQueryClient();
   const { add } = useCustomerAddressStore();
 
+  const rebootCatalogues = () => {
+    updateSearch(QueryKeys.Customers, "");
+    updateSearch(QueryKeys.Departments, "");
+    updateSearch(QueryKeys.Municipalities, "");
+    updateSearch(QueryKeys.Zones, "");
+  };
+
   const create = async (customer: CustomerAddressRequest) => {
     const response = await createCustomerAddress(customer);
-    client.invalidateQueries({
-      queryKey: ["customerAddress"],
-      type: "active",
-      exact: true,
-    });
+
+    if (response.success) {
+      client.invalidateQueries({
+        queryKey: [QueryKeys.CustomerDirections],
+        type: "all",
+        exact: false,
+      });
+      rebootCatalogues();
+    }
+
     return response;
   };
 
@@ -25,14 +39,14 @@ export const useCustomerAddress = () => {
     const response = await updateCustomerAddress(customer);
 
     await client.invalidateQueries({
-      queryKey: ["customersAddress"],
-      type: "active",
-      exact: true,
+      queryKey: [QueryKeys.CustomerDirections],
+      type: "all",
+      exact: false
     });
 
     const customers = client.getQueryData<
       ApiResponse<CustomerAddressResponse[]>
-    >(["customerAddress"]);
+    >([QueryKeys.CustomerDirections]);
 
     if (customers != undefined) {
       const find = customers.data?.find((c) => c.id === customer.id);

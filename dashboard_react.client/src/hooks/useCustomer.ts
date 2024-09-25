@@ -3,6 +3,7 @@ import { createCustomer, updateCustomer } from "../services/customerService";
 import { useCustomerStore } from "../store/useCustomerStore";
 import { ApiResponse } from "../types/ApiResponse";
 import { CustomerResponse } from "../types/CustomerResponse";
+import { QueryKeys } from "../config/contants";
 
 export const useCustomer = () => {
   const client = useQueryClient();
@@ -11,11 +12,13 @@ export const useCustomer = () => {
   const create = async (customer: CustomerRequest) => {
     const response = await createCustomer(customer);
 
-    client.refetchQueries({
-      queryKey: ["customers"],
-      type: "active",
-      exact: true,
-    });
+    if (response.success) {
+      client.refetchQueries({
+        queryKey: [QueryKeys.Customers],
+        type: "all",
+        exact: false,
+      });
+    }
 
     return response;
   };
@@ -24,13 +27,13 @@ export const useCustomer = () => {
     const response = await updateCustomer(customer);
 
     await client.refetchQueries({
-      queryKey: ["customers"],
-      type: "active",
-      exact: true,
+      queryKey: [QueryKeys.Customers],
+      type: "all",
+      exact: false,
     });
 
     const customers = client.getQueryData<ApiResponse<CustomerResponse[]>>([
-      "customers",
+      QueryKeys.Customers,
     ]);
 
     if (customers != undefined) {

@@ -4,19 +4,29 @@ import { useProductStore } from "../store/useProductStore";
 import { ApiResponse } from "../types/ApiResponse";
 import { ProductRequest } from "../types/ProductRequest";
 import { ProductResponse } from "../types/ProductResponse";
+import { updateSearch } from "../obsevables/searchObservable";
+import { QueryKeys } from "../config/contants";
 
 export const useProducts = () => {
   const client = useQueryClient();
-  const { add } = useProductStore();
+  const { add} = useProductStore();
+
+  const rebootCatalogues = () => {
+    updateSearch("Families", "");
+  };
 
   const create = async (product: ProductRequest) => {
     const response = await createProduct(product);
 
-    client.refetchQueries({
-      queryKey: ["products"],
-      type: "active",
-      exact: true,
-    });
+    if (response.success) {
+      client.refetchQueries({
+        queryKey: [QueryKeys.Products],
+        type: "all",
+        exact: true,
+      });
+
+      rebootCatalogues();
+    }
 
     return response;
   };
@@ -25,13 +35,13 @@ export const useProducts = () => {
     const response = await updateProduct(product);
 
     await client.refetchQueries({
-      queryKey: ["products"],
-      type: "active",
+      queryKey: [QueryKeys.Products],
+      type: "all",
       exact: true,
     });
 
     const products = client.getQueryData<ApiResponse<ProductResponse[]>>([
-      "products",
+      QueryKeys.Products,
     ]);
 
     if (products != undefined) {

@@ -20,6 +20,7 @@ import { PilotForm } from "../../components/forms/PilotForm";
 import { initialPilot } from "./CreatePilotPage";
 import { useDrawer } from "../../hooks/useDrawer";
 import { PilotsResponseColumns } from "../../components/columns/PilotsResponseColumns";
+import { QueryKeys } from "../../config/contants";
 
 
 
@@ -33,7 +34,7 @@ export const PilotPage = () => {
     ApiResponse<PilotResponse[] | ValidationFailure[]>,
     ApiError | undefined
   >({
-    queryKey: ["pilots"],
+    queryKey: [QueryKeys.Pilots],
     queryFn: () => getPilots(),
   });
 

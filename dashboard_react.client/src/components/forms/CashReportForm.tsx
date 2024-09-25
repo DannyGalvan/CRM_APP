@@ -11,7 +11,7 @@ import { cashReportShema } from "../../util/validations/cashReportValidations";
 import { OrderResponse } from "../../types/OrderResponse";
 import { ApiError } from "../../util/errors";
 import { getFilteredOrders } from "../../services/orderService";
-import { OrderStates } from "../../config/contants";
+import { OrderStates, QueryKeys } from "../../config/contants";
 import { useEffect } from "react";
 import { initialCashReport } from "../../pages/cashReport/CreateCashReportPage";
 import { Col } from "../grid/Col";
@@ -57,7 +57,7 @@ export const CashReportForm = ({
     ApiResponse<OrderResponse[]>,
     ApiError | undefined
   >({
-    queryKey: ["ordersHasRoute"],
+    queryKey: [QueryKeys.OrdersHasRoute],
     queryFn: () => getFilteredOrders(`OrderStateId:eq:${OrderStates.hasRoute}`),
   });
 

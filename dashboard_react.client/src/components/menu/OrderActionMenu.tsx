@@ -14,7 +14,7 @@ import { partialUpdateOrder } from "../../services/orderService";
 import { ValidationFailure } from "../../types/ValidationFailure";
 import { toast } from "react-toastify";
 import { useDrawer } from "../../hooks/useDrawer";
-import { OrderStates } from "../../config/contants";
+import { OrderStates, QueryKeys } from "../../config/contants";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface CatalogueActionMenuProps {
@@ -49,9 +49,16 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
         toast.error(error.errorMessage);
       });
     } else {
+      
       await client.invalidateQueries({
-        queryKey: ["orders"],
-        type: "active",
+        queryKey: [QueryKeys.Orders],
+        type: "all",
+        exact: false,
+      });
+
+      await client.invalidateQueries({
+        queryKey: [QueryKeys.Products],
+        type: "all",
         exact: false,
       });
 

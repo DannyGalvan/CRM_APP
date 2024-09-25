@@ -4,6 +4,7 @@ import { usePilotStore } from "../store/usePilotStore";
 import { PilotRequest } from "../types/PilotRequest";
 import { createPilot, updatePilot } from "../services/pilotService";
 import { PilotResponse } from "../types/PilotResponse";
+import { QueryKeys } from "../config/contants";
 
 export const usePilots = () => {
   const client = useQueryClient();
@@ -12,11 +13,13 @@ export const usePilots = () => {
   const create = async (pilot: PilotRequest) => {
     const response = await createPilot(pilot);
 
-    client.refetchQueries({
-      queryKey: ["pilots"],
-      type: "active",
-      exact: true,
-    });
+    if (response.success) {
+      client.refetchQueries({
+        queryKey: [QueryKeys.Pilots],
+        type: "all",
+        exact: false,
+      });
+    }
 
     return response;
   };
@@ -25,13 +28,13 @@ export const usePilots = () => {
     const response = await updatePilot(pilot);
 
     await client.refetchQueries({
-      queryKey: ["pilots"],
-      type: "active",
-      exact: true,
+      queryKey: [QueryKeys.Pilots],
+      type: "all",
+      exact: false,
     });
 
     const pilots = client.getQueryData<ApiResponse<PilotResponse[]>>([
-      "pilots",
+      QueryKeys.Pilots,
     ]);
 
     if (pilots != undefined) {

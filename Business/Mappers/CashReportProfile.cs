@@ -67,6 +67,19 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty));
 
+            CreateMap<CashReport, CashReport>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Observations, opt => opt.MapFrom(src => src.Observations))
+                .ForMember(dest => dest.CashierName, opt => opt.MapFrom(src => src.CashierName))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => src.UpdatedBy))
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State))
+                .ForMember(dest => dest.OrdersQuantity, opt => opt.MapFrom(src => src.OrdersQuantity))
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.Total))
+                .ForMember(dest => dest.TotalByPaymentTypes, opt => opt.MapFrom(src => src.TotalByPaymentTypes))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt));
+
             // CashReportDetail mapper
             CreateMap<CashReportDetailRequest, CashReportDetail>()
                 .ForMember(dest => dest.OrderId,
@@ -97,6 +110,16 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy.ToString()))
                 .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => (src.UpdatedBy != null && src.UpdatedBy != ObjectId.Empty) ? src.UpdatedBy.ToString() : string.Empty))
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State));
+
+            CreateMap<CashReportDetail, CashReportDetail>()
+                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.CashReportId, opt => opt.MapFrom(src => src.CashReportId))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.UpdatedBy, opt => opt.MapFrom(src => src.UpdatedBy))
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt));
 
         }
 

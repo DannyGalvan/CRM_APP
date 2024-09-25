@@ -7,7 +7,6 @@ interface InputPriceProps {
 }
 
 export const InputPrice = ({ data }: InputPriceProps) => {
-    console.log(data)
   const [price, setPrice] = useState(data.unitPrice);
   const { changeUnitPrice, changeLoad } = useOrderDetailStore();
 

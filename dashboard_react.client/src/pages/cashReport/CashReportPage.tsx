@@ -20,6 +20,7 @@ import { CashReportResponseColumns } from "../../components/columns/CashReportRe
 import { Drawer } from "../../containers/Drawer";
 import { CashReportForm } from "../../components/forms/CashReportForm";
 import { initialCashReport } from "./CreateCashReportPage";
+import { QueryKeys } from "../../config/contants";
 
 export const CashReportPage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
@@ -31,7 +32,7 @@ export const CashReportPage = () => {
     ApiResponse<CashReportResponse[] | ValidationFailure[]>,
     ApiError | undefined
   >({
-    queryKey: ["cashReports"],
+    queryKey: [QueryKeys.CashReports],
     queryFn: () => getCashReports("State:eq:1"),
   });
 
@@ -66,6 +67,7 @@ export const CashReportPage = () => {
             setIsOpen={setOpenCreate}
             title={`Crear Corte de Caja`}
             size="2xl"
+            id="create"
           >
             <div className="p-5">
               <CashReportForm
@@ -86,6 +88,7 @@ export const CashReportPage = () => {
             }}
             title={`Editar Corte de Caja`}
             size="2xl"
+            id="update"
           >
             <div className="p-5">
               <CashReportForm initialForm={cashReport!} sendForm={update} text="Editar" />

@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Globalization;
+using System.Reflection;
+using Business.Interfaces.Interceptors;
+using Business.Util;
 
 namespace Business.Services
 {
@@ -27,6 +30,21 @@ namespace Business.Services
         private IValidator<TRequest> GetValidator(string key)
         {
             return _serviceProvider.GetRequiredKeyedService<IValidator<TRequest>>(key);
+        }
+
+        private IEnumerable<IEntityAfterCreateInterceptor<TEntity,TRequest>> GetAfterCreateInterceptors()
+        {
+            return _serviceProvider.GetServices<IEntityAfterCreateInterceptor<TEntity, TRequest>>().OrderBy(i => i.GetType().GetCustomAttribute<OrderAttribute>()?.Priority ?? int.MaxValue);
+        }
+
+        private IEnumerable<IEntityAfterUpdateInterceptor<TEntity, TRequest>> GetAfterUpdateInterceptors()
+        {
+            return _serviceProvider.GetServices<IEntityAfterUpdateInterceptor<TEntity, TRequest>>().OrderBy(i => i.GetType().GetCustomAttribute<OrderAttribute>()?.Priority ?? int.MaxValue);
+        }
+
+        private IEnumerable<IEntityAfterPartialUpdateInterceptor<TEntity, TRequest>> GetPartialUpdateInterceptors()
+        {
+            return _serviceProvider.GetServices<IEntityAfterPartialUpdateInterceptor<TEntity, TRequest>>().OrderBy(i => i.GetType().GetCustomAttribute<OrderAttribute>()?.Priority ?? int.MaxValue);
         }
 
         public Response<TEntity, List<ValidationFailure>> Create(TRequest model)
@@ -69,6 +87,15 @@ namespace Business.Services
                 response.Data = entity;
                 response.Success = true;
                 response.Message = $"Entity {typeof(TEntity).Name} created successfully";
+
+                if (!response.Success) return response;
+
+                foreach (var interceptor in GetAfterCreateInterceptors())
+                {
+                    if (!response.Success) return response;
+
+                    response = interceptor.Execute(response, model);
+                }
 
                 return response;
             }
@@ -280,7 +307,9 @@ namespace Business.Services
 
                 IMongoCollection<TEntity> database = _context.Database.GetCollection<TEntity>(collectionName);
 
-                TEntity? entityExist = database.Find(e => e.Id!.Equals(entityConvert.Id)).FirstOrDefault();
+                TEntity? prevState = database.Find(e => e.Id!.Equals(entityConvert.Id)).FirstOrDefault();
+
+                TEntity? entityExist = _mapper.Map<TEntity>(prevState);
 
                 if (entityExist == null)
                 {
@@ -307,6 +336,15 @@ namespace Business.Services
                 response.Data = entityExist;
                 response.Success = true;
                 response.Message = $"Entity {typeof(TEntity).Name} updated successfully";
+
+                if (!response.Success) return response;
+
+                foreach (var interceptor in GetPartialUpdateInterceptors())
+                {
+                    if (!response.Success) return response;
+
+                    response = interceptor.Execute(response, model, prevState);
+                }
 
                 return response;
             }
@@ -349,7 +387,9 @@ namespace Business.Services
 
                 IMongoCollection<TEntity> database = _context.Database.GetCollection<TEntity>(collectionName);
 
-                TEntity? entityExist = database.Find(e => e.Id!.Equals(entity.Id)).FirstOrDefault();
+                TEntity? prevState = database.Find(e => e.Id!.Equals(entity.Id)).FirstOrDefault();
+
+                TEntity? entityExist = _mapper.Map<TEntity>(prevState);
 
                 if (entityExist == null)
                 {
@@ -376,6 +416,16 @@ namespace Business.Services
                 response.Data = entityExist;
                 response.Success = true;
                 response.Message = $"Entity {typeof(TEntity).Name} updated successfully";
+
+                if (!response.Success) return response;
+
+                foreach (var interceptor in GetAfterUpdateInterceptors())
+                {
+                    if (!response.Success) return response;
+
+                    response = interceptor.Execute(response, model, prevState);
+                }
+
                 return response;
             }
             catch (Exception ex)

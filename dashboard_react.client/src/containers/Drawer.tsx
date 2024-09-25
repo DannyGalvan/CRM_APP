@@ -1,30 +1,41 @@
-import { IoIosClose } from 'react-icons/io';
+import { IoIosClose } from "react-icons/io";
 
 interface DrawerProps {
   children?: React.ReactNode;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   title: React.ReactNode | string;
-  size: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
+  id?: string;
+  size: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
 }
 
-export const Drawer = ({ children, isOpen, setIsOpen, title, size = "md" } : DrawerProps) => {
+export const Drawer = ({
+  children,
+  isOpen,
+  setIsOpen,
+  title,
+  size = "md",
+  id,
+}: DrawerProps) => {
   return (
     <div
       className={
-        'fixed overflow-hidden z-[100] bg-gray-900 bg-opacity-25 inset-0 transform ease-in-out ' +
+        "fixed inset-0 z-[100] transform overflow-hidden bg-gray-900 bg-opacity-25 ease-in-out " +
         (isOpen
-          ? ' transition-opacity opacity-100 duration-500 translate-x-0  '
-          : ' transition-all delay-500 opacity-0 translate-x-full  ')
+          ? " translate-x-0 opacity-100 transition-opacity duration-500  "
+          : " translate-x-full opacity-0 transition-all delay-500  ")
       }
     >
       <section
         className={
-          `w-screen mw-${size} z-[0] right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform ` +
-          (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
+          `w-screen mw-${size} delay-400 absolute right-0 z-[0] h-full transform bg-white shadow-xl transition-all duration-500 ease-in-out ` +
+          (isOpen ? " translate-x-0 " : " translate-x-full ")
         }
       >
-        <article className={`relative my-6 flex h-full mw-${size} flex-col overflow-y-scroll px-0 pb-10 scrollbar-thin`}>
+        <article
+          id={id}
+          className={`relative my-6 flex h-full mw-${size} flex-col overflow-y-scroll px-0 pb-10 scrollbar-thin`}
+        >
           <header className="p-4 text-lg font-bold">{title}</header>
           <IoIosClose
             className="absolute right-4 top-3 cursor-pointer text-red-600"

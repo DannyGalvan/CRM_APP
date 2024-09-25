@@ -101,8 +101,6 @@ export const dateNow = () => {
 
 export const today = () => {
   const now = new Date();
-  const offset = now.getTimezoneOffset(); // Obtiene la diferencia en minutos entre UTC y la zona horaria local
-  now.setMinutes(now.getMinutes() - offset); // Ajusta la fecha restando la diferencia
 
   return now;
 };

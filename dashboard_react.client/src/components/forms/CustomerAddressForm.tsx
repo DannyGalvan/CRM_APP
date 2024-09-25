@@ -12,6 +12,8 @@ import { CatalogueSearch } from "../input/CatalogueSearch";
 import { useCustomerAddressStore } from "../../store/useCustomerAddressStore";
 import { getCustomers } from "../../services/customerService";
 import { Input, Textarea } from "@nextui-org/input";
+import { QueryKeys } from "../../config/contants";
+import { ModalType } from "../../hooks/useModalStrategies";
 
 interface CustomerAddressFormProps {
   initialForm: CustomerAddressRequest | CustomerAddressResponse;
@@ -63,7 +65,7 @@ export const CustomerAddressForm = ({
         {success != null && <Response message={message} type={success!} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <CatalogueSearch
-            querykey="Customers"
+            querykey={QueryKeys.Customers as ModalType}
             entity="Clientes"
             errorMessage={errors?.customerId}
             setFormValue={handleChange}
@@ -73,7 +75,7 @@ export const CustomerAddressForm = ({
             defaultValue={customerAddress?.customer?.fullName}
           />
           <CatalogueSearch
-            querykey="Departments"
+            querykey={QueryKeys.Departments as ModalType}
             entity="Departamento"
             errorMessage={errors?.departmentId}
             setFormValue={handleChange}
@@ -81,7 +83,7 @@ export const CustomerAddressForm = ({
             defaultValue={customerAddress?.department?.name}
           />
           <CatalogueSearch
-            querykey="Municipalities"
+            querykey={QueryKeys.Municipalities as ModalType}
             entity="Municipio"
             errorMessage={errors?.municipalityId}
             setFormValue={handleChange}
@@ -89,7 +91,7 @@ export const CustomerAddressForm = ({
             defaultValue={customerAddress?.municipality?.name}
           />
           <CatalogueSearch
-            querykey="Zones"
+            querykey={QueryKeys.Zones as ModalType}
             entity="Zona"
             errorMessage={errors?.zoneId}
             setFormValue={handleChange}

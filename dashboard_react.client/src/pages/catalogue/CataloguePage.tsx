@@ -8,7 +8,7 @@ import { Col } from "../../components/grid/Col";
 import { CatalogueActionMenu } from "../../components/menu/CatalogueActionMenu";
 import { CollectionSelect } from "../../components/select/CollectionSelect";
 import { TableRoot } from "../../components/table/TableRoot";
-import { DEFAULT_CATALOGUE } from "../../config/contants";
+import { DEFAULT_CATALOGUE, QueryKeys } from "../../config/contants";
 import { Drawer } from "../../containers/Drawer";
 import { useCatalogues } from "../../hooks/useCatalogues";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
@@ -113,7 +113,7 @@ export const CataloguePage = () => {
     ApiResponse<CatalogueResponse[]>,
     ApiError | undefined
   >({
-    queryKey: ["catalogues", selectedCatalogue.selected],
+    queryKey: [QueryKeys.Catalogues, selectedCatalogue.selected],
     queryFn: () => getAllCatalogues(selectedCatalogue.selected),
   });
 

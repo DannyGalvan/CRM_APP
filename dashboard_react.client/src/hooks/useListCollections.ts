@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
-import { DEFAULT_CATALOGUE } from '../config/contants';
+import { DEFAULT_CATALOGUE, QueryKeys } from '../config/contants';
 import { getCollections } from '../services/collectionService';
 import { ApiResponse } from '../types/ApiResponse';
 import { CollectionResponse } from '../types/CollectionResponse';
@@ -24,7 +24,7 @@ export const useListCollections = () => {
     isLoading: collectionLoading,
     isFetching: collectionFetching,
   } = useQuery<ApiResponse<CollectionResponse[]>, ApiError>({
-    queryKey: ["collections"],
+    queryKey: [QueryKeys.Collections],
     queryFn: getCollections,
     select: (data) => ({
       ...data,
