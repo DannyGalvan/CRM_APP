@@ -17,13 +17,16 @@ export const OrderResponseColumns: TableColumn<OrderResponse>[] = [
       selector: (data) => data?.customer?.fullName,
       omit: false,
       sortable: true,
+      maxWidth: "150px",
+      wrap: true,
     },
     {
       id: "address",
       name: "Direccion",
       selector: (data) => data?.customerDirection?.address,
       sortable: true,
-      maxWidth: "150px",
+      wrap: true,
+      maxWidth: "300px",
       omit: false,
     },
     {
@@ -33,6 +36,7 @@ export const OrderResponseColumns: TableColumn<OrderResponse>[] = [
       omit: false,
       sortable: true,
       maxWidth: "100px",
+      format: (data) => `Q. ${data.total?.toFixed(2)}`,
     },
     {
       id: "payment",

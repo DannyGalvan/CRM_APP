@@ -6,6 +6,7 @@ namespace Entities.Response
         public bool Success { get; set; }
         public string Message { get; set; } = string.Empty;
         public T? Data { get; set; }
+        public int TotalResults { get; set; }
     }
 
     public class Response<T, U>
@@ -14,5 +15,6 @@ namespace Entities.Response
         public string Message { get; set; } = string.Empty;
         public T? Data { get; set; }
         public U? Errors { get; set; }
+        public int TotalResults { get; set; }
     }
 }

@@ -1,23 +1,18 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createOrder, updateOrder } from "../services/orderService";
 import { useOrderDetailStore } from "../store/useOrderDetailStore";
-import { useOrderStore } from "../store/useOrderStore";
-import { ApiResponse } from "../types/ApiResponse";
 import { OrderRequest } from "../types/OrderRequest";
-import { OrderResponse } from "../types/OrderResponse";
 import { rebootScroll } from "../util/viewTransition";
 import { updateSearch } from "../obsevables/searchObservable";
 import { QueryKeys } from "../config/contants";
+import { useOrderStore } from "../store/useOrderStore";
+import { useRangeOfDatesStore } from "../store/useRangeOfDatesStore";
 
-interface RangeOfDates {
-  start: string;
-  end: string;
-}
-
-export const useOrder = (rangeOfDates?: RangeOfDates) => {
+export const useOrder = () => {
   const client = useQueryClient();
+  const { filters } = useOrderStore();
+  const { end, start } = useRangeOfDatesStore();
   const { orderDetail, clear } = useOrderDetailStore();
-  const { add } = useOrderStore();
 
   const rebootCatalogues = () => {
     updateSearch(QueryKeys.Customers, "");
@@ -25,6 +20,35 @@ export const useOrder = (rangeOfDates?: RangeOfDates) => {
     updateSearch(QueryKeys.PaymentTypes, "");
     updateSearch(QueryKeys.Products, "");
     updateSearch("Reminder", "0.00");
+  };
+
+  const reboolQueries = async () => {
+    await client.invalidateQueries({
+      queryKey: [
+        QueryKeys.Orders,
+        filters.filter,
+        end,
+        start,
+        filters.page,
+        filters.pageSize,
+      ],
+      type: "all",
+      exact: true,
+    });
+
+    await client.refetchQueries({
+      queryKey: [QueryKeys.OrdersFiltered],
+      type: "all",
+      exact: true,
+    });
+
+    await client.refetchQueries({
+      queryKey: [QueryKeys.Products],
+      type: "all",
+      exact: false,
+    });
+
+    rebootScroll();
   };
 
   const create = async (form: OrderRequest) => {
@@ -44,25 +68,7 @@ export const useOrder = (rangeOfDates?: RangeOfDates) => {
 
       rebootCatalogues();
 
-      await client.invalidateQueries({
-        queryKey: [QueryKeys.Orders],
-        type: "all",
-        exact: false,
-      });
-
-      await client.refetchQueries({
-        queryKey: [QueryKeys.OrdersFiltered],
-        type: "all",
-        exact: false,
-      });
-
-      await client.refetchQueries({
-        queryKey: [QueryKeys.Products],
-        type: "all",
-        exact: false,
-      });
-
-      rebootScroll();
+      await reboolQueries();
     }
 
     return response;
@@ -84,47 +90,7 @@ export const useOrder = (rangeOfDates?: RangeOfDates) => {
       return response;
     }
 
-    rebootScroll();
-
-    await client.invalidateQueries({
-      queryKey: [QueryKeys.Orders],
-      type: "all",
-      exact: false,
-    });
-
-    await client.refetchQueries({
-      queryKey: [QueryKeys.Products],
-      type: "all",
-      exact: false,
-    });
-
-    const orders = client.getQueryData<ApiResponse<OrderResponse[]>>([
-      QueryKeys.Orders,
-      rangeOfDates!.start,
-      rangeOfDates!.end,
-    ]);
-
-    if (orders != undefined) {
-      const find = orders.data?.find((c) => c.id === form.id);
-
-      if (find != undefined) {
-        const newOrder = {
-          ...find,
-          createdAt: null,
-          updatedAt: null,
-          updatedBy: null,
-          createdBy: null,
-        };
-
-        find && add(newOrder);
-      }
-    }
-
-    await client.refetchQueries({
-      queryKey: [QueryKeys.OrdersFiltered],
-      type: "all",
-      exact: false,
-    });
+    await reboolQueries();
 
     return response;
   };

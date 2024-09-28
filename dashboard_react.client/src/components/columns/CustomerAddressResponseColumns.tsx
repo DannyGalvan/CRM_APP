@@ -18,6 +18,7 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       name: "Cliente",
       selector: (data) => data?.customer?.fullName,
       omit: false,
+      maxWidth: "250px",
       sortable: true,
     },
     {
@@ -50,6 +51,7 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       selector: (data) => data.colonyCondominium,
       sortable: true,
       maxWidth: "160px",
+      wrap: true,
       omit: true,
     },
     {
@@ -57,7 +59,8 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       name: "Direccion",
       selector: (data) => data.address,
       sortable: true,
-      maxWidth: "160px",
+      wrap: true,
+      maxWidth: "350px",
       omit: false,
     },
     {

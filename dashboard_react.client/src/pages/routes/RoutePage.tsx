@@ -21,8 +21,11 @@ import { useDrawer } from "../../hooks/useDrawer";
 import { NotFound } from "../error/NotFound";
 import { RouteResponseColumns } from "../../components/columns/RouteResponseColumns";
 import { QueryKeys } from "../../config/contants";
+import { InputDateSelector } from "../../components/input/InputDateSelector";
+import { useRangeOfDatesStore } from "../../store/useRangeOfDatesStore";
 
 export const RoutePage = () => {
+  const { getDateFilters, end, start } = useRangeOfDatesStore();
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();
   const { create, update } = useRoutes();
@@ -32,8 +35,8 @@ export const RoutePage = () => {
     ApiResponse<RouteResponse[] | ValidationFailure[]>,
     ApiError | undefined
   >({
-    queryKey: [QueryKeys.Routes],
-    queryFn: () => getRoutes("State:eq:1"),
+    queryKey: [QueryKeys.Routes, end, start],
+    queryFn: () => getRoutes(`${getDateFilters("CreatedAt")} AND State:eq:1`),
   });
 
   useEffect(() => {
@@ -52,6 +55,7 @@ export const RoutePage = () => {
             <Icon name={"bi bi-bag-plus"} /> Crear Ruta
           </Button>
         </Col>
+        <InputDateSelector label="Rango de faechas Rutas"/>
         <TableRoot
           columns={RouteResponseColumns}
           data={data?.data ?? []}

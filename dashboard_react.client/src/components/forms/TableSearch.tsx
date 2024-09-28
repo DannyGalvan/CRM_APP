@@ -20,19 +20,21 @@ export const TableSearch = ({
   filterData,
 }: TableSearchProps) => {
   return (
-    <Row className={"my-4"}>
+    <Row className={"mt-4"}>
       <Col sm={12} md={6}>
         <Select
           label="Filtrar por campo"
           className="py-4"
           onChange={selectedField}
-          size="md"
+          size="sm"
           variant="bordered"
-          aria-label="Filtrar por campo"  
+          aria-label="Filtrar por campo"
         >
-          {columns.map((item, index) => (
-            <SelectItem key={index}>{item.name}</SelectItem>
-          ))}
+          {columns
+            .filter((x) => x.hasFilter)
+            .map((item, _) => (
+              <SelectItem key={item.id}>{item.name}</SelectItem>
+            ))}
         </Select>
       </Col>
       <Col sm={12} md={6}>
@@ -40,13 +42,13 @@ export const TableSearch = ({
           <Input
             label="Buscar..."
             name="search"
-            type="text"
+            type="search"
             ref={searchField}
             className={"py-4"}
-            size="md"
+            size="sm"
             variant="bordered"
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === "Tab") {
                 e.preventDefault();
                 filterData();
               }
@@ -55,13 +57,13 @@ export const TableSearch = ({
           <Button
             color="primary"
             radius="sm"
-            className="mt-[1.1rem] py-[1.6rem]"
-            size={"md"}
+            className="mt-[1.1rem] py-[1.5rem]"
+            size={"sm"}
             onClick={(e) => {
               e.preventDefault();
               filterData();
             }}
-            type="submit"
+            type="button"
           >
             <Icon name="bi bi-search" />
           </Button>

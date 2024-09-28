@@ -12,12 +12,19 @@ namespace Business.Util
         {
             foreach (PropertyInfo property in typeof(TDestination).GetProperties())
             {
-                //object? existingValue = property.GetValue(existingEntity);
+                object? existingValue = property.GetValue(existingEntity);
                 object? updatedValue = property.GetValue(updatedEntity);
 
-                if (property.Name is "CreatedBy" or "CreatedAt" or "Id" or "OrderDate" or "DeliveryDate")
+                switch (property.Name)
                 {
-                    continue;
+                    case "CreatedAt" or "OrderDate" or "DeliveryDate":
+                        existingValue = Convert.ToDateTime(existingValue).AddHours(6);
+                        property.SetValue(existingEntity, existingValue);
+                        continue;
+                    case "Id":
+                        continue;
+                    case "CreatedBy":
+                        continue;
                 }
 
                 if (updatedValue == null || !property.CanWrite) continue;
@@ -34,12 +41,6 @@ namespace Business.Util
                         break;
                 }
             }
-        }
-
-        public static T DeepCopy<T>(T obj)
-        {
-            var json = JsonSerializer.Serialize(obj);
-            return JsonSerializer.Deserialize<T>(json)!;
         }
     }
 }

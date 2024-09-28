@@ -105,9 +105,9 @@ export const today = () => {
   return now;
 };
 
-export const minDateMaxDate = () => {
+export const minDateMaxDate = (months = 6) => {
   const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - months);
 
   const minDate = sixMonthsAgo.toISOString().substring(0, 10);
   const maxDate = new Date().toISOString().substring(0, 10);

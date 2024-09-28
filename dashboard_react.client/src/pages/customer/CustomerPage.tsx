@@ -1,10 +1,8 @@
 import { Button } from "@nextui-org/button";
-import { useQuery } from "@tanstack/react-query";
 import { Col } from "@tremor/react";
-import { lazy, Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { Icon } from "../../components/Icons/Icon";
 import { CustomerForm } from "../../components/forms/CustomerForm";
-import { TableRoot } from "../../components/table/TableRoot";
 import { Drawer } from "../../containers/Drawer";
 import { useCustomer } from "../../hooks/useCustomer";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
@@ -12,44 +10,23 @@ import Protected from "../../routes/middlewares/Protected";
 import { getCustomers } from "../../services/customerService";
 import { useCustomerStore } from "../../store/useCustomerStore";
 import { compactGrid } from "../../theme/tableTheme";
-import { ApiResponse } from "../../types/ApiResponse";
 import { CustomerResponse } from "../../types/CustomerResponse";
-import { ValidationFailure } from "../../types/ValidationFailure";
-import { ApiError } from "../../util/errors";
-import { NotFound } from "../error/NotFound";
 import { initialCustomer } from "./CustomerCreatePage";
-import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 import { useDrawer } from "../../hooks/useDrawer";
 import { CustomerResponseColumns } from "../../components/columns/CustomerResponseColumns";
 import { QueryKeys } from "../../config/contants";
-
-const ModalCreateItem = lazy(() =>
-  import("../../components/modals/ModalCreateItem").then((module) => ({
-    default: module.ModalCreateItem,
-  })),
-);
+import { TableServer } from "../../components/table/TableServer";
 
 export const CustomerPage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();
-  const { customer, add } = useCustomerStore();
+  const { customer, add, customerFilters, setCustomeFilters } =
+    useCustomerStore();
   const { create, update } = useCustomer();
-
-  const { data, error, isFetching, isLoading } = useQuery<
-    ApiResponse<CustomerResponse[] | ValidationFailure[]>,
-    ApiError | undefined
-  >({
-    queryKey: [QueryKeys.Customers],
-    queryFn: () => getCustomers(),
-  });
 
   useEffect(() => {
     reRender();
   }, []);
-
-  if (error) {
-    return <NotFound Message={error.message} Number={error.statusCode} />;
-  }
 
   return (
     <Protected>
@@ -59,15 +36,17 @@ export const CustomerPage = () => {
             <Icon name={"bi bi-person-plus"} /> Crear Cliente
           </Button>
         </Col>
-        <TableRoot
+        <TableServer<CustomerResponse>
+          queryKey={QueryKeys.Customers}
           columns={CustomerResponseColumns}
-          data={data?.data ?? []}
           hasFilters={true}
-          pending={isLoading || isFetching}
           text="de los clientes"
           styles={compactGrid}
           title={"Clientes"}
           width={false}
+          filters={customerFilters}
+          setFilters={setCustomeFilters}
+          queryFn={getCustomers}
         />
         {render && (
           <Drawer
@@ -105,9 +84,6 @@ export const CustomerPage = () => {
           </Drawer>
         )}
       </div>
-      <Suspense fallback={<LoadingComponent />}>
-        <ModalCreateItem />
-      </Suspense>
     </Protected>
   );
 };

@@ -23,9 +23,9 @@ namespace Dashboard_React.Server.Controllers
 
         [HttpGet]
         [Authorize(Policy = "Customer.List")]
-        public IActionResult GetAll(string? filters, bool? thenInclude)
+        public IActionResult GetAll(string? filters, bool? thenInclude, int page = 1, int pageSize = 30)
         {
-            var response = _customerService.GetAll(filters, thenInclude ?? false);
+            var response = _customerService.GetAll(filters, thenInclude ?? false, page, pageSize);
 
             if
             (response.Success)
@@ -34,7 +34,8 @@ namespace Dashboard_React.Server.Controllers
                 {
                     Data = _mapper.Map<List<Customer>,List<CustomerResponse>>(response.Data!),
                     Success = response.Success,
-                    Message = response.Message
+                    Message = response.Message,
+                    TotalResults = response.TotalResults,
                 };
 
                 return Ok(successResponse);

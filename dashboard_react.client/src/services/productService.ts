@@ -4,15 +4,17 @@ import { ProductRequest } from "../types/ProductRequest";
 import { ProductResponse } from "../types/ProductResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 
-export const getProducts = async (filter?: string) => {
+export const getProducts = async (filter?: string, page = 1, pageSize = 10) => {
   let response;
 
   if (filter) {
-    response = await api.get<any,ApiResponse<ProductResponse[]>,any>(
-      `/product?filters=${filter}`
+    response = await api.get<any, ApiResponse<ProductResponse[]>, any>(
+      `/product?filters=${filter}&page=${page}&pageSize=${pageSize}`,
     );
   } else {
-    response = await api.get<any, ApiResponse<ProductResponse[]>, any>("/product");
+    response = await api.get<any, ApiResponse<ProductResponse[]>, any>(
+      `/product?page=${page}&pageSize=${pageSize}`,
+    );
   }
 
   return response;

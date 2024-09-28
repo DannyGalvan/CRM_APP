@@ -45,6 +45,7 @@ export const OrderDetailLineColumns: TableColumn<OrderDetailLine>[] = [
     id: "Total",
     name: "Total de Linea",
     selector: (data) => data.totalLine,
+    format: (data) => `Q. ${data.totalLine?.toFixed(2)}`,
     sortable: true,
     omit: false,
   },

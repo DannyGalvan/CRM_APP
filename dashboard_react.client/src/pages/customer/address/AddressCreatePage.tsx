@@ -1,9 +1,10 @@
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { Col } from "../../../components/grid/Col";
 import Protected from "../../../routes/middlewares/Protected";
 import { LoadingComponent } from "../../../components/spinner/LoadingComponent";
 import { CustomerAddressForm } from "../../../components/forms/CustomerAddressForm";
 import { useCustomerAddress } from "../../../hooks/useCustomerAddress";
+import { ModalCreateItemAsync } from "../../../components/modals/ModalCreateItemAsync";
 
 export const initialCustomerAddress: CustomerAddressRequest = {
   address: "",
@@ -13,15 +14,9 @@ export const initialCustomerAddress: CustomerAddressRequest = {
   colonyCondominium: "",
 };
 
-const ModalCreateItem = lazy(() =>
-  import("../../../components/modals/ModalCreateItem").then((module) => ({
-    default: module.ModalCreateItem,
-  })),
-);
-
 export const AddressCreatePage = () => {
   const { create } = useCustomerAddress();
-  
+
   return (
     <Protected>
       <div className="page-view flex flex-col flex-wrap items-center justify-center">
@@ -35,7 +30,7 @@ export const AddressCreatePage = () => {
         </Col>
       </div>
       <Suspense fallback={<LoadingComponent />}>
-        <ModalCreateItem />
+        <ModalCreateItemAsync />
       </Suspense>
     </Protected>
   );

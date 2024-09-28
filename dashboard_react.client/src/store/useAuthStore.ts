@@ -69,6 +69,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ reportState: newState });
       setReportAuthorization(authState.token);
       window.localStorage.setItem("@authReport", JSON.stringify(newState));
+      set({ loading: false });
     } catch (error) {
       console.error({ error });
       set({ loading: false, reportState: reportInitialState });

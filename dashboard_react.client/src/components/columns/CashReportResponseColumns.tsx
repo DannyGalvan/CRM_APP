@@ -31,7 +31,8 @@ export const CashReportResponseColumns: TableColumn<CashReportResponse>[] = [
     {
       id: "total",
       name: "Total",
-      selector: (data) => data.total.toFixed(2),
+      selector: (data) => data.total,
+      format: (data) => `Q. ${data.total?.toFixed(2)}`,
       sortable: true,
       wrap: true,
       omit: false,

@@ -25,8 +25,11 @@ import { useEffect, useState } from "react";
 import { nameRoutes, QueryKeys } from "../../config/contants";
 import { ModalType } from "../../hooks/useModalStrategies";
 import { Icon } from "../Icons/Icon";
-import { useNavigate } from "react-router-dom";
-import { onSearchUpdate } from "../../obsevables/searchObservable";
+import {
+  onSearchUpdate,
+  updateSearch,
+} from "../../obsevables/searchObservable";
+import { ButtonAnimatedLink } from "../links/ButtonAnimatedLink";
 
 interface OrderFormProps {
   initialForm: OrderRequest | OrderResponse;
@@ -53,7 +56,6 @@ export const OrderForm = ({
   sendForm,
   reboot,
 }: OrderFormProps) => {
-  const nav = useNavigate();
   const [reminder, setReminder] = useState<string>("0.00");
   const { order } = useOrderStore();
   const { orderDetail, add, load, changeLoad, total } = useOrderDetailStore();
@@ -119,12 +121,12 @@ export const OrderForm = ({
         >
           <Row className="justify-end">
             <Col md={6}>
-              <Button
+              <ButtonAnimatedLink
                 color={"secondary"}
-                onClick={() => nav(`${nameRoutes.route}/${nameRoutes.create}`)}
+                to={`${nameRoutes.route}/${nameRoutes.create}`}
               >
                 <Icon name={"bi bi-sign-turn-right"} /> Crear Rutas
-              </Button>
+              </ButtonAnimatedLink>
             </Col>
             <Col md={6}>
               <Input
@@ -158,10 +160,13 @@ export const OrderForm = ({
             defaultValue={order?.customer?.fullName}
             errorMessage={errors?.customerId}
             keyName="FullName"
-            selector={(selected) =>
-              setReminder(selected.shippingFee.toFixed(2))
-            }
-            unSelector={() => setReminder("0.00")}
+            selector={(selected) => {
+              setReminder(selected.shippingFee.toFixed(2));
+            }}
+            unSelector={() => {
+              setReminder("0.00");
+              updateSearch(QueryKeys.CustomerDirections, "");
+            }}
             queryFn={getCustomers}
           />
           <CatalogueSearch
@@ -174,7 +179,7 @@ export const OrderForm = ({
             keyName="Address"
             queryFn={getCustomerAddress}
             disabled={form.customerId === ""}
-            aditionalFilter={`AND CustomerId:eq:${form.customerId}`}
+            aditionalFilter={` AND CustomerId:eq:${form.customerId}`}
           />
           <CatalogueSearch
             name="paymentTypeId"
@@ -187,7 +192,7 @@ export const OrderForm = ({
           <span className="text-md text-right font-bold text-cyan-500">
             Recordatorio Envio: Q {reminder}
           </span>
-          <p className="font-bold text-red-600">{errors?.orderDetails}</p>
+          <p className="font-bold text-red-600">{errors?.orderDetails ?? ""}</p>
           <h2 className="text-center text-xl font-bold">Detalle del pedido</h2>
           <div>
             <CatalogueSearch

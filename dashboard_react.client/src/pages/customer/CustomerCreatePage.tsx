@@ -1,9 +1,7 @@
-import { lazy, Suspense } from "react";
 import { CustomerForm } from "../../components/forms/CustomerForm";
 import { Col } from "../../components/grid/Col";
 import { useCustomer } from "../../hooks/useCustomer";
 import Protected from "../../routes/middlewares/Protected";
-import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 
 export const initialCustomer: CustomerRequest = {
   firstName: "",
@@ -16,12 +14,6 @@ export const initialCustomer: CustomerRequest = {
   socialNetworks: "",
   state: 1,
 };
-
-const ModalCreateItem = lazy(() =>
-  import("../../components/modals/ModalCreateItem").then((module) => ({
-    default: module.ModalCreateItem,
-  })),
-);
 
 export const CustomerCreatePage = () => {
   const { create } = useCustomer();
@@ -38,9 +30,6 @@ export const CustomerCreatePage = () => {
           />
         </Col>
       </div>
-      <Suspense fallback={<LoadingComponent />}>
-        <ModalCreateItem />
-      </Suspense>
     </Protected>
   );
 };

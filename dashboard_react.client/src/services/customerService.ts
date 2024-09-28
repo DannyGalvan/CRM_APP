@@ -3,16 +3,16 @@ import { ApiResponse } from "../types/ApiResponse";
 import { CustomerResponse } from "../types/CustomerResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 
-export const getCustomers = async (filter?: string) => {
-  let response: ApiResponse<CustomerResponse[] | ValidationFailure[]>;
+export const getCustomers = async (filter?: string, page = 1, pageSize = 10) => {
+  let response: ApiResponse<CustomerResponse[]>;
 
   if (!filter) {
     response = await api.get<any, ApiResponse<CustomerResponse[]>, any>(
-      "/customer",
+      `/customer?page=${page}&pageSize=${pageSize}`,
     );
   } else {
     response = await api.get<any, ApiResponse<CustomerResponse[]>, any>(
-      `/customer?filters=${filter}`,
+      `/customer?filters=${filter}&page=${page}&pageSize=${pageSize}`,
     );
   }
 

@@ -89,6 +89,9 @@ export const TableRoot = ({
       )}
       <DataTable
         responsive
+        paginationDefaultPage={1}
+        paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
+        paginationPerPage={30}
         contextMessage={SELECTED_MESSAGE}
         columns={memoizedColumns}
         data={memoizedData}
@@ -98,7 +101,6 @@ export const TableRoot = ({
         pagination
         striped
         expandableRows={width}
-        // expandableRowsComponent={ExpandedComponent}
         paginationComponentOptions={PAGINATION_OPTIONS}
         subHeader={true}
         fixedHeader
@@ -107,6 +109,8 @@ export const TableRoot = ({
         fixedHeaderScrollHeight="650px"
         theme="individuality"
         highlightOnHover
+        clearSelectedRows={selectedRows}
+        pointerOnHover
         progressPending={pending}
         progressComponent={<LoadingComponent />}
         noDataComponent={

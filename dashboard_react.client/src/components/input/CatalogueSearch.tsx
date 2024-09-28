@@ -51,7 +51,7 @@ export const CatalogueSearch = ({
     queryKey: [querykey, "search", search, aditionalFilter],
     queryFn: () =>
       queryFn
-        ? queryFn(`${keyName}:like:${search} ${aditionalFilter}`)
+        ? queryFn(`${keyName}:like:${search}${aditionalFilter}`)
         : getAllCatalogues(
             querykey,
             `Description:like:${search} ${aditionalFilter}`,

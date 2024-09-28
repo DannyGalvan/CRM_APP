@@ -112,7 +112,7 @@ namespace Business.Services
             }
         }
 
-        public Response<List<TEntity>, List<ValidationFailure>> GetAll(string? filters, bool? thenInclude = false)
+        public Response<List<TEntity>, List<ValidationFailure>> GetAll(string? filters, bool? thenInclude = false, int pageNumber = 1, int pageSize = 30)
         {
             Response<List<TEntity>, List<ValidationFailure>> response = new();
 
@@ -187,16 +187,29 @@ namespace Business.Services
                     }
                 }
 
+                var sortDescending = new BsonDocument("$sort", new BsonDocument("CreatedAt", -1));
+
+                aggregate = aggregate.AppendStage<TEntity>(sortDescending);
+
                 if (!string.IsNullOrEmpty(filters))
                 {
                     var filter = TranslateToMongoFilter(filters);
                     aggregate = aggregate.Match(filter);
                 }
 
+                var aggregateForCount = aggregate.ToEnumerable().ToList();
+
+                int totalRecords = aggregateForCount.Count;
+
+                // Paginación: calcular cuántos registros omitir y limitar la cantidad de resultados.
+                int skip = (pageNumber - 1) * pageSize;
+                aggregate = aggregate.Skip(skip).Limit(pageSize);
+
                 var entities = aggregate.ToList();
 
                 response.Errors = null;
                 response.Data = entities;
+                response.TotalResults = totalRecords;
                 response.Success = true;
                 response.Message = $"Entities {typeof(TEntity).Name} retrieved successfully";
 
@@ -403,7 +416,7 @@ namespace Business.Services
 
                 userId = entityExist.CreatedBy.ToString();
 
-                DateTime createdAt = entityExist.CreatedAt;
+                DateTime createdAt = entityExist.CreatedAt.AddHours(6);
 
                 Util.Util.UpdateProperties(entityExist, entity);
 

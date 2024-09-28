@@ -4,8 +4,8 @@ import { Col } from "../../components/grid/Col";
 import Protected from "../../routes/middlewares/Protected";
 import { RouteDtoRequest } from "../../types/RouteDto";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
-import { ModalCreateItem } from "../../components/modals/ModalCreateItem";
 import { useRoutes } from "../../hooks/useRoutes";
+import { ModalCreateItemAsync } from "../../components/modals/ModalCreateItemAsync";
 
 export const initialRoute: RouteDtoRequest = {
   observations: "",
@@ -37,7 +37,7 @@ export const CreateRoutePage = () => {
         </Col>
       </div>
       <Suspense fallback={<LoadingComponent />}>
-        <ModalCreateItem />
+        <ModalCreateItemAsync />
       </Suspense>
     </Protected>
   );
