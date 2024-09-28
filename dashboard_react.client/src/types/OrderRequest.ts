@@ -1,4 +1,3 @@
-
 export interface OrderRequest {
   id?: string;
   deliveryDate?: Date;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { Col } from "../../components/grid/Col";
 import { Row } from "../../components/grid/Row";
 import { nameRoutes } from "../../config/contants";
@@ -39,7 +40,7 @@ export function Component() {
     <ProtectedError>
       <div className="container mx-auto">
         <Row className="min-h-[80vh] items-center justify-center">
-          <Col xs={12} className="text-center">
+          <Col className="text-center" xs={12}>
             <span className="block text-8xl font-bold">
               {error?.statusCode ?? error?.name}
             </span>

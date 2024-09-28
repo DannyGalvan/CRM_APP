@@ -1,4 +1,5 @@
 import { ReactNode, useEffect } from "react";
+
 import { CatalogueForm } from "../components/forms/CatalogueForm";
 import { CustomerForm } from "../components/forms/CustomerForm";
 import { ProductForm } from "../components/forms/ProductForm";
@@ -6,14 +7,15 @@ import { initialCatalogue } from "../pages/catalogue/CreateCataloguePage";
 import { initialCustomer } from "../pages/customer/CustomerCreatePage";
 import { initialProduct } from "../pages/product/CreateProductPage";
 import { useModalCreateStore } from "../store/useModalCreateStore";
+import { PilotForm } from "../components/forms/PilotForm";
+import { initialPilot } from "../pages/pilots/CreatePilotPage";
+import { useErrorsStore } from "../store/useErrorsStore";
+import { CustomerAddressForm } from "../components/forms/CustomerAddressForm";
+
 import { useCatalogues } from "./useCatalogues";
 import { useCustomer } from "./useCustomer";
 import { useProducts } from "./useProducts";
-import { PilotForm } from "../components/forms/PilotForm";
-import { initialPilot } from "../pages/pilots/CreatePilotPage";
 import { usePilots } from "./usePilots";
-import { useErrorsStore } from "../store/useErrorsStore";
-import { CustomerAddressForm } from "../components/forms/CustomerAddressForm";
 import { useCustomerAddress } from "./useCustomerAddress";
 
 export type ModalType =
@@ -51,12 +53,12 @@ export const useModalStrategies = () => {
 
   const commonCatalogueForm = () => (
     <CatalogueForm
+      reboot
       collectionError={collectionError}
+      initialForm={initialCatalogue}
       selectedCatalogue={{ name: modal.title, selected: modal.keyForm }}
       sendForm={catalogCreate}
       text="Crear"
-      initialForm={initialCatalogue}
-      reboot
     />
   );
 
@@ -68,34 +70,34 @@ export const useModalStrategies = () => {
     Families: commonCatalogueForm(),
     Customers: (
       <CustomerForm
+        reboot
         initialForm={initialCustomer}
         sendForm={create}
         text="Crear"
-        reboot
       />
     ),
     CustomerDirections: (
       <CustomerAddressForm
+        reboot
         initialForm={initialCustomer}
         sendForm={createCustomerAddress}
         text="Crear"
-        reboot
       />
     ),
     Products: (
       <ProductForm
+        reboot
         initialForm={initialProduct}
         sendForm={createProduct}
         text="Crear"
-        reboot
       />
     ),
     Pilots: (
       <PilotForm
+        reboot
         initialForm={initialPilot}
         sendForm={createPilot}
         text="Crear"
-        reboot
       />
     ),
     "": <span>Sin Formulario</span>,

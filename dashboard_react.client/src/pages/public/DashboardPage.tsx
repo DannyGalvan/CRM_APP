@@ -1,5 +1,6 @@
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Suspense, lazy } from "react";
+
 import { Grid } from "../../components/grid/Grid";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 import { MONTHS } from "../../config/contants";
@@ -37,9 +38,9 @@ export function Component() {
         <h1 className="text-center text-3xl font-bold" id="tabelLabel">
           Dashboard
         </h1>
-        <Grid md={1} className="my-3 p-4">
+        <Grid className="p-4 my-3" md={1}>
           <div>
-            <Grid lg={2} md={2} xs={1} className="my-3 p-4">
+            <Grid className="p-4 my-3" lg={2} md={2} xs={1}>
               <Card className="border-t-large border-t-blue-700 bg-success-50">
                 <CardHeader>
                   <h1 className="text-xl font-bold">
@@ -75,17 +76,17 @@ export function Component() {
                 <LoadingComponent />
               ) : (
                 <LineChart
+                  categories={[month_orders]}
                   className="h-80"
+                  colors={["violet"]}
                   data={dataOrders?.orders as any}
                   index="date"
-                  categories={[month_orders]}
-                  colors={["violet"]}
-                  valueFormatter={dataFormatter}
-                  yAxisWidth={50}
                   maxValue={
                     dataOrders?.totalOrders! / dataOrders?.quantityOrders! +
                     1000
                   }
+                  valueFormatter={dataFormatter}
+                  yAxisWidth={50}
                 />
               )}
             </Suspense>
@@ -125,14 +126,14 @@ export function Component() {
                 <LoadingComponent />
               ) : (
                 <LineChart
+                  categories={[year_orders]}
                   className="h-80"
+                  colors={["yellow"]}
                   data={data?.orders as any}
                   index="date"
-                  categories={[year_orders]}
-                  colors={["yellow"]}
+                  maxValue={data?.totalOrders! / data?.quantityOrders! + 5000}
                   valueFormatter={dataFormatter}
                   yAxisWidth={50}
-                  maxValue={data?.totalOrders! / data?.quantityOrders! + 5000}
                 />
               )}
             </Suspense>

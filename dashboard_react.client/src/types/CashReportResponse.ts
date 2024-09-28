@@ -1,5 +1,3 @@
-
-
 export interface CashReportResponse {
   id: string;
   cashierName: string;

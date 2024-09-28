@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+
 import { MONTHS } from "../config/contants";
 import { getOrdersByDay, getOrdersByMonth } from "../services/dashboardService";
 import { DailyOrders } from "../types/DailyOrders";

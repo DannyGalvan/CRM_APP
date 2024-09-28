@@ -5,6 +5,9 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { useOrderDetailStore } from "../../store/useOrderDetailStore";
 import { useOrderStore } from "../../store/useOrderStore";
 import { OrderResponse } from "../../types/OrderResponse";
@@ -12,10 +15,8 @@ import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
 import { partialUpdateOrder } from "../../services/orderService";
 import { ValidationFailure } from "../../types/ValidationFailure";
-import { toast } from "react-toastify";
 import { useDrawer } from "../../hooks/useDrawer";
 import { OrderStates, QueryKeys } from "../../config/contants";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface CatalogueActionMenuProps {
   data: OrderResponse;
@@ -49,7 +50,6 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
         toast.error(error.errorMessage);
       });
     } else {
-      
       await client.invalidateQueries({
         queryKey: [QueryKeys.Orders],
         type: "all",
@@ -69,7 +69,7 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button className="bg-transparent text-cyan-500" isIconOnly>
+        <Button isIconOnly className="bg-transparent text-cyan-500">
           <Icon name="bi bi-three-dots-vertical" />
         </Button>
       </DropdownTrigger>
@@ -85,18 +85,18 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
           key="edit"
           className="text-success"
           color="success"
-          onClick={handleOpen}
           startContent={<Icon name="bi bi-pen" />}
+          onClick={handleOpen}
         >
           Editar
         </DropdownItem>
         <DropdownItem
           key="delete"
-          onClick={handleDelete}
-          startContent={<Icon name="bi bi-trash3" />}
           className="text-danger"
           color="danger"
           content="Eliminar"
+          startContent={<Icon name="bi bi-trash3" />}
+          onClick={handleDelete}
         >
           Eliminar
         </DropdownItem>

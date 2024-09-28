@@ -1,13 +1,12 @@
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/modal";
 import { Switch } from "@nextui-org/switch";
 import { TableColumn } from "react-data-table-component";
+
 import { Icon } from "../Icons/Icon";
 
 interface ModalTableProps {
   columns: TableColumn<any>[];
-  changeVisibilitiColumn: (
-    column: TableColumn<any>,
-  ) => void;
+  changeVisibilitiColumn: (column: TableColumn<any>) => void;
   open: boolean;
   toggle: () => void;
 }
@@ -27,9 +26,8 @@ export const ModalTable = ({
             {columns.map((column, index) => (
               <div key={index}>
                 <Switch
-                  isSelected={!column.omit}
-                  onChange={() => changeVisibilitiColumn(column)}
                   color="primary"
+                  isSelected={!column.omit}
                   thumbIcon={({ isSelected, className }) =>
                     isSelected ? (
                       <Icon name={`bi bi-eye-fill ${className}`} />
@@ -37,6 +35,7 @@ export const ModalTable = ({
                       <Icon name={`bi bi-eye-slash-fill ${className}`} />
                     )
                   }
+                  onChange={() => changeVisibilitiColumn(column)}
                 >
                   {column.name}
                 </Switch>

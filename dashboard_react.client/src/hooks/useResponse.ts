@@ -1,7 +1,9 @@
 import { useState } from "react";
+
 import { ApiResponse } from "../types/ApiResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 import { toCamelCase } from "../util/converted";
+
 import { ErrorObject } from "./useForm";
 
 export const useResponse = <T, U>() => {
@@ -11,7 +13,7 @@ export const useResponse = <T, U>() => {
   const [s, setS] = useState<boolean | null>(null);
 
   const showErrors = (errors: ValidationFailure[]) => {
-    let errorsConverted: ErrorObject = {};
+    const errorsConverted: ErrorObject = {};
 
     errors.forEach((error) => {
       errorsConverted[toCamelCase(error.propertyName)] = error.errorMessage;

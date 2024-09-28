@@ -23,10 +23,10 @@ export const CustomerCreatePage = () => {
       <div className="page-view flex flex-col flex-wrap items-center justify-center">
         <Col md={8}>
           <CustomerForm
+            reboot
             initialForm={initialCustomer}
             sendForm={create}
             text="Crear"
-            reboot
           />
         </Col>
       </div>

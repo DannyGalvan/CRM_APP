@@ -21,10 +21,10 @@ export const CreatePilotPage = () => {
       <div className="page-view flex flex-col flex-wrap items-center justify-center">
         <Col md={8}>
           <PilotForm
+            reboot
             initialForm={initialPilot}
             sendForm={create}
             text="Crear"
-            reboot
           />
         </Col>
       </div>

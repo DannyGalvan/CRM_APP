@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+
 import { Authorizations } from "../../types/Authorizations";
 import { Icon } from "../Icons/Icon";
+
 import { AnimatedLink } from "./AnimatedLink";
 
 interface subMenuProps {
@@ -22,7 +24,7 @@ export const SubMenu = ({ data }: subMenuProps) => {
         }`}
         onClick={() => setSubMenuOpen(!subMenuOpen)}
       >
-        <Icon color={iconColor} size={23} name={data.module.image} />
+        <Icon color={iconColor} name={data.module.image} size={23} />
         <p className="flex-1 text-wrap capitalize">{data.module.name}</p>
         <motion.i
           animate={
@@ -57,10 +59,10 @@ export const SubMenu = ({ data }: subMenuProps) => {
             menu.isVisible && (
               <li key={menu.id}>
                 <AnimatedLink
+                  className="capitalize link text-wrap"
                   to={`${menu.path}`}
-                  className="link text-wrap capitalize"
                 >
-                   <Icon color={iconColor} size={18} name={menu.icon} />
+                  <Icon color={iconColor} name={menu.icon} size={18} />
                   {menu.name}
                 </AnimatedLink>
               </li>

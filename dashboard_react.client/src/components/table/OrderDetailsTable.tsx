@@ -1,4 +1,5 @@
 import DataTable, { TableColumn } from "react-data-table-component";
+
 import { PAGINATION_OPTIONS, SELECTED_MESSAGE } from "../../config/contants";
 import { customStyles } from "../../theme/tableTheme";
 import { MesajeNoData } from "../messages/MesajeNoData";
@@ -20,25 +21,25 @@ export const OrderDetailsTable = ({
 }: OrderDetailsTableProps) => {
   return (
     <DataTable
-      responsive
-      contextMessage={SELECTED_MESSAGE}
-      columns={columns}
-      data={data}
-      title={title}
-      subHeaderWrap={true}
-      pagination
-      striped
-      // expandableRowsComponent={ExpandedComponent}
-      paginationComponentOptions={PAGINATION_OPTIONS}
-      subHeader={true}
       fixedHeader
-      fixedHeaderScrollHeight="650px"
-      theme="individuality"
       highlightOnHover
+      pagination
+      responsive
+      columns={columns}
+      contextMessage={SELECTED_MESSAGE}
+      customStyles={styles ?? customStyles}
+      data={data}
+      fixedHeaderScrollHeight="650px"
       noDataComponent={
         <MesajeNoData mesaje={`No se encontraros datos ${text}`} />
       }
-      customStyles={styles ?? customStyles}
+      subHeader={true}
+      subHeaderWrap={true}
+      theme="individuality"
+      title={title}
+      striped
+      // expandableRowsComponent={ExpandedComponent}
+      paginationComponentOptions={PAGINATION_OPTIONS}
     />
   );
 };

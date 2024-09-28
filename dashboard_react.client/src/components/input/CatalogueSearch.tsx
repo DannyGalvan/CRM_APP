@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { ChangeEvent, useEffect, useState } from "react";
+
 import { ModalType } from "../../hooks/useModalStrategies";
 import { getAllCatalogues } from "../../services/catalogueService";
 import { useModalCreateStore } from "../../store/useModalCreateStore";
 import { toCamelCase } from "../../util/converted";
 import { ApiError } from "../../util/errors";
-import { InputSearch } from "./InputSearch";
 import { useErrorsStore } from "../../store/useErrorsStore";
 import { onSearchUpdate } from "../../obsevables/searchObservable";
+
+import { InputSearch } from "./InputSearch";
 interface CatalogueSearchProps {
   querykey: ModalType;
   entity: string;
@@ -41,7 +43,7 @@ export const CatalogueSearch = ({
   disabled = false,
   selector,
   unSelector,
-  keyAdd
+  keyAdd,
 }: CatalogueSearchProps) => {
   const { setError } = useErrorsStore();
   const [search, setSearch] = useState<string>("");
@@ -116,23 +118,23 @@ export const CatalogueSearch = ({
   return (
     <div>
       <InputSearch
+        createItemFn={() => open(querykey, entity)}
         data={data?.data || []}
-        isLoading={isPending}
-        inputSearch={search}
+        defaultValue={defaultValue}
+        disabled={disabled}
+        entity={entity}
+        errorMessage={errorMessage}
         handleSearchSubmit={handleSearchSubmit}
         handleSelect={handleSelect}
         handleUnSelect={handleUnselect}
-        setSearchInput={setSearch}
-        errorMessage={errorMessage}
+        inputSearch={search}
+        isForm={false}
+        isLoading={isPending}
+        keyAdd={keyAdd}
+        keyname={toCamelCase(keyName)}
         label={entity}
         required={required}
-        disabled={disabled}
-        isForm={false}
-        defaultValue={defaultValue}
-        keyname={toCamelCase(keyName)}
-        entity={entity}
-        createItemFn={() => open(querykey, entity)}
-        keyAdd={keyAdd}
+        setSearchInput={setSearch}
       />
     </div>
   );

@@ -14,6 +14,7 @@ import timeGridPlugin from "@fullcalendar/timegrid"; // a plugin!
 import { useCallback, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "react-toastify";
+
 import { CalendarSidebar } from "../../components/layout/CalendarSidebar";
 import { ModalCalendar } from "../../components/modals/ModalCalendar";
 import { api } from "../../config/axios/interceptors";
@@ -36,7 +37,7 @@ export function Component() {
   const { open: openEvent, toggle: toggleEvent } = useToggle();
   const { date, handleDate } = useDates();
   const [error, setError] = useState<ApiError | undefined>(undefined);
-  let isPhone = useMediaQuery({ query: "(max-width: 1150px)" });
+  const isPhone = useMediaQuery({ query: "(max-width: 1150px)" });
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     setSelectEvent(clickInfo.event.toPlainObject());
@@ -89,60 +90,31 @@ export function Component() {
   return (
     <Protected>
       <ModalCalendar
-        isOpen={open}
-        onClose={toggle}
-        title="Nuevo Evento"
-        element={calendar}
         datesSelect={date}
+        element={calendar}
+        isOpen={open}
+        title="Nuevo Evento"
+        onClose={toggle}
       />
       <ModalCalendar
-        isOpen={openEvent}
-        onClose={toggleEvent}
-        title={"Editar Evento"}
-        element={calendar}
         datesSelect={date}
+        element={calendar}
         event={selectEvent}
+        isOpen={openEvent}
+        title={"Editar Evento"}
+        onClose={toggleEvent}
       />
       <div className="demo-app">
         {isPhone ? null : (
           <CalendarSidebar
-            weekendsVisible={weekendsVisible}
-            handleWeekendsToggle={handleWeekendsToggle}
             currentEvents={currentEvents}
+            handleWeekendsToggle={handleWeekendsToggle}
+            weekendsVisible={weekendsVisible}
           />
         )}
         <FullCalendar
           ref={calendar}
-          plugins={[
-            dayGridPlugin,
-            timeGridPlugin,
-            listPlugin,
-            multimonth,
-            interactionPlugin,
-          ]}
-          initialView="dayGridMonth"
-          headerToolbar={{
-            left: isPhone ? "prev next" : "prevYear prev next nextYear today",
-            center: !isPhone ? "title" : "today",
-            right: isPhone
-              ? "dayGridMonth timeGridDay"
-              : "dayGridMonth timeGridWeek timeGridDay listMonth",
-          }}
-          navLinks={true}
-          events={events}
           businessHours={true}
-          editable={true}
-          selectable={true}
-          select={handleDateSelect}
-          selectMirror={true}
-          dayMaxEvents={true}
-          weekends={weekendsVisible}
-          eventClick={handleEventClick}
-          eventsSet={handleEvents}
-          eventChange={eventChange}
-          locale={"es"}
-          stickyHeaderDates={true}
-          noEventsText="No hay eventos para mostrar"
           buttonText={{
             day: "Día",
             month: "Mes",
@@ -150,11 +122,40 @@ export function Component() {
             today: "Hoy",
             list: "Lista",
           }}
+          dayMaxEvents={true}
+          editable={true}
+          eventChange={eventChange}
+          eventClick={handleEventClick}
           eventTimeFormat={{
             hour: "numeric",
             minute: "2-digit",
             meridiem: "short",
           }}
+          events={events}
+          eventsSet={handleEvents}
+          headerToolbar={{
+            left: isPhone ? "prev next" : "prevYear prev next nextYear today",
+            center: !isPhone ? "title" : "today",
+            right: isPhone
+              ? "dayGridMonth timeGridDay"
+              : "dayGridMonth timeGridWeek timeGridDay listMonth",
+          }}
+          initialView="dayGridMonth"
+          locale={"es"}
+          navLinks={true}
+          noEventsText="No hay eventos para mostrar"
+          plugins={[
+            dayGridPlugin,
+            timeGridPlugin,
+            listPlugin,
+            multimonth,
+            interactionPlugin,
+          ]}
+          select={handleDateSelect}
+          selectMirror={true}
+          selectable={true}
+          stickyHeaderDates={true}
+          weekends={weekendsVisible}
         />
       </div>
     </Protected>

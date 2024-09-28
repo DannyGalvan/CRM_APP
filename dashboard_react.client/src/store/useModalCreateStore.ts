@@ -1,5 +1,7 @@
 import { create } from "zustand";
+
 import { ModalType } from "../hooks/useModalStrategies";
+
 import { logger } from "./logger";
 
 interface ModalState {

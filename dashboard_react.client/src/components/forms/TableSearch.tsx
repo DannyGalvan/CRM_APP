@@ -2,6 +2,7 @@ import { Select, SelectItem } from "@nextui-org/select";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { Ref } from "react";
+
 import { Icon } from "../Icons/Icon";
 import { Col } from "../grid/Col";
 import { Row } from "../grid/Row";
@@ -21,14 +22,14 @@ export const TableSearch = ({
 }: TableSearchProps) => {
   return (
     <Row className={"mt-4"}>
-      <Col sm={12} md={6}>
+      <Col md={6} sm={12}>
         <Select
-          label="Filtrar por campo"
+          aria-label="Filtrar por campo"
           className="py-4"
-          onChange={selectedField}
+          label="Filtrar por campo"
           size="sm"
           variant="bordered"
-          aria-label="Filtrar por campo"
+          onChange={selectedField}
         >
           {columns
             .filter((x) => x.hasFilter)
@@ -37,15 +38,15 @@ export const TableSearch = ({
             ))}
         </Select>
       </Col>
-      <Col sm={12} md={6}>
+      <Col md={6} sm={12}>
         <article className={"flex"}>
           <Input
-            label="Buscar..."
-            name="search"
-            type="search"
             ref={searchField}
             className={"py-4"}
+            label="Buscar..."
+            name="search"
             size="sm"
+            type="search"
             variant="bordered"
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === "Tab") {
@@ -55,15 +56,15 @@ export const TableSearch = ({
             }}
           />
           <Button
+            className="mt-[1.1rem] py-[1.5rem]"
             color="primary"
             radius="sm"
-            className="mt-[1.1rem] py-[1.5rem]"
             size={"sm"}
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               filterData();
             }}
-            type="button"
           >
             <Icon name="bi bi-search" />
           </Button>

@@ -2,7 +2,8 @@ import { toAllOperations } from "../util/converted";
 import { useAuthStore } from "../store/useAuthStore";
 
 export const useAuth = () => {
-  const { authState, loading, logout, signIn, syncAuth, singnInReports } = useAuthStore();
+  const { authState, loading, logout, signIn, syncAuth, singnInReports } =
+    useAuthStore();
 
   const {
     email,

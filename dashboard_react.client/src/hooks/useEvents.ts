@@ -2,6 +2,7 @@ import { EventApi, EventInput } from "@fullcalendar/core/index.js";
 import FullCalendar from "@fullcalendar/react";
 import { MutableRefObject, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
 import {
   createEvent,
   partialUpdateEvent,
@@ -94,7 +95,7 @@ export const useEvents = ({
         type: "success",
       });
       onClose();
-    }else{
+    } else {
       toast(response.message, { type: "error" });
     }
 

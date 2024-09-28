@@ -6,6 +6,8 @@ import {
 } from "@nextui-org/dropdown";
 import { Spinner } from "@nextui-org/spinner";
 import { Button } from "@nextui-org/button";
+import { useState } from "react";
+
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
 import { useDrawer } from "../../hooks/useDrawer";
@@ -14,7 +16,6 @@ import { CashReportResponse } from "../../types/CashReportResponse";
 import { useCashReportStore } from "../../store/useCashReportStore";
 import { useCashReport } from "../../hooks/useCashReport";
 import { downloadFile } from "../../services/reportService";
-import { useState } from "react";
 
 interface CashReportActionMenuProps {
   data: CashReportResponse;
@@ -52,7 +53,7 @@ export const CashReportActionMenu = ({ data }: CashReportActionMenuProps) => {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button className="bg-transparent text-cyan-500" isIconOnly>
+        <Button isIconOnly className="bg-transparent text-cyan-500">
           <Icon name="bi bi-three-dots-vertical" />
         </Button>
       </DropdownTrigger>
@@ -68,8 +69,8 @@ export const CashReportActionMenu = ({ data }: CashReportActionMenuProps) => {
           key="edit"
           className="text-success"
           color="success"
-          onClick={handleOpen}
           startContent={<Icon name="bi bi-pen" />}
+          onClick={handleOpen}
         >
           Editar
         </DropdownItem>
@@ -77,18 +78,18 @@ export const CashReportActionMenu = ({ data }: CashReportActionMenuProps) => {
           key="print"
           className="text-primary"
           color="primary"
-          onClick={handlePrint}
           startContent={<Icon name="bi bi-printer" />}
+          onClick={handlePrint}
         >
-          Ver Reporte {load && <Spinner size="sm" color="warning" />}
+          Ver Reporte {load && <Spinner color="warning" size="sm" />}
         </DropdownItem>
         <DropdownItem
           key="delete"
-          onClick={handleDelete}
-          startContent={<Icon name="bi bi-trash3" />}
           className="text-danger"
           color="danger"
           content="Eliminar"
+          startContent={<Icon name="bi bi-trash3" />}
+          onClick={handleDelete}
         >
           Eliminar
         </DropdownItem>

@@ -3,7 +3,11 @@ import { ApiResponse } from "../types/ApiResponse";
 import { CustomerResponse } from "../types/CustomerResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 
-export const getCustomers = async (filter?: string, page = 1, pageSize = 10) => {
+export const getCustomers = async (
+  filter?: string,
+  page = 1,
+  pageSize = 10,
+) => {
   let response: ApiResponse<CustomerResponse[]>;
 
   if (!filter) {

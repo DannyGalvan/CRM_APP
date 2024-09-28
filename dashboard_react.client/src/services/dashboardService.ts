@@ -7,7 +7,7 @@ export const getOrdersByMonth = async () => {
   return response;
 };
 
-export const getOrdersByDay = async (month: Number) => {
+export const getOrdersByDay = async (month: number) => {
   const response = await api.get<any, DailyOrders[], any>(
     `/Dashboard/${month}`,
   );

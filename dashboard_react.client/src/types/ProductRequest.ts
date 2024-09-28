@@ -1,5 +1,3 @@
-
-
 export interface ProductRequest {
   id?: string;
   name: string;
@@ -8,5 +6,5 @@ export interface ProductRequest {
   cost: number;
   salePrice: number;
   stock: number;
-  state?: number,
+  state?: number;
 }

@@ -10,7 +10,6 @@ export const getCollections = async () => {
     any
   >("/collection");
 
-  
   return response;
 };
 
@@ -20,7 +19,7 @@ export const getCollection = async (id: string) => {
     ApiResponse<CollectionResponse>,
     any
   >(`/collection/${id}`);
-  
+
   return response;
 };
 
@@ -30,7 +29,7 @@ export const createCollection = async (data: CollectionRequest) => {
     ApiResponse<CollectionResponse>,
     CollectionRequest
   >("/collection", data);
-  
+
   return response;
 };
 
@@ -40,7 +39,7 @@ export const updateCollection = async (data: CollectionRequest) => {
     ApiResponse<CollectionResponse>,
     CollectionRequest
   >(`/collection`, data);
-  
+
   return response;
 };
 
@@ -50,6 +49,6 @@ export const partialUpdateCollection = async (data: CollectionRequest) => {
     ApiResponse<CollectionResponse>,
     CollectionRequest
   >(`/collection`, data);
-  
+
   return response;
-}
+};

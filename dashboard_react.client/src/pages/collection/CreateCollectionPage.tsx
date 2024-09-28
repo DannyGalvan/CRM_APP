@@ -1,13 +1,13 @@
 import Protected from "../../routes/middlewares/Protected";
 import { CollectionRequest } from "../../types/CollectionRequest";
 
-export const initialCollection : CollectionRequest = {
+export const initialCollection: CollectionRequest = {
   description: "",
   name: "",
   isReadOnly: false,
-  isVisible : true,
-  nameView  : "",
-}
+  isVisible: true,
+  nameView: "",
+};
 
 export const CreateCollectionPage = () => {
   return (

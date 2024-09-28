@@ -11,17 +11,26 @@ interface GridProps {
   className?: string;
 }
 
-export const Grid = ({ children, xs, sm, md, lg, xl, gap, className } : GridProps) => {
+export const Grid = ({
+  children,
+  xs,
+  sm,
+  md,
+  lg,
+  xl,
+  gap,
+  className,
+}: GridProps) => {
   const colClasses = [
-    'grid',
-    xs ? `gcol-${xs}` : '',
-    sm ? `gcol-sm-${sm}` : '',
-    md ? `gcol-md-${md}` : '',
-    lg ? `gcol-lg-${lg}` : '',
-    xl ? `gcol-xl-${xl}` : '',
+    "grid",
+    xs ? `gcol-${xs}` : "",
+    sm ? `gcol-sm-${sm}` : "",
+    md ? `gcol-md-${md}` : "",
+    lg ? `gcol-lg-${lg}` : "",
+    xl ? `gcol-xl-${xl}` : "",
     `gap-${gap ?? 4}`,
-    'px-2',   
+    "px-2",
     className,
   ];
-  return <div className={colClasses.join(' ')}>{children}</div>;
+  return <div className={colClasses.join(" ")}>{children}</div>;
 };

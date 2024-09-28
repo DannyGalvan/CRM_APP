@@ -1,21 +1,23 @@
+import { useEffect } from "react";
+import { Button } from "@nextui-org/button";
+
 import { useCashReport } from "../../hooks/useCashReport";
 import { useDrawer } from "../../hooks/useDrawer";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
 import { CashReportResponse } from "../../types/CashReportResponse";
 import { getCashReports } from "../../services/cashReportService";
-import { useEffect } from "react";
 import Protected from "../../routes/middlewares/Protected";
 import { Col } from "../../components/grid/Col";
-import { Button } from "@nextui-org/button";
 import { Icon } from "../../components/Icons/Icon";
 import { compactGrid } from "../../theme/tableTheme";
 import { CashReportResponseColumns } from "../../components/columns/CashReportResponseColumns";
 import { Drawer } from "../../containers/Drawer";
 import { CashReportForm } from "../../components/forms/CashReportForm";
-import { initialCashReport } from "./CreateCashReportPage";
 import { QueryKeys } from "../../config/contants";
 import { TableServer } from "../../components/table/TableServer";
 import { useCashReportStore } from "../../store/useCashReportStore";
+
+import { initialCashReport } from "./CreateCashReportPage";
 
 export const CashReportPage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
@@ -37,47 +39,47 @@ export const CashReportPage = () => {
           </Button>
         </Col>
         <TableServer<CashReportResponse>
+          hasRangeOfDates
           columns={CashReportResponseColumns}
-          hasFilters={true}
-          text="de los cortes de caja"
-          styles={compactGrid}
-          title={"Cortes de Caja"}
-          width={false}
+          fieldRangeOfDates="CreatedAt"
           filters={cashFilters}
-          setFilters={setCashFilters}
+          hasFilters={true}
           queryFn={getCashReports}
           queryKey={QueryKeys.CashReports}
-          fieldRangeOfDates="CreatedAt"
-          hasRangeOfDates
+          setFilters={setCashFilters}
+          styles={compactGrid}
+          text="de los cortes de caja"
+          title={"Cortes de Caja"}
+          width={false}
         />
         {render && (
           <Drawer
+            id="create"
             isOpen={openCreate}
             setIsOpen={setOpenCreate}
-            title={`Crear Corte de Caja`}
             size="2xl"
-            id="create"
+            title={`Crear Corte de Caja`}
           >
             <div className="p-5">
               <CashReportForm
+                reboot
                 initialForm={initialCashReport}
                 sendForm={create}
                 text="Crear"
-                reboot
               />
             </div>
           </Drawer>
         )}
         {render && (
           <Drawer
+            id="update"
             isOpen={openUpdate}
             setIsOpen={() => {
               setOpenUpdate();
               addCashReport(null);
             }}
-            title={`Editar Corte de Caja`}
             size="2xl"
-            id="update"
+            title={`Editar Corte de Caja`}
           >
             <div className="p-5">
               <CashReportForm

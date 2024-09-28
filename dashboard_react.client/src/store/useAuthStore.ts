@@ -1,7 +1,8 @@
+import { create } from "zustand";
+
 import { InitialAuth, ReportState } from "../types/InitialAuth";
 import { authInitialState, reportInitialState } from "../config/contants";
 import { setAuthorization } from "../config/axios/interceptors";
-import { create } from "zustand";
 import { retrase } from "../util/viewTransition";
 import { setReportAuthorization } from "../config/axios/axiosReports";
 import { loginReport } from "../services/reportService";

@@ -1,6 +1,8 @@
 import { RouteObject } from "react-router-dom";
+
 import { nameRoutes } from "../config/contants";
 import { NotFound } from "../pages/error/NotFound";
+
 import Protected from "./middlewares/Protected";
 
 export const ErrorRoutes: RouteObject[] = [

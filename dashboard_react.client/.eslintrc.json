@@ -16,7 +16,7 @@
     "plugin:@tanstack/eslint-plugin-query/recommended",
     "plugin:tailwindcss/recommended"
   ],
-  "plugins": ["react", "unused-imports", "import", "@typescript-eslint", "jsx-a11y", "prettier", "react-hooks", "react", "padding-line-between-statements", "tailwindcss"],
+  "plugins": ["react", "unused-imports", "import", "@typescript-eslint", "jsx-a11y", "prettier", "react-hooks", "react", "tailwindcss"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -82,16 +82,6 @@
         "noSortAlphabetically": false,
         "reservedFirst": true
       }
-    ],
-    "padding-line-between-statements": [
-      "warn",
-      {"blankLine": "always", "prev": "*", "next": "return"},
-      {"blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
-      {
-        "blankLine": "any",
-        "prev": ["const", "let", "var"],
-        "next": ["const", "let", "var"]
-      }
-    ]
+    ]    
   }
 }

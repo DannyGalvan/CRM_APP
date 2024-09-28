@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { invalid_type_error, required_error } from "../../config/contants";
 
 export const cashReportDetailsShema = z.object({
@@ -27,9 +28,10 @@ export const cashReportDetailsShemaArray = z
   })
   .nonempty({ message: "Debes asignar al menos una orden a este corte! 🤷‍♂️" });
 
-export const cashReportDetailsWithOutIdCashReportShema = cashReportDetailsShema.omit({
-  cashReportId: true,
-});
+export const cashReportDetailsWithOutIdCashReportShema =
+  cashReportDetailsShema.omit({
+    cashReportId: true,
+  });
 
 export const cashReportDetailsWithOutCashReportShemaArray = z
   .array(cashReportDetailsWithOutIdCashReportShema, {

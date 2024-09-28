@@ -16,7 +16,7 @@ export const ContainerSearch = ({
   return !isForm ? (
     <article className={className}>{children}</article>
   ) : (
-    <form onSubmit={submitFn} className={className}>
+    <form className={className} onSubmit={submitFn}>
       {children}
     </form>
   );

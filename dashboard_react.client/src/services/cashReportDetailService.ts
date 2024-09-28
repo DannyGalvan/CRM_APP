@@ -9,19 +9,25 @@ export const getCashReportDetails = async (filter?: string) => {
   let response;
 
   if (filter) {
-    response = await api.get<any, ApiResponse<CashReportDetailsResponse[]>, any>(
-      `/CashReportDetail?filters=${filter}&thenInclude=true`,
-    );
+    response = await api.get<
+      any,
+      ApiResponse<CashReportDetailsResponse[]>,
+      any
+    >(`/CashReportDetail?filters=${filter}&thenInclude=true`);
   } else {
-    response = await api.get<any, ApiResponse<CashReportDetailsResponse[]>, any>(
-      "/CashReportDetail",
-    );
+    response = await api.get<
+      any,
+      ApiResponse<CashReportDetailsResponse[]>,
+      any
+    >("/CashReportDetail");
   }
 
   return response;
 };
 
-export const bulkCreateCashReportDetail = async (route: BulkCashReportDetailRequest) => {
+export const bulkCreateCashReportDetail = async (
+  route: BulkCashReportDetailRequest,
+) => {
   const response = await api.post<
     BulkCashReportDetailRequest,
     ApiResponse<CashReportDetailsResponse[] | ValidationFailure[]>,
@@ -31,7 +37,9 @@ export const bulkCreateCashReportDetail = async (route: BulkCashReportDetailRequ
   return response;
 };
 
-export const updateCashReportDetail = async (route: CashReportDetailsRequest) => {
+export const updateCashReportDetail = async (
+  route: CashReportDetailsRequest,
+) => {
   const response = await api.put<
     CashReportDetailsResponse,
     ApiResponse<CashReportDetailsResponse | ValidationFailure[]>,

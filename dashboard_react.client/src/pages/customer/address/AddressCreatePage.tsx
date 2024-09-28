@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+
 import { Col } from "../../../components/grid/Col";
 import Protected from "../../../routes/middlewares/Protected";
 import { LoadingComponent } from "../../../components/spinner/LoadingComponent";
@@ -22,10 +23,10 @@ export const AddressCreatePage = () => {
       <div className="page-view flex flex-col flex-wrap items-center justify-center">
         <Col md={8}>
           <CustomerAddressForm
+            reboot
             initialForm={initialCustomerAddress}
             sendForm={create}
             text="Crear"
-            reboot
           />
         </Col>
       </div>

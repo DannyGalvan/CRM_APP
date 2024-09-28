@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+
 import { RouteForm } from "../../components/forms/RouteForm";
 import { Col } from "../../components/grid/Col";
 import Protected from "../../routes/middlewares/Protected";
@@ -29,10 +30,10 @@ export const CreateRoutePage = () => {
       <div className="page-view flex flex-col flex-wrap items-center justify-center">
         <Col md={12}>
           <RouteForm
+            reboot
             initialForm={initialRoute}
             sendForm={create}
             text="Crear"
-            reboot
           />
         </Col>
       </div>

@@ -1,4 +1,6 @@
 import { Input } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
+
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialPilot } from "../../pages/pilots/CreatePilotPage";
 import { ApiResponse } from "../../types/ApiResponse";
@@ -9,7 +11,6 @@ import { handleOneLevelZodError } from "../../util/converted";
 import { pilotSchema } from "../../util/validations/pilotValidations";
 import { Col } from "../grid/Col";
 import { Response } from "../messages/Response";
-import { Button } from "@nextui-org/button";
 import { Row } from "../grid/Row";
 
 interface PilotFormProps {
@@ -53,7 +54,7 @@ export const PilotForm = ({
     sendForm,
     reboot,
   );
-  
+
   return (
     <Col md={12}>
       <h1 className="text-center text-2xl font-bold">{text} Piloto</h1>
@@ -63,82 +64,82 @@ export const PilotForm = ({
           <Row>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                label="Nombre"
                 isRequired
-                errorMessage={errors?.name}
-                variant="underlined"
-                isInvalid={!!errors?.name}
                 className="px-2"
+                errorMessage={errors?.name}
+                isInvalid={!!errors?.name}
+                label="Nombre"
+                name="name"
+                type="text"
+                value={form.name}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                label="Apellido"
                 isRequired
-                errorMessage={errors?.lastName}
-                variant="underlined"
-                isInvalid={!!errors?.lastName}
                 className="px-2"
+                errorMessage={errors?.lastName}
+                isInvalid={!!errors?.lastName}
+                label="Apellido"
+                name="lastName"
+                type="text"
+                value={form.lastName}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
           </Row>
           <Row>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="license"
-                value={form.license}
-                onChange={handleChange}
-                label="Licencia"
-                errorMessage={errors?.license}
-                variant="underlined"
-                isInvalid={!!errors?.license}
                 className="px-2"
+                errorMessage={errors?.license}
+                isInvalid={!!errors?.license}
+                label="Licencia"
+                name="license"
+                type="text"
+                value={form.license}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                label="Teléfono"
                 isRequired
-                errorMessage={errors?.phone}
-                variant="underlined"
-                isInvalid={!!errors?.phone}
                 className="px-2"
+                errorMessage={errors?.phone}
+                isInvalid={!!errors?.phone}
+                label="Teléfono"
+                name="phone"
+                type="text"
+                value={form.phone}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
           </Row>
           <Input
-            type="text"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            label="Correo Electrónico"
-            errorMessage={errors?.email}
-            variant="underlined"
-            isInvalid={!!errors?.email}
             className="px-2"
+            errorMessage={errors?.email}
+            isInvalid={!!errors?.email}
+            label="Correo Electrónico"
+            name="email"
+            type="text"
+            value={form.email}
+            variant="underlined"
+            onChange={handleChange}
           />
           <Button
+            fullWidth
+            className="py-4 mt-4 font-bold"
+            color="primary"
             isLoading={loading}
-            type="submit"
             radius="md"
             size="lg"
-            color="primary"
-            fullWidth
+            type="submit"
             variant="shadow"
-            className="mt-4 py-4 font-bold"
           >
             {text} Piloto
           </Button>

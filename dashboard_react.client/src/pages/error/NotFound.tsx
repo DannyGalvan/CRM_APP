@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { Col } from "../../components/grid/Col";
 import { Row } from "../../components/grid/Row";
 import { nameRoutes } from "../../config/contants";
@@ -30,13 +31,13 @@ export const NotFound = ({ Message, Number }: NotFoundProps) => {
       isLoggedIn ? navigate(-1) : navigate(nameRoutes.login);
     } else if (Number === "403") {
       navigate(-3);
-    } 
+    }
   };
 
   return (
     <div className="container mx-auto my-auto">
       <Row className="min-h-[80vh] items-center justify-center">
-        <Col xs={12} className="text-center">
+        <Col className="text-center" xs={12}>
           <span className="block text-8xl font-bold">{Number}</span>
           <div className="mb-4 text-3xl italic">{Message}</div>
           <span

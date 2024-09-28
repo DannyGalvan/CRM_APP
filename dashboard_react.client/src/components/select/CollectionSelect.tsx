@@ -1,4 +1,5 @@
 import { Select, SelectItem } from "@nextui-org/select";
+
 import { CollectionResponse } from "../../types/CollectionResponse";
 
 export interface CollectionSelectProps {
@@ -12,14 +13,13 @@ export const CollectionSelect = ({
   collections,
   handleSelect,
 }: CollectionSelectProps) => {
-
   return !isLoading ? (
     <Select
-      label="Selecciona una catalogo"
-      onChange={handleSelect}
-      variant="bordered"
-      aria-label="Filtrar por campo"  
       isRequired
+      aria-label="Filtrar por campo"
+      label="Selecciona una catalogo"
+      variant="bordered"
+      onChange={handleSelect}
     >
       {collections.map((collection) => (
         <SelectItem

@@ -1,6 +1,7 @@
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { useCallback, useEffect } from "react";
+
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { SelectedCatalogue } from "../../hooks/useListCollections";
 import { initialCatalogue } from "../../pages/catalogue/CreateCataloguePage";
@@ -43,7 +44,7 @@ export const CatalogueForm = ({
   text,
   reboot,
 }: CatalogueFormProps) => {
-  const {setError} = useErrorsStore();
+  const { setError } = useErrorsStore();
   const {
     form,
     message,
@@ -69,51 +70,51 @@ export const CatalogueForm = ({
   useEffect(() => {
     if (collectionError) {
       setError(collectionError);
-     }
+    }
   }, [collectionError, setError]);
 
   return (
     <>
-      <Col md={12} className="mt-3">
+      <Col className="mt-3" md={12}>
         <h1 className="text-center text-2xl font-bold">
           {text} {selectedCatalogue.name}
         </h1>
         <div>
           {success != null && <Response message={message} type={success!} />}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Input
-              label="Ingresa el nombre"
-              name="name"
-              value={form.name}
-              onChange={handleInputChange}
+              isRequired
               errorMessage={errors?.name}
               isInvalid={!!errors?.name}
-              variant="underlined"
+              label="Ingresa el nombre"
               maxLength={51}
               minLength={3}
-              isRequired
+              name="name"
+              value={form.name}
+              variant="underlined"
+              onChange={handleInputChange}
             />
             <Input
-              label="Ingresa la descripción"
-              name="description"
-              value={form.description}
-              onChange={handleInputChange}
+              isRequired
               errorMessage={errors?.description}
               isInvalid={!!errors?.description}
-              variant="underlined"
+              label="Ingresa la descripción"
               maxLength={201}
               minLength={3}
-              isRequired
+              name="description"
+              value={form.description}
+              variant="underlined"
+              onChange={handleInputChange}
             />
             <Button
+              fullWidth
+              className="py-4 mt-4 font-bold"
+              color="primary"
               isLoading={loading}
-              type="submit"
               radius="md"
               size="lg"
-              color="primary"
-              fullWidth
+              type="submit"
               variant="shadow"
-              className="mt-4 py-4 font-bold"
             >
               {text}
             </Button>

@@ -1,5 +1,6 @@
 import { Button } from "@nextui-org/button";
 import { Suspense, useEffect } from "react";
+
 import { Icon } from "../../components/Icons/Icon";
 import { ProductForm } from "../../components/forms/ProductForm";
 import { Col } from "../../components/grid/Col";
@@ -10,13 +11,14 @@ import Protected from "../../routes/middlewares/Protected";
 import { getProducts } from "../../services/productService";
 import { useProductStore } from "../../store/useProductStore";
 import { compactGrid } from "../../theme/tableTheme";
-import { initialProduct } from "./CreateProductPage";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 import { useDrawer } from "../../hooks/useDrawer";
 import { QueryKeys } from "../../config/contants";
 import { ProductResponseColumns } from "../../components/columns/ProductResponseColumns";
 import { ModalCreateItemAsync } from "../../components/modals/ModalCreateItemAsync";
 import { TableServer } from "../../components/table/TableServer";
+
+import { initialProduct } from "./CreateProductPage";
 
 export const ProductPage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
@@ -37,29 +39,29 @@ export const ProductPage = () => {
           </Button>
         </Col>
         <TableServer
+          hasFilters
           columns={ProductResponseColumns}
           filters={productFilters}
           queryFn={getProducts}
           queryKey={QueryKeys.Products}
           setFilters={setProductFilters}
-          title="Productos"
-          text="producto"
-          hasFilters
           styles={compactGrid}
+          text="producto"
+          title="Productos"
         />
         {render && (
           <Drawer
             isOpen={openCreate}
             setIsOpen={setOpenCreate}
-            title={`Crear Producto`}
             size="2xl"
+            title={`Crear Producto`}
           >
             <div className="p-5">
               <ProductForm
+                reboot
                 initialForm={initialProduct}
                 sendForm={create}
                 text="Crear"
-                reboot
               />
             </div>
           </Drawer>
@@ -71,8 +73,8 @@ export const ProductPage = () => {
               setOpenUpdate();
               add(null);
             }}
-            title={`Editar Cliente`}
             size="2xl"
+            title={`Editar Cliente`}
           >
             <div className="p-5">
               <ProductForm

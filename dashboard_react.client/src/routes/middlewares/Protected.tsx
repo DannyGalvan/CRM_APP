@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+
 import { nameRoutes } from "../../config/contants";
 import { useAuth } from "../../hooks/useAuth";
 import { useErrorsStore } from "../../store/useErrorsStore";
@@ -9,7 +10,7 @@ interface ProtectedProps {
 
 const Protected = ({ children }: ProtectedProps) => {
   const { isLoggedIn, redirect } = useAuth();
-  const {error} = useErrorsStore();
+  const { error } = useErrorsStore();
 
   if (!isLoggedIn) {
     return <Navigate to={nameRoutes.login} />;

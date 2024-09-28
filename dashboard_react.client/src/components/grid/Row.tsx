@@ -5,7 +5,6 @@ interface RowProps {
   className?: string;
 }
 
-export const Row = ({ children, className } : RowProps) => {
+export const Row = ({ children, className }: RowProps) => {
   return <div className={`flex flex-wrap ${className}`}>{children}</div>;
 };
-

@@ -1,4 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { Input, Textarea } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
+
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { useCashReportStore } from "../../store/useCashReportStore";
 import { useErrorsStore } from "../../store/useErrorsStore";
@@ -12,15 +16,12 @@ import { OrderResponse } from "../../types/OrderResponse";
 import { ApiError } from "../../util/errors";
 import { getFilteredOrders } from "../../services/orderService";
 import { OrderStates, QueryKeys } from "../../config/contants";
-import { useEffect } from "react";
 import { initialCashReport } from "../../pages/cashReport/CreateCashReportPage";
 import { Col } from "../grid/Col";
 import { Response } from "../messages/Response";
-import { Input, Textarea } from "@nextui-org/input";
 import { TableRoot } from "../table/TableRoot";
 import { OrderResponseColumns } from "../columns/OrderResponseColumns";
 import { compactGrid } from "../../theme/tableTheme";
-import { Button } from "@nextui-org/button";
 import { CashReportDetailResponseColumns } from "../columns/CashReportDetailResponseColumns";
 
 interface CashReportFormProps {
@@ -50,7 +51,8 @@ export const CashReportForm = ({
   text,
   reboot,
 }: CashReportFormProps) => {
-  const { addOrders, savedOrders, loadingSavedRoutes, getTotalOrders } = useCashReportStore();
+  const { addOrders, savedOrders, loadingSavedRoutes, getTotalOrders } =
+    useCashReportStore();
   const { setError } = useErrorsStore();
 
   const { data, error, isFetching, isLoading } = useQuery<
@@ -89,24 +91,24 @@ export const CashReportForm = ({
         {success != null && <Response message={message} type={success!} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <Input
+            errorMessage={errors?.cashierName}
+            isInvalid={!!errors?.cashierName}
             label="Nombre del cajero"
             name="cashierName"
             value={form.cashierName}
-            onChange={handleChange}
-            errorMessage={errors?.cashierName}
-            isInvalid={!!errors?.cashierName}
             variant="underlined"
+            onChange={handleChange}
           />
           <Textarea
-            label="Observaciones"
-            labelPlacement="outside"
-            placeholder="Ingresa observaciones del corte de caja"
-            name="observations"
-            value={form.observations}
-            onChange={handleChange}
             errorMessage={errors?.observations}
             isInvalid={!!errors?.observations}
+            label="Observaciones"
+            labelPlacement="outside"
+            name="observations"
+            placeholder="Ingresa observaciones del corte de caja"
+            value={form.observations}
             variant="underlined"
+            onChange={handleChange}
           />
           {text === "Editar" && (
             <TableRoot
@@ -114,36 +116,38 @@ export const CashReportForm = ({
               data={savedOrders ?? []}
               hasFilters={true}
               pending={loadingSavedRoutes}
-              text="de las ordenes"
               styles={compactGrid}
+              text="de las ordenes"
               title={"Ordenes en el corte de caja"}
               width={false}
             />
           )}
-          <span className="text-right font-bold text-cyan-700">Total del Corte: {getTotalOrders()}</span>
+          <span className="text-right font-bold text-cyan-700">
+            Total del Corte: {getTotalOrders()}
+          </span>
           <TableRoot
             columns={OrderResponseColumns}
             data={data?.data ?? []}
             hasFilters={true}
             pending={isLoading || isFetching}
-            text="de las ordenes"
+            selectedRows={true}
             styles={compactGrid}
+            text="de las ordenes"
             title={"Ordenes listas para corte de caja"}
             width={false}
-            selectedRows={true}
             onSelectedRowsChange={(rows) => {
               addOrders(rows.selectedRows);
             }}
           />
           <Button
+            fullWidth
+            className="py-4 mt-4 font-bold"
+            color="primary"
             isLoading={loading}
-            type="submit"
             radius="md"
             size="lg"
-            color="primary"
-            fullWidth
+            type="submit"
             variant="shadow"
-            className="mt-4 py-4 font-bold"
           >
             {text} Corte de Caja
           </Button>

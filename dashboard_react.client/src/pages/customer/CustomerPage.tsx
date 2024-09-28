@@ -1,6 +1,7 @@
 import { Button } from "@nextui-org/button";
 import { Col } from "@tremor/react";
 import { useEffect } from "react";
+
 import { Icon } from "../../components/Icons/Icon";
 import { CustomerForm } from "../../components/forms/CustomerForm";
 import { Drawer } from "../../containers/Drawer";
@@ -11,11 +12,12 @@ import { getCustomers } from "../../services/customerService";
 import { useCustomerStore } from "../../store/useCustomerStore";
 import { compactGrid } from "../../theme/tableTheme";
 import { CustomerResponse } from "../../types/CustomerResponse";
-import { initialCustomer } from "./CustomerCreatePage";
 import { useDrawer } from "../../hooks/useDrawer";
 import { CustomerResponseColumns } from "../../components/columns/CustomerResponseColumns";
 import { QueryKeys } from "../../config/contants";
 import { TableServer } from "../../components/table/TableServer";
+
+import { initialCustomer } from "./CustomerCreatePage";
 
 export const CustomerPage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
@@ -37,23 +39,23 @@ export const CustomerPage = () => {
           </Button>
         </Col>
         <TableServer<CustomerResponse>
-          queryKey={QueryKeys.Customers}
           columns={CustomerResponseColumns}
+          filters={customerFilters}
           hasFilters={true}
-          text="de los clientes"
+          queryFn={getCustomers}
+          queryKey={QueryKeys.Customers}
+          setFilters={setCustomeFilters}
           styles={compactGrid}
+          text="de los clientes"
           title={"Clientes"}
           width={false}
-          filters={customerFilters}
-          setFilters={setCustomeFilters}
-          queryFn={getCustomers}
         />
         {render && (
           <Drawer
             isOpen={openCreate}
             setIsOpen={setOpenCreate}
-            title={`Crear Cliente`}
             size="2xl"
+            title={`Crear Cliente`}
           >
             <div className="p-5">
               <CustomerForm
@@ -71,8 +73,8 @@ export const CustomerPage = () => {
               setOpenUpdate();
               add(null);
             }}
-            title={`Editar Cliente`}
             size="xl"
+            title={`Editar Cliente`}
           >
             <div className="p-5">
               <CustomerForm

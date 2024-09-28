@@ -59,15 +59,14 @@ export type KeyType =
   | "Collections"
   | "OrdersFiltered";
 
-
-export const QueryKeys : Record<ModalType | KeyType, ModalType | KeyType> = {
+export const QueryKeys: Record<ModalType | KeyType, ModalType | KeyType> = {
   Customers: "Customers",
   Pilots: "Pilots",
   Catalogues: "Catalogues",
   Products: "Products",
   Municipalities: "Municipalities",
   Zones: "Zones",
-  Departments : "Departments",
+  Departments: "Departments",
   CustomerDirections: "CustomerDirections",
   PaymentTypes: "PaymentTypes",
   Families: "Families",

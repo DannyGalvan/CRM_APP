@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+
 import { createProduct, updateProduct } from "../services/productService";
 import { useProductStore } from "../store/useProductStore";
 import { ProductRequest } from "../types/ProductRequest";
@@ -18,9 +19,7 @@ export const useProducts = () => {
 
     if (response.success) {
       client.refetchQueries({
-        queryKey: [
-          QueryKeys.Products         
-        ],
+        queryKey: [QueryKeys.Products],
         type: "all",
         exact: false,
       });

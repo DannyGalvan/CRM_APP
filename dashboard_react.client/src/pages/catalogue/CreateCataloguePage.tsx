@@ -24,24 +24,24 @@ export const CreateCataloguePage = () => {
   return (
     <Protected>
       <div className="page-view flex flex-col flex-wrap items-center justify-center">
-      <Col md={6}>
-        <Col md={12}>
-          <CollectionSelect
-            collections={collections}
-            handleSelect={handleSelect}
-            isLoading={collectionFetching || collectionLoading}
+        <Col md={6}>
+          <Col md={12}>
+            <CollectionSelect
+              collections={collections}
+              handleSelect={handleSelect}
+              isLoading={collectionFetching || collectionLoading}
+            />
+          </Col>
+          <CatalogueForm
+            reboot
+            collectionError={collectionError}
+            initialForm={initialCatalogue}
+            selectedCatalogue={selectedCatalogue}
+            sendForm={createCatalog}
+            text="Crear"
           />
         </Col>
-        <CatalogueForm
-          initialForm={initialCatalogue}
-          sendForm={createCatalog}
-          collectionError={collectionError}
-          selectedCatalogue={selectedCatalogue}
-          text="Crear"
-          reboot
-        />
-      </Col>
-    </div>
+      </div>
     </Protected>
   );
 };

@@ -3,7 +3,8 @@ import { CatalogueActionMenu } from "../menu/CatalogueActionMenu";
 import { useProductStore } from "../../store/useProductStore";
 import { TableColumnWithFilters } from "../../types/TableColumnWithFilters";
 
-export const ProductResponseColumns: TableColumnWithFilters<ProductResponse>[] = [
+export const ProductResponseColumns: TableColumnWithFilters<ProductResponse>[] =
+  [
     {
       id: "id",
       name: "Id",

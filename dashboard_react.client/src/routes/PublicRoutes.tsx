@@ -1,4 +1,5 @@
 import { RouteObject } from "react-router-dom";
+
 import { nameRoutes } from "../config/contants";
 
 export const PublicRoutes: RouteObject[] = [

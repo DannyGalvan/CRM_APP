@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
 import { TableColumn } from "react-data-table-component/dist/DataTable/types";
+
 import { PAGINATION_OPTIONS, SELECTED_MESSAGE } from "../../config/contants";
 import { useToggle } from "../../hooks/useToggle";
 import { customStyles } from "../../theme/tableTheme";
@@ -81,47 +82,47 @@ export const TableRoot = ({
       {hasFilters && (
         <TableRootSearch
           columns={columns}
+          filterData={filterData}
           searchField={searchField}
           selectedField={selectedField}
-          filterData={filterData}
         />
       )}
       <DataTable
-        responsive
-        paginationDefaultPage={1}
-        paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
-        paginationPerPage={30}
-        contextMessage={SELECTED_MESSAGE}
-        columns={memoizedColumns}
-        data={memoizedData}
-        title={title}
-        subHeaderComponent={<SubHeaderTableButton onClick={toggle} />}
-        subHeaderWrap={true}
-        pagination
-        striped
-        expandableRows={width}
-        paginationComponentOptions={PAGINATION_OPTIONS}
-        subHeader={true}
         fixedHeader
-        selectableRows={selectedRows}
-        onSelectedRowsChange={onSelectedRowsChange}
-        fixedHeaderScrollHeight="650px"
-        theme="individuality"
         highlightOnHover
-        clearSelectedRows={selectedRows}
+        pagination
         pointerOnHover
-        progressPending={pending}
-        progressComponent={<LoadingComponent />}
+        responsive
+        striped
+        clearSelectedRows={selectedRows}
+        columns={memoizedColumns}
+        contextMessage={SELECTED_MESSAGE}
+        customStyles={styles ?? customStyles}
+        data={memoizedData}
+        expandableRows={width}
+        fixedHeaderScrollHeight="650px"
         noDataComponent={
           <MesajeNoData mesaje={`No se encontraros datos ${text}`} />
         }
-        customStyles={styles ?? customStyles}
+        paginationComponentOptions={PAGINATION_OPTIONS}
+        paginationDefaultPage={1}
+        paginationPerPage={30}
+        paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
+        progressComponent={<LoadingComponent />}
+        progressPending={pending}
+        selectableRows={selectedRows}
+        subHeader={true}
+        subHeaderComponent={<SubHeaderTableButton onClick={toggle} />}
+        subHeaderWrap={true}
+        theme="individuality"
+        title={title}
+        onSelectedRowsChange={onSelectedRowsChange}
       />
       <ModalTable
+        changeVisibilitiColumn={changeVisibilitiColumn}
         columns={columns}
         open={open}
         toggle={toggle}
-        changeVisibilitiColumn={changeVisibilitiColumn}
       />
     </div>
   );

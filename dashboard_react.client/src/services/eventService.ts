@@ -1,4 +1,5 @@
 import { EventApi, EventInput } from "@fullcalendar/core/index.js";
+
 import { api } from "../config/axios/interceptors";
 import { ApiResponse } from "../types/ApiResponse";
 

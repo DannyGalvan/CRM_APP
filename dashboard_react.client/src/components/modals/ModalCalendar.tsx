@@ -11,6 +11,7 @@ import { Switch } from "@nextui-org/switch";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { MutableRefObject } from "react";
+
 import { useEvents } from "../../hooks/useEvents";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { handleOneLevelZodError } from "../../util/converted";
@@ -39,8 +40,7 @@ const validateEvent = (event: EventInput) => {
 
   const parce = eventSchema.safeParse(event);
 
-  if (!parce.success)
-    errors = handleOneLevelZodError(parce.error);
+  if (!parce.success) errors = handleOneLevelZodError(parce.error);
 
   return errors;
 };
@@ -72,33 +72,33 @@ export const ModalCalendar = ({
   };
 
   return (
-    <Modal size={"md"} isOpen={isOpen} onClose={close}>
+    <Modal isOpen={isOpen} size={"md"} onClose={close}>
       <ModalContent>
         <form onSubmit={handleSubmit}>
           <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
           <ModalBody>
             <div className="flex flex-col gap-4">
               <Input
+                errorMessage={errors?.title}
+                isInvalid={!!errors?.title}
                 label="Ingresa el nombre del evento"
                 name="title"
                 value={form.title}
                 onChange={handleChange}
-                errorMessage={errors?.title}
-                isInvalid={!!errors?.title}
               />
               <Input
+                errorMessage={errors?.description}
+                isInvalid={!!errors?.description}
                 label="ingresa la descripcion del evento"
                 name="description"
                 value={form.description}
                 onChange={handleChange}
-                errorMessage={errors?.description}
-                isInvalid={!!errors?.description}
               />
               <Switch
                 defaultSelected
-                size="sm"
-                name="allDay"
                 isSelected={form.allDay}
+                name="allDay"
+                size="sm"
                 onChange={(e) => {
                   const target = {
                     target: { name: "allDay", value: e.target.checked },
@@ -110,14 +110,14 @@ export const ModalCalendar = ({
               </Switch>
               {!form.allDay && (
                 <Input
-                  label="Hora evento"
-                  type="time"
-                  name="time"
-                  value={form.time}
                   isClearable
-                  onChange={handleChange}
                   errorMessage={errors?.time}
                   isInvalid={!!errors?.time}
+                  label="Hora evento"
+                  name="time"
+                  type="time"
+                  value={form.time}
+                  onChange={handleChange}
                 />
               )}
             </div>
@@ -141,7 +141,7 @@ export const ModalCalendar = ({
                 Eliminar
               </Button>
             )}
-            <Button isLoading={loading} color="primary" type="submit">
+            <Button color="primary" isLoading={loading} type="submit">
               Guardar
             </Button>
           </ModalFooter>

@@ -1,6 +1,7 @@
 import { Card, CardBody } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
+
 import { Icon } from "../../components/Icons/Icon";
 import { Response } from "../../components/messages/Response";
 import { useAuth } from "../../hooks/useAuth";
@@ -87,32 +88,21 @@ export function Component() {
               </h1>
               <form onSubmit={handleSubmit}>
                 <Input
-                  name={"userName"}
+                  className={"py-4"}
+                  errorMessage={errors?.userName}
                   id={"email"}
+                  isInvalid={!!errors?.userName}
+                  isRequired={true}
                   label={"Nombre de usuario"}
-                  onChange={handleChange}
+                  name={"userName"}
+                  size="lg"
                   type={"text"}
                   value={form.userName}
-                  isInvalid={!!errors?.userName}
-                  errorMessage={errors?.userName}
-                  isRequired={true}
-                  className={"py-4"}
-                  size="lg"
                   variant="bordered"
+                  onChange={handleChange}
                 />
                 <Input
-                  name={"password"}
-                  id={"password"}
-                  label={"Contraseña"}
-                  onChange={handleChange}
-                  type={open ? "text" : "password"}
-                  value={form.password}
-                  isInvalid={!!errors?.password}
-                  errorMessage={errors?.password}
-                  isRequired={true}
                   className={"py-4"}
-                  size="lg"
-                  variant="bordered"
                   endContent={
                     <button
                       className="focus:outline-none"
@@ -126,16 +116,27 @@ export function Component() {
                       )}
                     </button>
                   }
+                  errorMessage={errors?.password}
+                  id={"password"}
+                  isInvalid={!!errors?.password}
+                  isRequired={true}
+                  label={"Contraseña"}
+                  name={"password"}
+                  size="lg"
+                  type={open ? "text" : "password"}
+                  value={form.password}
+                  variant="bordered"
+                  onChange={handleChange}
                 />
                 <Button
+                  fullWidth
+                  className="py-4 mt-4 font-bold"
+                  color="primary"
                   isLoading={loading}
-                  type="submit"
                   radius="md"
                   size="lg"
-                  color="primary"
-                  fullWidth
+                  type="submit"
                   variant="shadow"
-                  className="mt-4 py-4 font-bold"
                 >
                   Iniciar Sesión
                 </Button>

@@ -2,6 +2,7 @@ import { Input } from "@nextui-org/input";
 import React, { FormEvent, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
+
 import { ContainerSearch } from "../../containers/ContainerSearch";
 import { LoadingComponent } from "../spinner/LoadingComponent";
 
@@ -41,9 +42,9 @@ const SearchResults = React.memo(
   }: any) => (
     <article className="absolute top-[4rem] z-50 flex w-full flex-col rounded-xl border border-gray-400 bg-white p-5 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
       <IoClose
-        className="absolute right-3 top-2 cursor-pointer text-red-600"
-        onClick={() => setOpen(false)}
+        className="absolute top-2 right-3 text-red-600 cursor-pointer"
         size={25}
+        onClick={() => setOpen(false)}
       />
       <p className="whitespace-pre-line break-words font-bold">
         resultados de {inputSearch}...
@@ -127,46 +128,46 @@ export const InputSearch = ({
 
   return (
     <ContainerSearch
+      className="flex flex-col sm:flex-row"
       isForm={isForm}
       submitFn={handleSubmit}
-      className="flex flex-col sm:flex-row"
     >
       <div className="relative flex w-full px-2">
         <Input
-          label={label}
-          name="search"
-          type="search"
-          id="search"
-          onKeyDown={handleKeyPress}
-          onFocus={handleFocus}
-          autoFocus={false}
-          disabled={disabled}
-          isInvalid={!!errorMessage}
-          isRequired={required}
           autoComplete="off"
-          variant="underlined"
-          value={inputSearch}
-          onChange={(e) => setSearchInput(e.target.value)}
-          errorMessage={errorMessage}
+          autoFocus={false}
           defaultValue={defaultValue}
+          disabled={disabled}
           endContent={
             <button className="focus:outline-none" type="button">
               <FaSearch />
             </button>
           }
+          errorMessage={errorMessage}
+          id="search"
+          isInvalid={!!errorMessage}
+          isRequired={required}
+          label={label}
+          name="search"
+          type="search"
+          value={inputSearch}
+          variant="underlined"
+          onChange={(e) => setSearchInput(e.target.value)}
+          onFocus={handleFocus}
+          onKeyDown={handleKeyPress}
         />
         {open && (
           <SearchResults
-            data={data}
-            isLoading={isLoading}
-            handleSelect={handleSelect}
-            keyname={keyname}
-            keyid={keyid}
-            inputSearch={inputSearch}
-            setOpen={setOpen}
             createItemFn={createItemFn}
+            data={data}
             entity={entity}
+            handleSelect={handleSelect}
+            inputSearch={inputSearch}
+            isLoading={isLoading}
             keyAdd={keyAdd}
+            keyid={keyid}
+            keyname={keyname}
+            setOpen={setOpen}
           />
         )}
       </div>

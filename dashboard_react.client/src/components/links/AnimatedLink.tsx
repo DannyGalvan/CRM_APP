@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import { transitionViewIfSupported } from "../../util/viewTransition";
 
 interface AnimatedLinkProps {
@@ -23,8 +24,8 @@ export const AnimatedLink = ({
 
   return (
     <a
-      href={to}
       className={`${className} ${active ? "active" : ""}`}
+      href={to}
       onClick={(ev) => {
         ev.preventDefault();
         transitionViewIfSupported(() => {

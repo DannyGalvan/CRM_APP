@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+
 import { ProductForm } from "../../components/forms/ProductForm";
 import { Col } from "../../components/grid/Col";
 import { useProducts } from "../../hooks/useProducts";
@@ -20,20 +21,20 @@ export const CreateProductPage = () => {
   const { create } = useProducts();
 
   return (
-   <Protected>
-     <div className="page-view flex flex-col flex-wrap items-center justify-center">
-      <Col md={8}>
-        <ProductForm
-          initialForm={initialProduct}
-          sendForm={create}
-          text="Crear"
-          reboot
-        />
-      </Col>
-    </div>
-    <Suspense fallback={<LoadingComponent />}>
+    <Protected>
+      <div className="flex flex-col flex-wrap justify-center items-center page-view">
+        <Col md={8}>
+          <ProductForm
+            reboot
+            initialForm={initialProduct}
+            sendForm={create}
+            text="Crear"
+          />
+        </Col>
+      </div>
+      <Suspense fallback={<LoadingComponent />}>
         <ModalCreateItemAsync />
       </Suspense>
-   </Protected>
+    </Protected>
   );
 };

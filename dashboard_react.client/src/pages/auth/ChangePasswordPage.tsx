@@ -1,5 +1,6 @@
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
+
 import { Icon } from "../../components/Icons/Icon";
 import { Col } from "../../components/grid/Col";
 import { Response } from "../../components/messages/Response";
@@ -39,8 +40,8 @@ const validateForm = (form: ChangePasswordForm) => {
 
 export function Component() {
   const { userId, logout } = useAuth();
-  const {open:password, toggle:togglePassword} = useToggle();
-  const {open:confirm, toggle:toggleConfirm} = useToggle();
+  const { open: password, toggle: togglePassword } = useToggle();
+  const { open: confirm, toggle: toggleConfirm } = useToggle();
 
   const sendForm = async (form: ChangePasswordForm) => {
     form.idUser = userId;
@@ -64,27 +65,17 @@ export function Component() {
   return (
     <ProtectedPublic>
       <div className="page-view container flex flex-col flex-wrap items-center justify-center">
-        <Col xl={6} lg={8} md={10} sm={12}>
+        <Col lg={8} md={10} sm={12} xl={6}>
           {success != null && <Response message={message} type={success} />}
           <h1 className="text-center text-4xl font-bold">Cambiar contraseña</h1>
         </Col>
         <form
+          className="flex flex-row flex-wrap justify-center col-xl-6 col-lg-8 col-md-10 col-12"
           onSubmit={handleSubmit}
-          className="col-xl-6 col-lg-8 col-md-10 col-12 flex flex-row flex-wrap  justify-center"
         >
           <Col md={12}>
             <Input
-              label="Contraseña"
-              name="password"
-              errorMessage={errors?.password}
-              type={password ? "text" : "password"}
-              value={form.password}
-              onChange={handleChange}
-              isInvalid={!!errors?.password}
-              isRequired={true}
               className={"py-4"}
-              size="lg"
-              variant="bordered"
               endContent={
                 <button
                   className="focus:outline-none"
@@ -98,21 +89,21 @@ export function Component() {
                   )}
                 </button>
               }
+              errorMessage={errors?.password}
+              isInvalid={!!errors?.password}
+              isRequired={true}
+              label="Contraseña"
+              name="password"
+              size="lg"
+              type={password ? "text" : "password"}
+              value={form.password}
+              variant="bordered"
+              onChange={handleChange}
             />
           </Col>
           <Col md={12}>
             <Input
-              label="Confirmacion de contraseña"
-              name="confirmPassword"
-              errorMessage={errors?.confirmPassword}
-              type={confirm ? "text" : "password"}
-              value={form.confirmPassword}
-              isInvalid={!!errors?.confirmPassword}
-              onChange={handleChange}
-              isRequired={true}
               className={"py-4"}
-              size="lg"
-              variant="bordered"
               endContent={
                 <button
                   className="focus:outline-none"
@@ -126,18 +117,28 @@ export function Component() {
                   )}
                 </button>
               }
+              errorMessage={errors?.confirmPassword}
+              isInvalid={!!errors?.confirmPassword}
+              isRequired={true}
+              label="Confirmacion de contraseña"
+              name="confirmPassword"
+              size="lg"
+              type={confirm ? "text" : "password"}
+              value={form.confirmPassword}
+              variant="bordered"
+              onChange={handleChange}
             />
           </Col>
-          <Col md={12} className={"mt-5"}>
+          <Col className={"mt-5"} md={12}>
             <Button
+              fullWidth
+              className="py-4 mt-4 font-bold"
+              color="primary"
               isLoading={loading}
-              type="submit"
               radius="md"
               size="lg"
-              color="primary"
-              fullWidth
+              type="submit"
               variant="shadow"
-              className="mt-4 py-4 font-bold"
             >
               Cambiar contraseña
             </Button>

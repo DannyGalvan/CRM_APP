@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { invalid_type_error, required_error } from "../../config/contants";
 
 export const eventSchema = z.object({
@@ -25,5 +26,6 @@ export const eventSchema = z.object({
     .string({ invalid_type_error, required_error })
     .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, {
       message: "La hora no es válida",
-    }).optional(),
+    })
+    .optional(),
 });

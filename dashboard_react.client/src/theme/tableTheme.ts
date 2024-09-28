@@ -17,10 +17,13 @@ export const individuality = {
     hover: "rgba(0,0,0,.08)",
     disabled: "rgba(0,0,0,.12)",
   },
-}
+};
 
-
-export const themeIndividuality = createTheme("individuality", individuality, "dark");
+export const themeIndividuality = createTheme(
+  "individuality",
+  individuality,
+  "dark",
+);
 
 export const customStyles = {
   header: {
@@ -75,29 +78,29 @@ export const customStyles = {
     },
     style: {
       background: "var(--solusersa)",
-    }
+    },
   },
   pagination: {
     style: {
       border: "none",
       background: "var(--bs-container)",
-      color: 'var(--bs-light)',
+      color: "var(--bs-light)",
     },
   },
   noData: {
     style: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: "var(--solusersa)"
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "var(--solusersa)",
     },
   },
   progress: {
     style: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: "var(--solusersa)"
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "var(--solusersa)",
     },
   },
 };
@@ -144,7 +147,7 @@ export const compactGrid = {
     },
     style: {
       background: "var(--solusersa)",
-    }
+    },
   },
   cells: {
     style: {
@@ -159,23 +162,23 @@ export const compactGrid = {
     style: {
       border: "none",
       background: "var(--bs-container)",
-      color: 'black',
+      color: "black",
     },
   },
   noData: {
     style: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: "var(--solusersa)"
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "var(--solusersa)",
     },
   },
   progress: {
     style: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: "var(--solusersa)"
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "var(--solusersa)",
     },
   },
 };

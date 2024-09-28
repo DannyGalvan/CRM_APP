@@ -33,8 +33,8 @@ export const Drawer = ({
         }
       >
         <article
-          id={id}
           className={`relative my-6 flex h-full mw-${size} flex-col overflow-y-scroll px-0 pb-10 scrollbar-thin`}
+          id={id}
         >
           <header className="p-4 text-lg font-bold">{title}</header>
           <IoIosClose
@@ -52,7 +52,7 @@ export const Drawer = ({
         onClick={() => {
           setIsOpen(false);
         }}
-      ></section>
+      />
     </div>
   );
 };

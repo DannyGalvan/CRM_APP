@@ -1,4 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+
 import { RouteDtoRequest, RouteDtoResponse } from "../types/RouteDto";
 import { useRouteDetailStore } from "../store/useRouteDetailsStore";
 import {
@@ -13,7 +15,6 @@ import {
   routeDetailsWithRouteShemaArray,
 } from "../util/validations/routeDetailsValidations";
 import { handleOneLevelZodError } from "../util/converted";
-import { toast } from "react-toastify";
 import { bulkCreateRouteDetail } from "../services/routeDetailService";
 import { bulkPartialUpdateOrder } from "../services/orderService";
 import { RouteDetailsResponse } from "../types/RouteDetailsResponse";
@@ -171,7 +172,9 @@ export const useRoutes = () => {
     return response;
   };
 
-  const update = async (form: RouteDtoRequest): Promise<ApiResponse<RouteDtoResponse | ValidationFailure[]>> => {
+  const update = async (
+    form: RouteDtoRequest,
+  ): Promise<ApiResponse<RouteDtoResponse | ValidationFailure[]>> => {
     const routeResponse = await updateRoute(form);
 
     if (!routeResponse.success) {
@@ -205,7 +208,7 @@ export const useRoutes = () => {
 
     route.forEach((detail) => (detail.routeId = routeSuccess.id));
 
-    let parseDetails = routeDetailsShemaArray.safeParse(route);
+    const parseDetails = routeDetailsShemaArray.safeParse(route);
 
     if (!parseDetails.success) {
       const detailsError = handleOneLevelZodError(parseDetails.error);

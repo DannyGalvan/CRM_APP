@@ -2,6 +2,7 @@ import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { TableColumn } from "react-data-table-component";
+
 import { Icon } from "../../components/Icons/Icon";
 import { CatalogueForm } from "../../components/forms/CatalogueForm";
 import { Col } from "../../components/grid/Col";
@@ -20,8 +21,9 @@ import { ApiResponse } from "../../types/ApiResponse";
 import { CatalogueResponse } from "../../types/CatalogueResponse";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
-import { initialCatalogue } from "./CreateCataloguePage";
 import { useDrawer } from "../../hooks/useDrawer";
+
+import { initialCatalogue } from "./CreateCataloguePage";
 
 const columns: TableColumn<any>[] = [
   {
@@ -136,75 +138,74 @@ export const CataloguePage = () => {
 
   return (
     <Protected>
-        <div className="mt-20 md:mt-0">
-          <div>
-            <CollectionSelect
-              collections={collections}
-              handleSelect={handleSelect}
-              isLoading={collectionFetching || collectionLoading}
-            />
-          </div>
-          <Col className="mt-5 flex justify-end">
-            <Button
-              color={"secondary"}
-              onClick={setOpenCreate}
-              isDisabled={selectedCatalogue.name == DEFAULT_CATALOGUE}
-            >
-              <Icon name={"bi bi-journal-plus"} /> Crear{" "}
-              {selectedCatalogue.name}
-            </Button>
-          </Col>
-          <TableRoot
-            columns={columns}
-            data={data?.data ?? []}
-            hasFilters={true}
-            pending={isLoading || isFetching}
-            text="de los catalogos"
-            styles={compactGrid}
-            title={selectedCatalogue.name!}
-            width={false}
+      <div className="mt-20 md:mt-0">
+        <div>
+          <CollectionSelect
+            collections={collections}
+            handleSelect={handleSelect}
+            isLoading={collectionFetching || collectionLoading}
           />
-          {render && (
-            <Drawer
-              isOpen={openCreate}
-              setIsOpen={setOpenCreate}
-              title={`Crear ${selectedCatalogue.name}`}
-              size="md"
-            >
-              <div className="p-5">
-                <CatalogueForm
-                  collectionError={collectionError}
-                  selectedCatalogue={selectedCatalogue}
-                  initialForm={initialCatalogue}
-                  sendForm={createCatalog}
-                  text="Crear"
-                  reboot
-                />
-              </div>
-            </Drawer>
-          )}
-          {render && (
-            <Drawer
-              isOpen={openUpdate}
-              setIsOpen={() => {
-                setOpenUpdate();
-                add(null);
-              }}
-              title={`Editar ${selectedCatalogue.name}`}
-              size="md"
-            >
-              <div className="p-5">
-                <CatalogueForm
-                  collectionError={collectionError}
-                  selectedCatalogue={selectedCatalogue}
-                  initialForm={catalogue!}
-                  sendForm={updateCatalog}
-                  text="Editar"
-                />
-              </div>
-            </Drawer>
-          )}
         </div>
+        <Col className="flex justify-end mt-5">
+          <Button
+            color={"secondary"}
+            isDisabled={selectedCatalogue.name == DEFAULT_CATALOGUE}
+            onClick={setOpenCreate}
+          >
+            <Icon name={"bi bi-journal-plus"} /> Crear {selectedCatalogue.name}
+          </Button>
+        </Col>
+        <TableRoot
+          columns={columns}
+          data={data?.data ?? []}
+          hasFilters={true}
+          pending={isLoading || isFetching}
+          styles={compactGrid}
+          text="de los catalogos"
+          title={selectedCatalogue.name!}
+          width={false}
+        />
+        {render && (
+          <Drawer
+            isOpen={openCreate}
+            setIsOpen={setOpenCreate}
+            size="md"
+            title={`Crear ${selectedCatalogue.name}`}
+          >
+            <div className="p-5">
+              <CatalogueForm
+                reboot
+                collectionError={collectionError}
+                initialForm={initialCatalogue}
+                selectedCatalogue={selectedCatalogue}
+                sendForm={createCatalog}
+                text="Crear"
+              />
+            </div>
+          </Drawer>
+        )}
+        {render && (
+          <Drawer
+            isOpen={openUpdate}
+            setIsOpen={() => {
+              setOpenUpdate();
+              add(null);
+            }}
+            size="md"
+            title={`Editar ${selectedCatalogue.name}`}
+          >
+            <div className="p-5">
+              <CatalogueForm
+                collectionError={collectionError}
+                initialForm={catalogue!}
+                selectedCatalogue={selectedCatalogue}
+                sendForm={updateCatalog}
+                text="Editar"
+              />
+            </div>
+          </Drawer>
+        )}
+      </div>
     </Protected>
   );
 };

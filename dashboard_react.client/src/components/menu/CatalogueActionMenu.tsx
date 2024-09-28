@@ -5,6 +5,7 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
+
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
 import { useDrawer } from "../../hooks/useDrawer";
@@ -34,7 +35,7 @@ export const CatalogueActionMenu = ({
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button className="bg-transparent text-cyan-500" isIconOnly>
+        <Button isIconOnly className="bg-transparent text-cyan-500">
           <Icon name="bi bi-three-dots-vertical" />
         </Button>
       </DropdownTrigger>
@@ -50,8 +51,8 @@ export const CatalogueActionMenu = ({
           key="edit"
           className="text-success"
           color="success"
-          onClick={handleOpen}
           startContent={<Icon name="bi bi-pen" />}
+          onClick={handleOpen}
         >
           Editar
         </DropdownItem>

@@ -1,4 +1,5 @@
 import { TableColumn } from "react-data-table-component";
+
 import { CashReportDetailsResponse } from "../../types/CashReportDetailResponse";
 import { CashReportDetailActionMenu } from "../menu/CashReportDetailActionMenu";
 

@@ -1,21 +1,23 @@
+import { useEffect } from "react";
+import { Button } from "@nextui-org/button";
+
 import { usePilots } from "../../hooks/usePilots";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
 import { usePilotStore } from "../../store/usePilotStore";
 import { PilotResponse } from "../../types/PilotResponse";
 import { getPilots } from "../../services/pilotService";
-import { useEffect } from "react";
 import Protected from "../../routes/middlewares/Protected";
 import { Col } from "../../components/grid/Col";
-import { Button } from "@nextui-org/button";
 import { Icon } from "../../components/Icons/Icon";
 import { compactGrid } from "../../theme/tableTheme";
 import { Drawer } from "../../containers/Drawer";
 import { PilotForm } from "../../components/forms/PilotForm";
-import { initialPilot } from "./CreatePilotPage";
 import { useDrawer } from "../../hooks/useDrawer";
 import { PilotsResponseColumns } from "../../components/columns/PilotsResponseColumns";
 import { QueryKeys } from "../../config/contants";
 import { TableServer } from "../../components/table/TableServer";
+
+import { initialPilot } from "./CreatePilotPage";
 
 export const PilotPage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
@@ -37,29 +39,29 @@ export const PilotPage = () => {
         </Col>
         <TableServer<PilotResponse>
           columns={PilotsResponseColumns}
-          hasFilters={true}
-          text="de los pilotos"
-          styles={compactGrid}
-          title={"Pilotos"}
-          width={false}
           filters={filterPilot}
-          setFilters={setFilterPilot}
+          hasFilters={true}
           queryFn={getPilots}
           queryKey={QueryKeys.Pilots}
+          setFilters={setFilterPilot}
+          styles={compactGrid}
+          text="de los pilotos"
+          title={"Pilotos"}
+          width={false}
         />
         {render && (
           <Drawer
             isOpen={openCreate}
             setIsOpen={setOpenCreate}
-            title={`Crear Producto`}
             size="2xl"
+            title={`Crear Producto`}
           >
             <div className="p-5">
               <PilotForm
+                reboot
                 initialForm={initialPilot}
                 sendForm={create}
                 text="Crear"
-                reboot
               />
             </div>
           </Drawer>
@@ -71,8 +73,8 @@ export const PilotPage = () => {
               setOpenUpdate();
               add(null);
             }}
-            title={`Editar Cliente`}
             size="2xl"
+            title={`Editar Cliente`}
           >
             <div className="p-5">
               <PilotForm initialForm={pilot!} sendForm={update} text="Editar" />

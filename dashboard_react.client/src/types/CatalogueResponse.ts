@@ -1,4 +1,3 @@
-
 export interface CatalogueResponse {
   id: string;
   name: string;

@@ -1,3 +1,6 @@
+import { Button } from "@nextui-org/button";
+import { Input, Textarea } from "@nextui-org/input";
+
 import { Response } from "../messages/Response";
 import { CustomerAddressResponse } from "../../types/CustomerAddressResponse";
 import { ApiResponse } from "../../types/ApiResponse";
@@ -5,13 +8,11 @@ import { ValidationFailure } from "../../types/ValidationFailure";
 import { Col } from "../grid/Col";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialCustomerAddress } from "../../pages/customer/address/AddressCreatePage";
-import { Button } from "@nextui-org/button";
 import { customerAddressShema } from "../../util/validations/customerAddressValidations";
 import { handleOneLevelZodError } from "../../util/converted";
 import { CatalogueSearch } from "../input/CatalogueSearch";
 import { useCustomerAddressStore } from "../../store/useCustomerAddressStore";
 import { getCustomers } from "../../services/customerService";
-import { Input, Textarea } from "@nextui-org/input";
 import { QueryKeys } from "../../config/contants";
 import { ModalType } from "../../hooks/useModalStrategies";
 
@@ -65,71 +66,71 @@ export const CustomerAddressForm = ({
         {success != null && <Response message={message} type={success!} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <CatalogueSearch
-            querykey={QueryKeys.Customers as ModalType}
+            defaultValue={customerAddress?.customer?.fullName}
             entity="Clientes"
             errorMessage={errors?.customerId}
-            setFormValue={handleChange}
-            name="customerId"
             keyName="FullName"
+            name="customerId"
             queryFn={getCustomers}
-            defaultValue={customerAddress?.customer?.fullName}
+            querykey={QueryKeys.Customers as ModalType}
+            setFormValue={handleChange}
           />
           <CatalogueSearch
-            querykey={QueryKeys.Departments as ModalType}
+            defaultValue={customerAddress?.department?.name}
             entity="Departamento"
             errorMessage={errors?.departmentId}
-            setFormValue={handleChange}
             name="departmentId"
-            defaultValue={customerAddress?.department?.name}
+            querykey={QueryKeys.Departments as ModalType}
+            setFormValue={handleChange}
           />
           <CatalogueSearch
-            querykey={QueryKeys.Municipalities as ModalType}
+            defaultValue={customerAddress?.municipality?.name}
             entity="Municipio"
             errorMessage={errors?.municipalityId}
-            setFormValue={handleChange}
             name="municipalityId"
-            defaultValue={customerAddress?.municipality?.name}
+            querykey={QueryKeys.Municipalities as ModalType}
+            setFormValue={handleChange}
           />
           <CatalogueSearch
-            querykey={QueryKeys.Zones as ModalType}
+            defaultValue={customerAddress?.zone?.name}
             entity="Zona"
             errorMessage={errors?.zoneId}
-            setFormValue={handleChange}
             name="zoneId"
-            defaultValue={customerAddress?.zone?.name}
+            querykey={QueryKeys.Zones as ModalType}
+            setFormValue={handleChange}
           />
           <Input
-            type="text"
-            name="colonyCondominium"
-            value={form.colonyCondominium}
-            onChange={handleChange}
-            label="Colonia/Condominio"
-            errorMessage={errors?.colonyCondominium}
-            variant="underlined"
-            isInvalid={!!errors?.colonyCondominium}
             isRequired
+            errorMessage={errors?.colonyCondominium}
+            isInvalid={!!errors?.colonyCondominium}
+            label="Colonia/Condominio"
+            name="colonyCondominium"
+            type="text"
+            value={form.colonyCondominium}
+            variant="underlined"
+            onChange={handleChange}
           />
           <Textarea
-            type="text"
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-            label="Dirección"
-            errorMessage={errors?.address}
-            variant="underlined"
-            className="px-2"
-            isInvalid={!!errors?.address}
             isRequired
+            className="px-2"
+            errorMessage={errors?.address}
+            isInvalid={!!errors?.address}
+            label="Dirección"
+            name="address"
+            type="text"
+            value={form.address}
+            variant="underlined"
+            onChange={handleChange}
           />
           <Button
+            fullWidth
+            className="py-4 mt-4 font-bold"
+            color="primary"
             isLoading={loading}
-            type="submit"
             radius="md"
             size="lg"
-            color="primary"
-            fullWidth
+            type="submit"
             variant="shadow"
-            className="mt-4 py-4 font-bold"
           >
             {text} Direccion Cliente
           </Button>

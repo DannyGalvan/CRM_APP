@@ -1,4 +1,3 @@
-
 interface CatalogueRequest {
   id?: string;
   name: string;

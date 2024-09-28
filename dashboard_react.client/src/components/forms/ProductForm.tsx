@@ -1,5 +1,6 @@
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
+
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialProduct } from "../../pages/product/CreateProductPage";
 import { useProductStore } from "../../store/useProductStore";
@@ -68,89 +69,89 @@ export const ProductForm = ({
         {success != null && <Response message={message} type={success!} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <Input
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            label="Nombre"
             isRequired
-            errorMessage={errors?.name}
-            variant="underlined"
-            isInvalid={!!errors?.name}
             className="px-2"
+            errorMessage={errors?.name}
+            isInvalid={!!errors?.name}
+            label="Nombre"
+            name="name"
+            type="text"
+            value={form.name}
+            variant="underlined"
+            onChange={handleChange}
           />
           <Input
-            type="text"
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            label="Descripcion"
             isRequired
-            errorMessage={errors?.description}
-            variant="underlined"
-            isInvalid={!!errors?.description}
             className="px-2"
+            errorMessage={errors?.description}
+            isInvalid={!!errors?.description}
+            label="Descripcion"
+            name="description"
+            type="text"
+            value={form.description}
+            variant="underlined"
+            onChange={handleChange}
           />
           <CatalogueSearch
-            querykey="Families"
+            defaultValue={product?.family?.name}
             entity="Familia"
             errorMessage={errors?.familyId}
-            setFormValue={handleChange}
             name="familyId"
-            defaultValue={product?.family?.name}
+            querykey="Families"
+            setFormValue={handleChange}
           />
           <Row>
             <Col md={4} sm={12}>
               <Input
-                type="number"
-                step={0.01}
-                name="cost"
-                value={form.cost.toString()}
-                onChange={handleChange}
-                label="Costo Q."
+                isRequired
                 errorMessage={errors?.cost}
-                variant="underlined"
                 isInvalid={!!errors?.cost}
-                isRequired
-              />
-            </Col>
-            <Col md={4} sm={12}>
-              <Input
-                type="number"
+                label="Costo Q."
+                name="cost"
                 step={0.01}
-                name="salePrice"
-                value={form.salePrice.toString()}
-                onChange={handleChange}
-                label="Precio de Venta Q."
-                errorMessage={errors?.salePrice}
+                type="number"
+                value={form.cost.toString()}
                 variant="underlined"
-                isInvalid={!!errors?.salePrice}
-                isRequired
+                onChange={handleChange}
               />
             </Col>
             <Col md={4} sm={12}>
               <Input
+                isRequired
+                errorMessage={errors?.salePrice}
+                isInvalid={!!errors?.salePrice}
+                label="Precio de Venta Q."
+                name="salePrice"
+                step={0.01}
                 type="number"
-                step={1}
-                name="stock"
-                value={form.stock.toString()}
-                onChange={handleChange}
-                label="Stock"
-                errorMessage={errors?.stock}
+                value={form.salePrice.toString()}
                 variant="underlined"
+                onChange={handleChange}
+              />
+            </Col>
+            <Col md={4} sm={12}>
+              <Input
+                errorMessage={errors?.stock}
                 isInvalid={!!errors?.stock}
+                label="Stock"
+                name="stock"
+                step={1}
+                type="number"
+                value={form.stock.toString()}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
           </Row>
           <Button
+            fullWidth
+            className="py-4 mt-4 font-bold"
+            color="primary"
             isLoading={loading}
-            type="submit"
             radius="md"
             size="lg"
-            color="primary"
-            fullWidth
+            type="submit"
             variant="shadow"
-            className="mt-4 py-4 font-bold"
           >
             {text} Producto
           </Button>

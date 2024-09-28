@@ -1,5 +1,5 @@
 export interface ListFilter {
-    filter?: string;
-    page: number;
-    pageSize: number;
+  filter?: string;
+  page: number;
+  pageSize: number;
 }

@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+
 import { createCustomer, updateCustomer } from "../services/customerService";
 import { useCustomerStore } from "../store/useCustomerStore";
 import { QueryKeys } from "../config/contants";
@@ -12,9 +13,7 @@ export const useCustomer = () => {
 
     if (response.success) {
       client.refetchQueries({
-        queryKey: [
-          QueryKeys.Customers
-        ],
+        queryKey: [QueryKeys.Customers],
         type: "all",
         exact: false,
       });

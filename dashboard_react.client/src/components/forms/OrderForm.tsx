@@ -1,4 +1,8 @@
 import { Button } from "@nextui-org/button";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { Input } from "@nextui-org/input";
+import { useEffect, useState } from "react";
+
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialOrder } from "../../pages/orders/CreateOrderPage";
 import { getCustomers } from "../../services/customerService";
@@ -16,12 +20,9 @@ import { CatalogueSearch } from "../input/CatalogueSearch";
 import { Response } from "../messages/Response";
 import { TableRoot } from "../table/TableRoot";
 import { Row } from "../grid/Row";
-import { getLocalTimeZone, today } from "@internationalized/date";
-import { Input } from "@nextui-org/input";
 import { getCustomerAddress } from "../../services/customerAddressService";
 import { OrderDetailLineColumns } from "../columns/OrderDetailLineColumns";
 import { OrderResponse } from "../../types/OrderResponse";
-import { useEffect, useState } from "react";
 import { nameRoutes, QueryKeys } from "../../config/contants";
 import { ModalType } from "../../hooks/useModalStrategies";
 import { Icon } from "../Icons/Icon";
@@ -130,8 +131,16 @@ export const OrderForm = ({
             </Col>
             <Col md={6}>
               <Input
+                className="max-w"
+                errorMessage={errors?.deliveryDate}
+                isInvalid={!!errors?.deliveryDate}
+                label="Fecha de Entrega"
                 min={today(getLocalTimeZone()).toString()}
+                name="deliveryDate"
+                pattern="\d{4}-\d{2}-\d{2}"
+                type="date"
                 value={format.format(form.deliveryDate)}
+                variant="underlined"
                 onChange={(e) => {
                   const [year, month, day] = e.target.value
                     .split("-")
@@ -141,53 +150,45 @@ export const OrderForm = ({
                     target: { name: "deliveryDate", value: fecha },
                   } as any);
                 }}
-                name="deliveryDate"
-                label="Fecha de Entrega"
-                className="max-w"
-                type="date"
-                pattern="\d{4}-\d{2}-\d{2}"
-                errorMessage={errors?.deliveryDate}
-                variant="underlined"
-                isInvalid={!!errors?.deliveryDate}
               />
             </Col>
           </Row>
           <CatalogueSearch
-            name="customerId"
-            querykey={QueryKeys.Customers as ModalType}
-            entity="Cliente"
-            setFormValue={handleChange}
             defaultValue={order?.customer?.fullName}
+            entity="Cliente"
             errorMessage={errors?.customerId}
             keyName="FullName"
+            name="customerId"
+            queryFn={getCustomers}
+            querykey={QueryKeys.Customers as ModalType}
             selector={(selected) => {
               setReminder(selected.shippingFee.toFixed(2));
             }}
+            setFormValue={handleChange}
             unSelector={() => {
               setReminder("0.00");
               updateSearch(QueryKeys.CustomerDirections, "");
             }}
-            queryFn={getCustomers}
           />
           <CatalogueSearch
-            name="customerDirectionId"
-            querykey={QueryKeys.CustomerDirections as ModalType}
-            entity="Direccion del Cliente"
-            setFormValue={handleChange}
+            aditionalFilter={` AND CustomerId:eq:${form.customerId}`}
             defaultValue={order?.customerDirection?.address}
+            disabled={form.customerId === ""}
+            entity="Direccion del Cliente"
             errorMessage={errors?.customerDirectionId}
             keyName="Address"
+            name="customerDirectionId"
             queryFn={getCustomerAddress}
-            disabled={form.customerId === ""}
-            aditionalFilter={` AND CustomerId:eq:${form.customerId}`}
+            querykey={QueryKeys.CustomerDirections as ModalType}
+            setFormValue={handleChange}
           />
           <CatalogueSearch
+            defaultValue={order?.paymentType?.name}
+            entity="Tipo de Pago"
+            errorMessage={errors?.paymentTypeId}
             name="paymentTypeId"
             querykey={QueryKeys.PaymentTypes as ModalType}
-            entity="Tipo de Pago"
             setFormValue={handleChange}
-            defaultValue={order?.paymentType?.name}
-            errorMessage={errors?.paymentTypeId}
           />
           <span className="text-md text-right font-bold text-cyan-500">
             Recordatorio Envio: Q {reminder}
@@ -196,40 +197,40 @@ export const OrderForm = ({
           <h2 className="text-center text-xl font-bold">Detalle del pedido</h2>
           <div>
             <CatalogueSearch
-              name="productId"
-              querykey={QueryKeys.Products as ModalType}
               entity="Agregar Producto"
-              setFormValue={handleAddOrderDetail}
-              queryFn={getProducts}
-              isForm={false}
-              keyName="Name"
-              keyAdd="stock"
-              required={false}
               errorMessage={errors?.productId}
+              isForm={false}
+              keyAdd="stock"
+              keyName="Name"
+              name="productId"
+              queryFn={getProducts}
+              querykey={QueryKeys.Products as ModalType}
+              required={false}
+              setFormValue={handleAddOrderDetail}
             />
             <TableRoot
               columns={OrderDetailLineColumns}
               data={orderDetail}
-              text="de los detalles del pedido"
-              styles={compactGrid}
-              title={"Detalles del Pedido"}
-              width={false}
               hasFilters={true}
               pending={load}
+              styles={compactGrid}
+              text="de los detalles del pedido"
+              title={"Detalles del Pedido"}
+              width={false}
             />
             <p className="bg-black text-end text-2xl font-bold text-white">
               Total: Q {total().toFixed(2)}
             </p>
           </div>
           <Button
+            fullWidth
+            className="py-4 mt-4 font-bold"
+            color="primary"
             isLoading={loading}
-            type="submit"
             radius="md"
             size="lg"
-            color="primary"
-            fullWidth
+            type="submit"
             variant="shadow"
-            className="mt-4 py-4 font-bold"
           >
             {action} Pedido
           </Button>

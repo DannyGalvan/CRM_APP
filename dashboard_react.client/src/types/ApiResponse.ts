@@ -1,6 +1,5 @@
 import { Authorizations } from "./Authorizations";
 
-
 export interface AuthResponse {
   name: string;
   userName: string;
@@ -15,6 +14,5 @@ export interface ApiResponse<T> {
   data: T | null;
   success: boolean | null;
   message: string | null;
-  totalResults: number
+  totalResults: number;
 }
-

@@ -1,6 +1,7 @@
 import { EventApi } from "@fullcalendar/core/index.js";
 import { Switch } from "@nextui-org/switch";
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
+
 import { Icon } from "../Icons/Icon";
 import { EventSidebar } from "../calendar/EventSidebar";
 
@@ -34,17 +35,16 @@ export const CalendarSidebar = ({
         </div>
         <div className="demo-app-sidebar-section">
           <Switch
-            isSelected={weekendsVisible}
-            onChange={handleWeekendsToggle}
             color="secondary"
+            isSelected={weekendsVisible}
             thumbIcon={({ isSelected, className }) =>
               isSelected ? (
-                <Icon name={`bi bi-eye-fill ${className}`}  />
-                
+                <Icon name={`bi bi-eye-fill ${className}`} />
               ) : (
-                <Icon name={`bi bi-eye-slash-fill ${className}`}  />
+                <Icon name={`bi bi-eye-slash-fill ${className}`} />
               )
             }
+            onChange={handleWeekendsToggle}
           >
             Fines de semana
           </Switch>

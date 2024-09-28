@@ -1,6 +1,5 @@
 import Module from "module";
 
-
 export interface Operations {
   id: number;
   idModule: number;

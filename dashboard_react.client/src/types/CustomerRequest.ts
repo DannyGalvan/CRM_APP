@@ -1,5 +1,3 @@
-
-
 interface CustomerRequest {
   id?: string;
   firstName: string;

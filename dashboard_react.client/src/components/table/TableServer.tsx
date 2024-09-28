@@ -1,4 +1,7 @@
 import DataTable from "react-data-table-component";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 import { customStyles } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
 import { TableColumnWithFilters } from "../../types/TableColumnWithFilters";
@@ -8,8 +11,6 @@ import { useToggle } from "../../hooks/useToggle";
 import { LoadingComponent } from "../spinner/LoadingComponent";
 import { MesajeNoData } from "../messages/MesajeNoData";
 import { ModalTable } from "../modals/ModalTable";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { ApiError } from "../../util/errors";
 import { TableSearch } from "../forms/TableSearch";
 import { useErrorsStore } from "../../store/useErrorsStore";
@@ -126,20 +127,51 @@ export const TableServer = <T extends {}>({
 
   return (
     <div className="w-full">
-      {hasRangeOfDates && <InputDateSelector label="Filtro de Rango de Fechas" />}
+      {hasRangeOfDates && (
+        <InputDateSelector label="Filtro de Rango de Fechas" />
+      )}
       {hasFilters && (
         <TableSearch
           columns={columns}
+          filterData={filterData}
           searchField={searchField}
           selectedField={selectedField}
-          filterData={filterData}
         />
       )}
       <DataTable
-        responsive
+        fixedHeader
+        highlightOnHover
         pagination
         paginationServer
+        pointerOnHover
+        responsive
+        striped
+        clearSelectedRows={selectedRows}
+        columns={memoizedColumns}
+        contextMessage={SELECTED_MESSAGE}
+        customStyles={styles ?? customStyles}
+        data={data?.data ?? []}
+        expandableRows={width}
+        fixedHeaderScrollHeight="650px"
+        noDataComponent={
+          <MesajeNoData mesaje={`No se encontraros datos ${text}`} />
+        }
+        paginationComponentOptions={PAGINATION_OPTIONS}
         paginationTotalRows={data?.totalResults}
+        progressComponent={<LoadingComponent />}
+        progressPending={isPending}
+        selectableRows={selectedRows}
+        subHeader={true}
+        subHeaderComponent={<SubHeaderTableButton onClick={toggle} />}
+        subHeaderWrap={true}
+        theme="individuality"
+        title={title}
+        onChangePage={(page, _) => {
+          setFilters({
+            ...filters,
+            page,
+          });
+        }}
         onChangeRowsPerPage={(rows, current) => {
           setFilters({
             ...filters,
@@ -147,42 +179,13 @@ export const TableServer = <T extends {}>({
             page: current,
           });
         }}
-        onChangePage={(page, _) => {
-          setFilters({
-            ...filters,
-            page,
-          });
-        }}
-        contextMessage={SELECTED_MESSAGE}
-        columns={memoizedColumns}
-        data={data?.data ?? []}
-        title={title}
-        subHeaderComponent={<SubHeaderTableButton onClick={toggle} />}
-        subHeaderWrap={true}
-        striped
-        expandableRows={width}
-        paginationComponentOptions={PAGINATION_OPTIONS}
-        subHeader={true}
-        fixedHeader
-        selectableRows={selectedRows}
         onSelectedRowsChange={onSelectedRowsChange}
-        fixedHeaderScrollHeight="650px"
-        theme="individuality"
-        highlightOnHover
-        clearSelectedRows={selectedRows}
-        pointerOnHover
-        progressPending={isPending}
-        progressComponent={<LoadingComponent />}
-        noDataComponent={
-          <MesajeNoData mesaje={`No se encontraros datos ${text}`} />
-        }
-        customStyles={styles ?? customStyles}
       />
       <ModalTable
+        changeVisibilitiColumn={changeVisibilitiColumn as any}
         columns={columns}
         open={open}
         toggle={toggle}
-        changeVisibilitiColumn={changeVisibilitiColumn as any}
       />
     </div>
   );

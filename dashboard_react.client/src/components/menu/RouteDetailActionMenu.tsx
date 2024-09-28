@@ -5,15 +5,16 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
 import { RouteDetailsResponse } from "../../types/RouteDetailsResponse";
 import { updateRouteDetail } from "../../services/routeDetailService";
-import { toast } from "react-toastify";
 import { partialUpdateOrder } from "../../services/orderService";
 import { OrderStates } from "../../config/contants";
 import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
-import { useQueryClient } from "@tanstack/react-query";
 import { useErrorsStore } from "../../store/useErrorsStore";
 import { ValidationFailure } from "../../types/ValidationFailure";
 
@@ -42,7 +43,7 @@ export const RouteDetailActionMenu = ({ data }: RouteDetailActionMenuProps) => {
       errors.forEach((error) => {
         toast.error(error.propertyName + " " + error.errorMessage);
       });
-      
+
       return;
     }
 
@@ -77,7 +78,7 @@ export const RouteDetailActionMenu = ({ data }: RouteDetailActionMenuProps) => {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button className="bg-transparent text-cyan-500" isIconOnly>
+        <Button isIconOnly className="bg-transparent text-cyan-500">
           <Icon name="bi bi-three-dots-vertical" />
         </Button>
       </DropdownTrigger>
@@ -91,11 +92,11 @@ export const RouteDetailActionMenu = ({ data }: RouteDetailActionMenuProps) => {
         </DropdownItem>
         <DropdownItem
           key="delete"
-          onClick={handleDelete}
-          startContent={<Icon name="bi bi-trash3" />}
           className="text-danger"
           color="danger"
           content="Eliminar"
+          startContent={<Icon name="bi bi-trash3" />}
+          onClick={handleDelete}
         >
           Eliminar
         </DropdownItem>

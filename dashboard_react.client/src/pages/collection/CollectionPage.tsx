@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { TableColumn } from "react-data-table-component";
+
 import { TableRoot } from "../../components/table/TableRoot";
 import Protected from "../../routes/middlewares/Protected";
 import { getCollections } from "../../services/collectionService";
@@ -90,8 +91,8 @@ export const CollectionPage = () => {
           data={data?.data ?? []}
           hasFilters={true}
           pending={isLoading || isFetching}
-          text="de las listas"
           styles={compactGrid}
+          text="de las listas"
           title="Tablas"
           width={false}
         />

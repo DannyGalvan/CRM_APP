@@ -5,12 +5,13 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
-import { toast } from "react-toastify";
 import { partialUpdateOrder } from "../../services/orderService";
 import { OrderStates } from "../../config/contants";
-import { useQueryClient } from "@tanstack/react-query";
 import { useErrorsStore } from "../../store/useErrorsStore";
 import { CashReportDetailsResponse } from "../../types/CashReportDetailResponse";
 import { useCashReportStore } from "../../store/useCashReportStore";
@@ -35,7 +36,10 @@ export const CashReportDetailActionMenu = ({
       .filter((order) => order.id !== data.id)
       .map((order) => order.order);
 
-    const updateResponse = await updateCashReport({ ...cashReport!, orders: details });
+    const updateResponse = await updateCashReport({
+      ...cashReport!,
+      orders: details,
+    });
 
     if (!updateResponse.success) {
       toast.error(updateResponse.message);
@@ -97,7 +101,7 @@ export const CashReportDetailActionMenu = ({
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button className="bg-transparent text-cyan-500" isIconOnly>
+        <Button isIconOnly className="bg-transparent text-cyan-500">
           <Icon name="bi bi-three-dots-vertical" />
         </Button>
       </DropdownTrigger>
@@ -111,11 +115,11 @@ export const CashReportDetailActionMenu = ({
         </DropdownItem>
         <DropdownItem
           key="delete"
-          onClick={handleDelete}
-          startContent={<Icon name="bi bi-trash3" />}
           className="text-danger"
           color="danger"
           content="Eliminar"
+          startContent={<Icon name="bi bi-trash3" />}
+          onClick={handleDelete}
         >
           Eliminar
         </DropdownItem>

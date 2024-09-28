@@ -1,6 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+
 import "react-toastify/dist/ReactToastify.css";
 import App from "./App.js";
 import { api, authorization } from "./config/axios/interceptors.js";

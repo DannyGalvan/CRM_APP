@@ -1,7 +1,6 @@
 import { RouteDetailsRequest } from "./RouteDetailsRequest";
 
-
- export interface BulkRouteDetailRequest {
-    routeDetails: RouteDetailsRequest[];
-    createdBy: string;
+export interface BulkRouteDetailRequest {
+  routeDetails: RouteDetailsRequest[];
+  createdBy: string;
 }

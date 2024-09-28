@@ -1,49 +1,49 @@
-import { Button} from '@nextui-org/button'
-import { Tooltip } from '@nextui-org/tooltip'
-import { Icon } from '../Icons/Icon'
+import { Button } from "@nextui-org/button";
+import { Tooltip } from "@nextui-org/tooltip";
 
+import { Icon } from "../Icons/Icon";
 
 interface SubHeaderTableButtonProps {
-   onClick: () => void 
-  }
+  onClick: () => void;
+}
 
 export const SubHeaderTableButton = ({
- onClick
+  onClick,
 }: SubHeaderTableButtonProps) => {
   return (
     <Tooltip
-    content="Campos Visibles"
-    placement="top"
-    delay={0}
-    closeDelay={0}
-    motionProps={{
-      variants: {
-        exit: {
-          opacity: 0,
-          transition: {
-            duration: 0.1,
-            ease: "easeIn",
+      closeDelay={0}
+      content="Campos Visibles"
+      delay={0}
+      motionProps={{
+        variants: {
+          exit: {
+            opacity: 0,
+            transition: {
+              duration: 0.1,
+              ease: "easeIn",
+            },
+          },
+          enter: {
+            opacity: 1,
+            transition: {
+              duration: 0.15,
+              ease: "easeOut",
+            },
           },
         },
-        enter: {
-          opacity: 1,
-          transition: {
-            duration: 0.15,
-            ease: "easeOut",
-          },
-        },
-      },
-    }}
-  >
-    <Button
-      className="bg-transparent text-white"
-      radius="sm"
-      type="button"
-      isIconOnly
-      onClick={onClick}
+      }}
+      placement="top"
     >
-      <Icon name="bi bi-three-dots-vertical" />
-    </Button>
-  </Tooltip>
-  )
-}
+      <Button
+        isIconOnly
+        className="bg-transparent text-white"
+        radius="sm"
+        type="button"
+        onClick={onClick}
+      >
+        <Icon name="bi bi-three-dots-vertical" />
+      </Button>
+    </Tooltip>
+  );
+};

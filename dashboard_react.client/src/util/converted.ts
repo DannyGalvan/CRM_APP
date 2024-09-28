@@ -2,6 +2,7 @@ import { EventInput } from "@fullcalendar/core/index.js";
 import { Selector } from "react-data-table-component";
 import { toast } from "react-toastify";
 import { ZodError } from "zod";
+
 import { ErrorObject } from "../hooks/useForm";
 import { Authorizations } from "../types/Authorizations";
 import { Operations } from "../types/Operations";
@@ -42,7 +43,7 @@ export const toFormatTime = (date: string) => {
     minutes < 10 ? "0" + minutes : minutes.toString();
 
   // Crear una cadena de texto con la hora
-  const formatHours: string = `${formatHour}:${formatMinute}`;
+  const formatHours = `${formatHour}:${formatMinute}`;
 
   // Mostrar la hora
   return formatHours;
@@ -64,7 +65,7 @@ export const toFormatDate = (date: string) => {
   const mesFormateado: string = mes < 10 ? "0" + mes : mes.toString();
 
   // Crear una cadena de texto con la fecha
-  const fechaFormateada: string = `${año}-${mesFormateado}-${diaFormateado}`;
+  const fechaFormateada = `${año}-${mesFormateado}-${diaFormateado}`;
 
   // Mostrar la fecha
   return fechaFormateada;

@@ -1,5 +1,6 @@
 import { Input } from "@nextui-org/input";
 import { FocusEvent, FocusEventHandler, useState } from "react";
+
 import { useOrderDetailStore } from "../../store/useOrderDetailStore";
 
 interface InputQuantityProps {
@@ -23,12 +24,12 @@ export const InputQuantity = ({ data }: InputQuantityProps) => {
   return (
     <div>
       <Input
+        min={0}
+        step={1}
+        type="number"
         value={quantity}
         onBlur={handleBlur}
         onChange={handleChange}
-        step={1}
-        min={0}
-        type="number"
       />
     </div>
   );

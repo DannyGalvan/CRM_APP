@@ -1,5 +1,6 @@
 import { Button } from "@nextui-org/button";
 import { Input, Textarea } from "@nextui-org/input";
+
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialCustomer } from "../../pages/customer/CustomerCreatePage";
 import { ApiResponse } from "../../types/ApiResponse";
@@ -60,115 +61,115 @@ export const CustomerForm = ({
           <Row>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="firstName"
-                value={form.firstName}
-                onChange={handleChange}
-                label="Primer Nombre"
                 isRequired
                 errorMessage={errors?.firstName}
-                variant="underlined"
                 isInvalid={!!errors?.firstName}
+                label="Primer Nombre"
+                name="firstName"
+                type="text"
+                value={form.firstName}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="secondName"
-                value={form.secondName}
-                onChange={handleChange}
-                label="Segundo Nombre"
                 errorMessage={errors?.secondName}
-                variant="underlined"
                 isInvalid={!!errors?.secondName}
+                label="Segundo Nombre"
+                name="secondName"
+                type="text"
+                value={form.secondName}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
           </Row>
           <Row>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="firstLastName"
-                value={form.firstLastName}
-                onChange={handleChange}
-                label="Primer Apellido"
+                isRequired
                 errorMessage={errors?.firstLastName}
-                variant="underlined"
                 isInvalid={!!errors?.firstLastName}
-                isRequired
+                label="Primer Apellido"
+                name="firstLastName"
+                type="text"
+                value={form.firstLastName}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="secondLastName"
-                value={form.secondLastName}
-                onChange={handleChange}
-                label="Segundo Apellido"
                 errorMessage={errors?.secondLastName}
-                variant="underlined"
                 isInvalid={!!errors?.secondLastName}
+                label="Segundo Apellido"
+                name="secondLastName"
+                type="text"
+                value={form.secondLastName}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
           </Row>
           <Row>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="firstPhone"
-                value={form.firstPhone}
-                onChange={handleChange}
-                label="Primer Teléfono"
-                errorMessage={errors?.firstPhone}
-                variant="underlined"
-                isInvalid={!!errors?.firstPhone}
                 isRequired
+                errorMessage={errors?.firstPhone}
+                isInvalid={!!errors?.firstPhone}
+                label="Primer Teléfono"
+                name="firstPhone"
+                type="text"
+                value={form.firstPhone}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
             <Col md={6} sm={12}>
               <Input
-                type="text"
-                name="secondPhone"
-                value={form.secondPhone}
-                onChange={handleChange}
-                label="Segundo Teléfono"
                 errorMessage={errors?.secondPhone}
-                variant="underlined"
                 isInvalid={!!errors?.secondPhone}
+                label="Segundo Teléfono"
+                name="secondPhone"
+                type="text"
+                value={form.secondPhone}
+                variant="underlined"
+                onChange={handleChange}
               />
             </Col>
           </Row>
           <Input
-            type="number"
+            errorMessage={errors?.shippingFee}
+            isInvalid={!!errors?.shippingFee}
+            label="Costo de Envío Q"
+            min={0}
             name="shippingFee"
             step={0.01}
-            min={0}
+            type="number"
             value={form.shippingFee}
-            onChange={handleChange}
-            label="Costo de Envío Q"
-            errorMessage={errors?.shippingFee}
             variant="underlined"
-            isInvalid={!!errors?.shippingFee}
+            onChange={handleChange}
           />
           <Textarea
-            type="text"
-            name="socialNetworks"
-            value={form.socialNetworks}
-            onChange={handleChange}
-            label="Redes Sociales"
             errorMessage={errors?.socialNetworks}
-            variant="underlined"
             isInvalid={!!errors?.socialNetworks}
+            label="Redes Sociales"
+            name="socialNetworks"
+            type="text"
+            value={form.socialNetworks}
+            variant="underlined"
+            onChange={handleChange}
           />
           <Button
+            fullWidth
+            className="py-4 mt-4 font-bold"
+            color="primary"
             isLoading={loading}
-            type="submit"
             radius="md"
             size="lg"
-            color="primary"
-            fullWidth
+            type="submit"
             variant="shadow"
-            className="mt-4 py-4 font-bold"
           >
             {text} Cliente
           </Button>

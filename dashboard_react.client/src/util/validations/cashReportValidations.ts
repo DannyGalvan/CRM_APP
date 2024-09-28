@@ -1,12 +1,17 @@
 import { z } from "zod";
+
 import { invalid_type_error, required_error } from "../../config/contants";
 
 export const cashReportShema = z.object({
   id: z.string({ invalid_type_error, required_error }).optional(),
   cashierName: z
     .string({ invalid_type_error, required_error })
-    .min(3, { message: "El nombre del cajero debe tener al menos 3 caracteres" })
-    .max(50, { message: "El nombre del cajero debe tener como máximo 50 caracteres" })
+    .min(3, {
+      message: "El nombre del cajero debe tener al menos 3 caracteres",
+    })
+    .max(50, {
+      message: "El nombre del cajero debe tener como máximo 50 caracteres",
+    })
     .trim()
     .refine((data) => data.trim() !== "", {
       message: "Debes proporcionar el nombre del cajero",

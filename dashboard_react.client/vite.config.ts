@@ -1,10 +1,10 @@
 import { fileURLToPath, URL } from "node:url";
-import tsconfigPaths from "vite-tsconfig-paths";
-
-import plugin from "@vitejs/plugin-react";
 import child_process from "child_process";
 import fs from "fs";
 import path from "path";
+
+import plugin from "@vitejs/plugin-react";
+import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vite";
 import compression from "vite-plugin-compression";
 import { VitePWA } from "vite-plugin-pwa";

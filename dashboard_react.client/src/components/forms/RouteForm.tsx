@@ -1,3 +1,8 @@
+import { Button } from "@nextui-org/button";
+import { Textarea } from "@nextui-org/input";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { ApiResponse } from "../../types/ApiResponse";
 import { RouteDtoRequest, RouteDtoResponse } from "../../types/RouteDto";
@@ -8,11 +13,8 @@ import { useRouteStore } from "../../store/useRouteStore";
 import { initialRoute } from "../../pages/routes/CreateRoutePage";
 import { Col } from "../grid/Col";
 import { Response } from "../messages/Response";
-import { Button } from "@nextui-org/button";
 import { CatalogueSearch } from "../input/CatalogueSearch";
 import { getPilots } from "../../services/pilotService";
-import { Textarea } from "@nextui-org/input";
-import { useQuery } from "@tanstack/react-query";
 import { OrderResponse } from "../../types/OrderResponse";
 import { ApiError } from "../../util/errors";
 import { getFilteredOrders } from "../../services/orderService";
@@ -21,7 +23,6 @@ import { compactGrid } from "../../theme/tableTheme";
 import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
 import { RouteDetailsRequest } from "../../types/RouteDetailsRequest";
 import { useErrorsStore } from "../../store/useErrorsStore";
-import { useEffect } from "react";
 import { OrderResponseColumns } from "../columns/OrderResponseColumns";
 import { OrderDetailResponseColumns } from "../columns/OrderDetailResponseColumns";
 import { OrderStates, QueryKeys } from "../../config/contants";
@@ -98,25 +99,25 @@ export const RouteForm = ({
         {success != null && <Response message={message} type={success!} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <CatalogueSearch
-            name="pilotId"
-            querykey={QueryKeys.Pilots as ModalType}
-            entity="Pilotos"
-            setFormValue={handleChange}
             defaultValue={route?.pilot?.fullName}
+            entity="Pilotos"
             errorMessage={errors?.pilotId}
             keyName="FullName"
+            name="pilotId"
             queryFn={getPilots}
+            querykey={QueryKeys.Pilots as ModalType}
+            setFormValue={handleChange}
           />
           <Textarea
-            label="Description"
-            labelPlacement="outside"
-            placeholder="Ingresa observaciones de la ruta"
-            name="observations"
-            value={form.observations}
-            onChange={handleChange}
             errorMessage={errors?.observations}
             isInvalid={!!errors?.observations}
+            label="Description"
+            labelPlacement="outside"
+            name="observations"
+            placeholder="Ingresa observaciones de la ruta"
+            value={form.observations}
             variant="underlined"
+            onChange={handleChange}
           />
           {text === "Editar" && (
             <TableRoot
@@ -124,8 +125,8 @@ export const RouteForm = ({
               data={routeDetail ?? []}
               hasFilters={true}
               pending={loadingDetails}
-              text="de las ordenes"
               styles={compactGrid}
+              text="de las ordenes"
               title={"Ordenes en la ruta"}
               width={false}
             />
@@ -135,11 +136,11 @@ export const RouteForm = ({
             data={data?.data ?? []}
             hasFilters={true}
             pending={isLoading || isFetching}
-            text="de las ordenes"
+            selectedRows={true}
             styles={compactGrid}
+            text="de las ordenes"
             title={"Ordenes pendientes"}
             width={false}
-            selectedRows={true}
             onSelectedRowsChange={(rows) => {
               const details: RouteDetailsRequest[] = rows.selectedRows.map(
                 (row: any) => ({
@@ -152,14 +153,14 @@ export const RouteForm = ({
             }}
           />
           <Button
+            fullWidth
+            className="py-4 mt-4 font-bold"
+            color="primary"
             isLoading={loading}
-            type="submit"
             radius="md"
             size="lg"
-            color="primary"
-            fullWidth
+            type="submit"
             variant="shadow"
-            className="mt-4 py-4 font-bold"
           >
             {text} Ruta
           </Button>

@@ -1,4 +1,3 @@
-
 export interface CollectionRequest {
   id?: string;
   name: string;
@@ -6,4 +5,4 @@ export interface CollectionRequest {
   nameView: string;
   isReadOnly: boolean;
   isVisible: boolean;
-};
+}

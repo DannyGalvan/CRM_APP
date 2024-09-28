@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+
 import { nameRoutes } from "../config/contants";
 import { Root } from "../containers/Root";
 import { CatalogueRoutes } from "../routes/CatalogueRoutes";
@@ -8,11 +9,12 @@ import { ErrorRoutes } from "../routes/ErrorRoutes";
 import { OrderRoutes } from "../routes/OrderRoutes";
 import { ProductRoutes } from "../routes/ProductRoutes";
 import { PublicRoutes } from "../routes/PublicRoutes";
-import { useAuth } from "./useAuth";
 import { PilotRoutes } from "../routes/PilotRoutes";
 import { RouteRoutes } from "../routes/RouteRoutes";
 import { CustomerAddressRoutes } from "../routes/CustomerAddressRoutes";
 import { CashReportRoutes } from "../routes/CashReportRoutes";
+
+import { useAuth } from "./useAuth";
 
 export const useAuthorizationRoutes = () => {
   const { allOperations } = useAuth();

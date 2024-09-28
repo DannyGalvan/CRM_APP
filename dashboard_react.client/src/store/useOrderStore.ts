@@ -1,7 +1,9 @@
 import { create } from "zustand";
+
 import { OrderResponse } from "../types/OrderResponse";
-import { logger } from "./logger";
 import { ListFilter } from "../types/LIstFilter";
+
+import { logger } from "./logger";
 
 interface OrderState {
   filters: ListFilter;

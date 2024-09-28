@@ -1,5 +1,3 @@
-
-
 export interface DailyOrders {
   id: {
     day: number;

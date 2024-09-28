@@ -1,4 +1,6 @@
 import { Button } from "@nextui-org/button";
+import { useEffect } from "react";
+
 import { Col } from "../../../components/grid/Col";
 import Protected from "../../../routes/middlewares/Protected";
 import { Icon } from "../../../components/Icons/Icon";
@@ -6,16 +8,16 @@ import { CustomerAddressReponseColumns } from "../../../components/columns/Custo
 import { compactGrid } from "../../../theme/tableTheme";
 import { CustomerAddressResponse } from "../../../types/CustomerAddressResponse";
 import { getCustomerAddress } from "../../../services/customerAddressService";
-import { useEffect } from "react";
 import { useRetraseRender } from "../../../hooks/useRetraseRender";
 import { Drawer } from "../../../containers/Drawer";
 import { CustomerAddressForm } from "../../../components/forms/CustomerAddressForm";
-import { initialCustomerAddress } from "./AddressCreatePage";
 import { useDrawer } from "../../../hooks/useDrawer";
 import { useCustomerAddress } from "../../../hooks/useCustomerAddress";
 import { useCustomerAddressStore } from "../../../store/useCustomerAddressStore";
 import { QueryKeys } from "../../../config/contants";
 import { TableServer } from "../../../components/table/TableServer";
+
+import { initialCustomerAddress } from "./AddressCreatePage";
 
 export const AddressPage = () => {
   const { create, update } = useCustomerAddress();
@@ -38,22 +40,22 @@ export const AddressPage = () => {
         </Col>
         <TableServer<CustomerAddressResponse>
           columns={CustomerAddressReponseColumns}
-          hasFilters={true}
-          text="de las direcciones"
-          styles={compactGrid}
-          title={"Direcciones Cliente"}
-          width={false}
           filters={addressFilters}
-          setFilters={setAddressFilters}
+          hasFilters={true}
           queryFn={getCustomerAddress}
           queryKey={QueryKeys.CustomerDirections}
+          setFilters={setAddressFilters}
+          styles={compactGrid}
+          text="de las direcciones"
+          title={"Direcciones Cliente"}
+          width={false}
         />
         {render && (
           <Drawer
             isOpen={openCreate}
             setIsOpen={setOpenCreate}
-            title={`Crear Direccion Cliente`}
             size="2xl"
+            title={`Crear Direccion Cliente`}
           >
             <div className="p-5">
               <CustomerAddressForm
@@ -71,8 +73,8 @@ export const AddressPage = () => {
               setOpenUpdate();
               add(null);
             }}
-            title={`Editar Cliente`}
             size="xl"
+            title={`Editar Cliente`}
           >
             <div className="p-5">
               <CustomerAddressForm

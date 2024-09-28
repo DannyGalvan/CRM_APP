@@ -11,8 +11,8 @@ export const OrderResponseFilteredColumns: TableColumnWithFilters<OrderResponse>
       sortable: true,
       maxWidth: "150px",
       omit: true,
-      filterField: (value) => value ? `_id:eq:${value}` : "",
-      hasFilter: true,      
+      filterField: (value) => (value ? `_id:eq:${value}` : ""),
+      hasFilter: true,
     },
     {
       id: "name",
@@ -22,7 +22,7 @@ export const OrderResponseFilteredColumns: TableColumnWithFilters<OrderResponse>
       sortable: true,
       reorder: true,
       filterField: (value) => (value ? `Customer.FullName:like:${value}` : ""),
-      hasFilter: true,  
+      hasFilter: true,
     },
     {
       id: "address",

@@ -1,4 +1,5 @@
 import { TableColumn } from "react-data-table-component";
+
 import { RouteDetailsResponse } from "../../types/RouteDetailsResponse";
 import { RouteDetailActionMenu } from "../menu/RouteDetailActionMenu";
 

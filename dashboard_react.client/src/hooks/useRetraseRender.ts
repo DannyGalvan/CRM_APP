@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export const useRetraseRender = () => {
   const [render, setRender] = useState(false);
@@ -10,4 +10,4 @@ export const useRetraseRender = () => {
   };
 
   return { reRender, render };
-}
+};

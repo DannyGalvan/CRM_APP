@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Suspense, lazy, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+
 import { useAuth } from "./hooks/useAuth";
 import ErrorBoundary from "./pages/error/ErrorBoundary";
 import LoadingPage from "./pages/public/LoadingPage";

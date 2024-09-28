@@ -19,10 +19,10 @@ export const CreateCashReportPage = () => {
       <div className="page-view flex flex-col flex-wrap items-center justify-center">
         <Col md={12}>
           <CashReportForm
+            reboot
             initialForm={initialCashReport}
             sendForm={create}
             text="Crear"
-            reboot
           />
         </Col>
       </div>

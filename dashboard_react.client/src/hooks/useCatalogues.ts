@@ -1,11 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
+
 import { createCatalogue, updateCatalogue } from "../services/catalogueService";
 import { useCatalogueStore } from "../store/useCatalogueStore";
 import { ApiResponse } from "../types/ApiResponse";
 import { CatalogueResponse } from "../types/CatalogueResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
-import { SelectedCatalogue, useListCollections } from "./useListCollections";
 import { QueryKeys } from "../config/contants";
+
+import { SelectedCatalogue, useListCollections } from "./useListCollections";
 
 export const useCatalogues = () => {
   const client = useQueryClient();
@@ -21,9 +23,8 @@ export const useCatalogues = () => {
 
   const createCatalog = async (
     catalogue: CatalogueRequest,
-    forceSelected?: SelectedCatalogue, 
+    forceSelected?: SelectedCatalogue,
   ): Promise<ApiResponse<CatalogueResponse | ValidationFailure[]>> => {
-
     const response = await createCatalogue(
       forceSelected?.selected ?? selectedCatalogue.selected,
       catalogue,
@@ -31,7 +32,10 @@ export const useCatalogues = () => {
 
     if (response.success) {
       client.refetchQueries({
-        queryKey: [QueryKeys.Catalogues, forceSelected?.selected ?? selectedCatalogue.selected],
+        queryKey: [
+          QueryKeys.Catalogues,
+          forceSelected?.selected ?? selectedCatalogue.selected,
+        ],
         type: "all",
         exact: true,
       });

@@ -1,5 +1,3 @@
-
-
 export interface MonthlyOrders {
   id: {
     month: number;
@@ -8,6 +6,3 @@ export interface MonthlyOrders {
   totalOrders: number;
   totalAmount: number;
 }
-
-
-

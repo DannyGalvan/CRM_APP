@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+
 import { OrderForm } from "../../components/forms/OrderForm";
 import { Col } from "../../components/grid/Col";
 import { useOrder } from "../../hooks/useOrder";
@@ -23,13 +24,13 @@ export const CreateOrderPage = () => {
 
   return (
     <Protected>
-      <div className="page-view flex flex-col flex-wrap items-center justify-center">      
+      <div className="page-view flex flex-col flex-wrap items-center justify-center">
         <Col md={12}>
           <OrderForm
+            reboot
+            action="Crear"
             initialForm={initialOrder}
             sendForm={create}
-            action="Crear"
-            reboot
           />
         </Col>
       </div>

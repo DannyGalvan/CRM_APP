@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { useCallback, useMemo, useState } from 'react';
-import { DEFAULT_CATALOGUE, QueryKeys } from '../config/contants';
-import { getCollections } from '../services/collectionService';
-import { ApiResponse } from '../types/ApiResponse';
-import { CollectionResponse } from '../types/CollectionResponse';
-import { ApiError } from '../util/errors';
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo, useState } from "react";
+
+import { DEFAULT_CATALOGUE, QueryKeys } from "../config/contants";
+import { getCollections } from "../services/collectionService";
+import { ApiResponse } from "../types/ApiResponse";
+import { CollectionResponse } from "../types/CollectionResponse";
+import { ApiError } from "../util/errors";
 
 export interface SelectedCatalogue {
   selected?: string;
@@ -35,7 +36,7 @@ export const useListCollections = () => {
   const handleSelect = useCallback((e: any) => {
     setSetselectedCatalogue(JSON.parse(e.target.value));
   }, []);
-  
+
   const filteredCollections = useMemo(
     () => collections?.data ?? [],
     [collections],
@@ -49,4 +50,4 @@ export const useListCollections = () => {
     collectionFetching,
     handleSelect,
   };
-}
+};

@@ -8,9 +8,9 @@ const LoadingPage = () => {
         <div className="flex flex-row justify-center">
           <Col md={4} sm={4} xs={8}>
             <img
-              src={URL_LOGO}
-              className={`loading w-100 rounded-xl object-cover`}
               alt="logo"
+              className={`loading w-100 rounded-xl object-cover`}
+              src={URL_LOGO}
             />
             <h3 className="text-center text-3xl font-bold text-gray-500">
               Cargando... Espere
