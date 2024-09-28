@@ -126,7 +126,7 @@ export const TableServer = <T extends {}>({
 
   return (
     <div className="w-full">
-      {hasRangeOfDates && <InputDateSelector label="Rango de Fechas Ordenes" />}
+      {hasRangeOfDates && <InputDateSelector label="Filtro de Rango de Fechas" />}
       {hasFilters && (
         <TableSearch
           columns={columns}

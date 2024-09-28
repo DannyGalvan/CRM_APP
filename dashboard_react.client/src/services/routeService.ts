@@ -13,15 +13,17 @@ export const createRoute = async (route: RouteRequest) => {
   return response;
 };
 
-export const getRoutes = async (filter?: string) => {
+export const getRoutes = async (filter?: string, page = 1, pageSize = 10) => {
   let response;
 
   if (filter) {
-    response = await api.get<any,ApiResponse<RouteResponse[]>,any>(
-      `/route?filters=${filter}`
+    response = await api.get<any, ApiResponse<RouteResponse[]>, any>(
+      `/route?filters=State:eq:1 AND ${filter}&page=${page}&pageSize=${pageSize}`,
     );
   } else {
-    response = await api.get<any, ApiResponse<RouteResponse[]>, any>("/route");
+    response = await api.get<any, ApiResponse<RouteResponse[]>, any>(
+      `/route&page=${page}&pageSize=${pageSize}`,
+    );
   }
 
   return response;
@@ -45,4 +47,4 @@ export const partialUpdateRoute = async (route: RouteRequest) => {
   >(`/route`, route);
 
   return response;
-}
+};

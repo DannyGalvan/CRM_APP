@@ -22,9 +22,9 @@ namespace Dashboard_React.Server.Controllers
 
         [HttpGet]
         [Authorize(Policy = "Pilot.List")]
-        public IActionResult GetAll(string? filters)
+        public IActionResult GetAll(string? filters, int page = 1, int pageSize = 30)
         {
-            var response = _pilotService.GetAll(filters);
+            var response = _pilotService.GetAll(filters, thenInclude:false, page, pageSize);
 
             if
                 (response.Success)
@@ -33,7 +33,8 @@ namespace Dashboard_React.Server.Controllers
                 {
                     Data = _mapper.Map<List<Pilot>, List<PilotResponse>>(response.Data!),
                     Success = response.Success,
-                    Message = response.Message
+                    Message = response.Message,
+                    TotalResults = response.TotalResults,
                 };
 
                 return Ok(successResponse);

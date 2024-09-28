@@ -1,19 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
 import { usePilots } from "../../hooks/usePilots";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
 import { usePilotStore } from "../../store/usePilotStore";
 import { PilotResponse } from "../../types/PilotResponse";
-import { ValidationFailure } from "../../types/ValidationFailure";
-import { ApiResponse } from "../../types/ApiResponse";
-import { ApiError } from "../../util/errors";
 import { getPilots } from "../../services/pilotService";
-import { NotFound } from "../error/NotFound";
 import { useEffect } from "react";
 import Protected from "../../routes/middlewares/Protected";
 import { Col } from "../../components/grid/Col";
 import { Button } from "@nextui-org/button";
 import { Icon } from "../../components/Icons/Icon";
-import { TableRoot } from "../../components/table/TableRoot";
 import { compactGrid } from "../../theme/tableTheme";
 import { Drawer } from "../../containers/Drawer";
 import { PilotForm } from "../../components/forms/PilotForm";
@@ -21,30 +15,17 @@ import { initialPilot } from "./CreatePilotPage";
 import { useDrawer } from "../../hooks/useDrawer";
 import { PilotsResponseColumns } from "../../components/columns/PilotsResponseColumns";
 import { QueryKeys } from "../../config/contants";
-
-
+import { TableServer } from "../../components/table/TableServer";
 
 export const PilotPage = () => {
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();
   const { create, update } = usePilots();
-  const { pilot, add } = usePilotStore();
-
-  const { data, error, isFetching, isLoading } = useQuery<
-    ApiResponse<PilotResponse[] | ValidationFailure[]>,
-    ApiError | undefined
-  >({
-    queryKey: [QueryKeys.Pilots],
-    queryFn: () => getPilots(),
-  });
+  const { pilot, add, filterPilot, setFilterPilot } = usePilotStore();
 
   useEffect(() => {
     reRender();
   }, []);
-
-  if (error) {
-    return <NotFound Message={error.message} Number={error.statusCode} />;
-  }
 
   return (
     <Protected>
@@ -54,15 +35,17 @@ export const PilotPage = () => {
             <Icon name={"bi bi-bag-plus"} /> Crear Piloto
           </Button>
         </Col>
-        <TableRoot
+        <TableServer<PilotResponse>
           columns={PilotsResponseColumns}
-          data={data?.data ?? []}
           hasFilters={true}
-          pending={isLoading || isFetching}
           text="de los pilotos"
           styles={compactGrid}
           title={"Pilotos"}
           width={false}
+          filters={filterPilot}
+          setFilters={setFilterPilot}
+          queryFn={getPilots}
+          queryKey={QueryKeys.Pilots}
         />
         {render && (
           <Drawer

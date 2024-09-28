@@ -1,9 +1,9 @@
-import { TableColumn } from "react-data-table-component";
 import { CashReportResponse } from "../../types/CashReportResponse";
 import { CashReportActionMenu } from "../menu/CashReportActionMenu";
+import { TableColumnWithFilters } from "../../types/TableColumnWithFilters";
 
-
-export const CashReportResponseColumns: TableColumn<CashReportResponse>[] = [
+export const CashReportResponseColumns: TableColumnWithFilters<CashReportResponse>[] =
+  [
     {
       id: "id",
       name: "Id",
@@ -19,6 +19,8 @@ export const CashReportResponseColumns: TableColumn<CashReportResponse>[] = [
       sortable: true,
       wrap: true,
       omit: false,
+      hasFilter: true,
+      filterField: (value) => (value ? `CashierName:like:${value}` : ""),
     },
     {
       id: "observations",
@@ -27,12 +29,24 @@ export const CashReportResponseColumns: TableColumn<CashReportResponse>[] = [
       sortable: true,
       wrap: true,
       omit: false,
+      hasFilter: true,
+      filterField: (value) => (value ? `Observations:like:${value}` : ""),
     },
     {
       id: "total",
       name: "Total",
       selector: (data) => data.total,
       format: (data) => `Q. ${data.total?.toFixed(2)}`,
+      sortable: true,
+      wrap: true,
+      omit: false,
+      hasFilter: true,
+      filterField: (value) => (value ? `Total:gt:${value}` : ""),
+    },
+    {
+      id: "state",
+      name: "Estado",
+      selector: (data) => (data.state == 1 ? "Creado" : "Eliminado"),
       sortable: true,
       wrap: true,
       omit: false,
@@ -44,6 +58,8 @@ export const CashReportResponseColumns: TableColumn<CashReportResponse>[] = [
       sortable: true,
       maxWidth: "160px",
       omit: false,
+      hasFilter: true,
+      filterField: (value) => (value ? `CreatedAt:gt:${value}T00` : ""),
     },
     {
       id: "updatedAt",

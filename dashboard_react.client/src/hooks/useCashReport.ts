@@ -44,7 +44,7 @@ export const useCashReport = () => {
     await client.invalidateQueries({
       queryKey: [QueryKeys.CashReports],
       type: "all",
-      exact: true,
+      exact: false,
     });
 
     rebootScroll();
@@ -74,6 +74,7 @@ export const useCashReport = () => {
         data: [],
         success: false,
         message: "detalles de ruta no válidos",
+        totalResults: 0,
       };
     }
 
@@ -88,6 +89,7 @@ export const useCashReport = () => {
         data: errors,
         success: cashReportResponse.success,
         message: cashReportResponse.message,
+        totalResults: 0,
       };
     }
 
@@ -110,6 +112,7 @@ export const useCashReport = () => {
         data: [],
         success: false,
         message: "Error validando detalles de ruta",
+        totalResults: 0,
       };
     }
 
@@ -124,6 +127,7 @@ export const useCashReport = () => {
         data: errors,
         success: bulkResponse.success,
         message: bulkResponse.message,
+        totalResults: 0,
       };
     }
 
@@ -141,6 +145,7 @@ export const useCashReport = () => {
         data: errors,
         success: bulkOrderResponse.success,
         message: bulkOrderResponse.message,
+        totalResults: 0,
       };
     }
 
@@ -165,6 +170,7 @@ export const useCashReport = () => {
         data: errors,
         success: cashReportResponse.success,
         message: cashReportResponse.message,
+        totalResults: 0,
       };
     }
 
@@ -193,6 +199,7 @@ export const useCashReport = () => {
         data: [],
         success: false,
         message: "Error validando detalles de ruta",
+        totalResults: 0,
       };
     }
 
@@ -207,6 +214,7 @@ export const useCashReport = () => {
         data: errors,
         success: bulkResponse.success,
         message: bulkResponse.message,
+        totalResults: 0,
       };
     }
 
@@ -224,8 +232,9 @@ export const useCashReport = () => {
         data: errors,
         success: bulkOrderResponse.success,
         message: bulkOrderResponse.message,
+        totalResults: 0,
       };
-    }    
+    }
 
     await updateDataToRefetch();
 

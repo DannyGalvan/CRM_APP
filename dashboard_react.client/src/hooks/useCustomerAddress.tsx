@@ -4,14 +4,12 @@ import {
   updateCustomerAddress,
 } from "../services/customerAddressService";
 import { useCustomerAddressStore } from "../store/useCustomerAddressStore";
-import { ApiResponse } from "../types/ApiResponse";
-import { CustomerAddressResponse } from "../types/CustomerAddressResponse";
 import { updateSearch } from "../obsevables/searchObservable";
 import { QueryKeys } from "../config/contants";
 
 export const useCustomerAddress = () => {
   const client = useQueryClient();
-  const { add } = useCustomerAddressStore();
+  const { addressFilters } = useCustomerAddressStore();
 
   const rebootCatalogues = () => {
     updateSearch(QueryKeys.Customers, "");
@@ -38,28 +36,18 @@ export const useCustomerAddress = () => {
   const update = async (customer: CustomerAddressRequest) => {
     const response = await updateCustomerAddress(customer);
 
-    await client.invalidateQueries({
-      queryKey: [QueryKeys.CustomerDirections],
+    client.refetchQueries({
+      queryKey: [
+        QueryKeys.CustomerDirections,
+        addressFilters.filter,
+        "",
+        "",
+        addressFilters.page,
+        addressFilters.pageSize,
+      ],
       type: "all",
-      exact: false
+      exact: true,
     });
-
-    const customers = client.getQueryData<
-      ApiResponse<CustomerAddressResponse[]>
-    >([QueryKeys.CustomerDirections]);
-
-    if (customers != undefined) {
-      const find = customers.data?.find((c) => c.id === customer.id);
-
-      if (find != undefined) {
-        find.createdAt = null;
-        find.updatedAt = null;
-        find.updatedBy = null;
-        find.createdBy = null;
-      }
-
-      find && add(find);
-    }
 
     return response;
   };

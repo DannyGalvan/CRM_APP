@@ -4,15 +4,21 @@ import { CashReportRequest } from "../types/CashReportRequest";
 import { CashReportResponse } from "../types/CashReportResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 
-export const getCashReports = async (filter?: string) => {
+export const getCashReports = async (
+  filter?: string,
+  page = 1,
+  pageSize = 10,
+) => {
   let response;
 
   if (filter) {
-    response = await api.get<any,ApiResponse<CashReportResponse[]>,any>(
-      `/cashReport?filters=${filter}`
+    response = await api.get<any, ApiResponse<CashReportResponse[]>, any>(
+      `/cashReport?filters=${filter}&page=${page}&pageSize=${pageSize}`,
     );
   } else {
-    response = await api.get<any, ApiResponse<CashReportResponse[]>, any>("/cashReport");
+    response = await api.get<any, ApiResponse<CashReportResponse[]>, any>(
+      `/cashReport?page=${page}&pageSize=${pageSize}`,
+    );
   }
 
   return response;
@@ -46,4 +52,4 @@ export const partialUpdateCashReport = async (route: CashReportRequest) => {
   >(`/cashReport`, route);
 
   return response;
-}
+};

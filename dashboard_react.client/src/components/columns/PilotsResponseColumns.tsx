@@ -1,9 +1,9 @@
-import { TableColumn } from "react-data-table-component";
 import { usePilotStore } from "../../store/usePilotStore";
 import { CatalogueActionMenu } from "../menu/CatalogueActionMenu";
 import { PilotResponse } from "../../types/PilotResponse";
+import { TableColumnWithFilters } from "../../types/TableColumnWithFilters";
 
-export const PilotsResponseColumns: TableColumn<PilotResponse>[] = [
+export const PilotsResponseColumns: TableColumnWithFilters<PilotResponse>[] = [
   {
     id: "id",
     name: "Id",
@@ -19,6 +19,8 @@ export const PilotsResponseColumns: TableColumn<PilotResponse>[] = [
     sortable: true,
     wrap: true,
     omit: true,
+    hasFilter: true,
+    filterField: (value) => (value ? `Name:like:${value}` : ""),
   },
   {
     id: "lastName",
@@ -27,14 +29,18 @@ export const PilotsResponseColumns: TableColumn<PilotResponse>[] = [
     sortable: true,
     wrap: true,
     omit: true,
+    hasFilter: true,
+    filterField: (value) => (value ? `LastName:like:${value}` : ""),
   },
   {
     id: "fullName",
-    name: "Nombre",
+    name: "Nombre Completo",
     selector: (data) => data.fullName,
     sortable: true,
     wrap: true,
     omit: false,
+    hasFilter: true,
+    filterField: (value) => (value ? `FullName:like:${value}` : ""),
   },
   {
     id: "licence",
@@ -43,6 +49,8 @@ export const PilotsResponseColumns: TableColumn<PilotResponse>[] = [
     sortable: true,
     wrap: true,
     omit: false,
+    hasFilter: true,
+    filterField: (value) => (value ? `License:like:${value}` : ""),
   },
   {
     id: "phone",
@@ -59,6 +67,8 @@ export const PilotsResponseColumns: TableColumn<PilotResponse>[] = [
     sortable: true,
     wrap: true,
     omit: false,
+    hasFilter: true,
+    filterField: (value) => (value ? `Email:like:${value}` : ""),
   },
   {
     id: "state",

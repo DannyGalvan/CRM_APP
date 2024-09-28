@@ -30,7 +30,7 @@ export function Component() {
   if (error) {
     return <NotFound Message={error.message} Number={error.statusCode} />;
   }
-  
+
   return (
     <ProtectedPublic>
       <div>

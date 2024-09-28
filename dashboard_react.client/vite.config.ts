@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from "node:url";
-import tsconfigPaths from 'vite-tsconfig-paths';
+import tsconfigPaths from "vite-tsconfig-paths";
 
 import plugin from "@vitejs/plugin-react";
 import child_process from "child_process";
@@ -101,7 +101,7 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/reports/, ""),
       },
-    },    
+    },
     port: 5173,
     https: {
       key: fs.readFileSync(keyFilePath),

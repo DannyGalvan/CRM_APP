@@ -43,7 +43,7 @@ export const useRoutes = () => {
     await client.invalidateQueries({
       queryKey: [QueryKeys.Routes],
       type: "all",
-      exact: true,
+      exact: false,
     });
 
     await client.refetchQueries({
@@ -73,6 +73,7 @@ export const useRoutes = () => {
         data: [],
         success: false,
         message: "detalles de ruta no válidos",
+        totalResults: 1,
       };
     }
 
@@ -86,6 +87,7 @@ export const useRoutes = () => {
         data: errors,
         success: routeResponse.success,
         message: routeResponse.message,
+        totalResults: 1,
       };
     }
 
@@ -105,6 +107,7 @@ export const useRoutes = () => {
         data: [],
         success: false,
         message: "Error validando detalles de ruta",
+        totalResults: 1,
       };
     }
 
@@ -121,6 +124,7 @@ export const useRoutes = () => {
         data: errors,
         success: bulkResponse.success,
         message: bulkResponse.message,
+        totalResults: 1,
       };
     }
 
@@ -140,6 +144,7 @@ export const useRoutes = () => {
         data: errors,
         success: bulkOrderResponse.success,
         message: bulkOrderResponse.message,
+        totalResults: 1,
       };
     }
 
@@ -160,12 +165,13 @@ export const useRoutes = () => {
       },
       success: true,
       message: "Ruta creada con éxito",
+      totalResults: 1,
     };
 
     return response;
   };
 
-  const update = async (form: RouteDtoRequest) => {
+  const update = async (form: RouteDtoRequest): Promise<ApiResponse<RouteDtoResponse | ValidationFailure[]>> => {
     const routeResponse = await updateRoute(form);
 
     if (!routeResponse.success) {
@@ -176,6 +182,7 @@ export const useRoutes = () => {
         data: errors,
         success: routeResponse.success,
         message: routeResponse.message,
+        totalResults: 1,
       };
     }
 
@@ -187,9 +194,10 @@ export const useRoutes = () => {
       });
 
       return {
-        data: [],
+        data: [] as RouteDtoResponse | ValidationFailure[],
         success: true,
         message: "Ruta actualizada con éxito",
+        totalResults: 1,
       };
     }
 
@@ -206,9 +214,10 @@ export const useRoutes = () => {
       });
 
       return {
-        data: [],
+        data: [] as RouteDtoResponse | ValidationFailure[],
         success: false,
         message: "Error validando detalles de ruta",
+        totalResults: 1,
       };
     }
 
@@ -225,6 +234,7 @@ export const useRoutes = () => {
         data: errors,
         success: bulkResponse.success,
         message: bulkResponse.message,
+        totalResults: 1,
       };
     }
 
@@ -244,6 +254,7 @@ export const useRoutes = () => {
         data: errors,
         success: bulkOrderResponse.success,
         message: bulkOrderResponse.message,
+        totalResults: 1,
       };
     }
 
@@ -266,6 +277,7 @@ export const useRoutes = () => {
       },
       success: true,
       message: "Ruta creada con éxito",
+      totalResults: 1,
     };
 
     return response;

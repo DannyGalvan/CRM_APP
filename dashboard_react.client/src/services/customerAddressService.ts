@@ -3,16 +3,20 @@ import { ApiResponse } from "../types/ApiResponse";
 import { CustomerAddressResponse } from "../types/CustomerAddressResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 
-export const getCustomerAddress = async (filter?: string) => {
-  let response: ApiResponse<CustomerAddressResponse[] | ValidationFailure[]>;
+export const getCustomerAddress = async (
+  filter?: string,
+  page = 1,
+  pageSize = 10,
+) => {
+  let response: ApiResponse<CustomerAddressResponse[]>;
 
   if (!filter) {
     response = await api.get<any, ApiResponse<CustomerAddressResponse[]>, any>(
-      "/customerDirection",
+      `/customerDirection?page=${page}&pageSize=${pageSize}`,
     );
   } else {
     response = await api.get<any, ApiResponse<CustomerAddressResponse[]>, any>(
-      `/customerDirection?filters=${filter}`,
+      `/customerDirection?filters=${filter}&page=${page}&pageSize=${pageSize}`,
     );
   }
 
@@ -31,7 +35,9 @@ export const createCustomerAddress = async (
   return response;
 };
 
-export const updateCustomerAddress = async (customer: CustomerAddressRequest) => {
+export const updateCustomerAddress = async (
+  customer: CustomerAddressRequest,
+) => {
   const response = await api.put<
     CustomerAddressRequest,
     ApiResponse<CustomerAddressResponse | ValidationFailure[]>,

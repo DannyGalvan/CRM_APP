@@ -1,9 +1,9 @@
-import { TableColumn } from "react-data-table-component";
 import { CustomerAddressResponse } from "../../types/CustomerAddressResponse";
 import { CatalogueActionMenu } from "../menu/CatalogueActionMenu";
 import { useCustomerAddressStore } from "../../store/useCustomerAddressStore";
+import { TableColumnWithFilters } from "../../types/TableColumnWithFilters";
 
-export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>[] =
+export const CustomerAddressReponseColumns: TableColumnWithFilters<CustomerAddressResponse>[] =
   [
     {
       id: "id",
@@ -20,6 +20,8 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       omit: false,
       maxWidth: "250px",
       sortable: true,
+      hasFilter: true,
+      filterField: (value) => (value ? `Customer.FullName:like:${value}` : ""),
     },
     {
       id: "department",
@@ -28,6 +30,8 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       sortable: true,
       maxWidth: "155px",
       omit: false,
+      hasFilter: true,
+      filterField: (value) => (value ? `Department.Name:like:${value}` : ""),
     },
     {
       id: "municipality",
@@ -36,6 +40,8 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       sortable: true,
       maxWidth: "155px",
       omit: false,
+      hasFilter: true,
+      filterField: (value) => (value ? `Municipality.Name:like:${value}` : ""),
     },
     {
       id: "zone",
@@ -44,6 +50,8 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       sortable: true,
       maxWidth: "125px",
       omit: false,
+      hasFilter: true,
+      filterField: (value) => (value ? `Zone.Name:like:${value}` : ""),
     },
     {
       id: "colony_condominium",
@@ -53,6 +61,8 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       maxWidth: "160px",
       wrap: true,
       omit: true,
+      hasFilter: true,
+      filterField: (value) => (value ? `ColonyCondominium:like:${value}` : ""),
     },
     {
       id: "address",
@@ -62,6 +72,8 @@ export const CustomerAddressReponseColumns: TableColumn<CustomerAddressResponse>
       wrap: true,
       maxWidth: "350px",
       omit: false,
+      hasFilter: true,
+      filterField: (value) => (value ? `Address:like:${value}` : ""),
     },
     {
       id: "createdAt",

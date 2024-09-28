@@ -1,10 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { TableRoot } from "../../components/table/TableRoot";
 import Protected from "../../routes/middlewares/Protected";
 import { compactGrid } from "../../theme/tableTheme";
-import { ApiResponse } from "../../types/ApiResponse";
-import { ValidationFailure } from "../../types/ValidationFailure";
-import { ApiError } from "../../util/errors";
 import { getRoutes } from "../../services/routeService";
 import { RouteResponse } from "../../types/RouteResponse";
 import { Col } from "../../components/grid/Col";
@@ -18,34 +13,19 @@ import { useEffect } from "react";
 import { initialRoute } from "./CreateRoutePage";
 import { useRouteStore } from "../../store/useRouteStore";
 import { useDrawer } from "../../hooks/useDrawer";
-import { NotFound } from "../error/NotFound";
 import { RouteResponseColumns } from "../../components/columns/RouteResponseColumns";
 import { QueryKeys } from "../../config/contants";
-import { InputDateSelector } from "../../components/input/InputDateSelector";
-import { useRangeOfDatesStore } from "../../store/useRangeOfDatesStore";
+import { TableServer } from "../../components/table/TableServer";
 
 export const RoutePage = () => {
-  const { getDateFilters, end, start } = useRangeOfDatesStore();
   const { openCreate, openUpdate, setOpenCreate, setOpenUpdate } = useDrawer();
   const { reRender, render } = useRetraseRender();
   const { create, update } = useRoutes();
-  const { route, add } = useRouteStore();
-
-  const { data, error, isFetching, isLoading } = useQuery<
-    ApiResponse<RouteResponse[] | ValidationFailure[]>,
-    ApiError | undefined
-  >({
-    queryKey: [QueryKeys.Routes, end, start],
-    queryFn: () => getRoutes(`${getDateFilters("CreatedAt")} AND State:eq:1`),
-  });
+  const { route, add, routeFilters, setRouteFilters } = useRouteStore();
 
   useEffect(() => {
     reRender();
   }, []);
-
-  if (error) {
-    return <NotFound Message={error.message} Number={error.statusCode} />;
-  }
 
   return (
     <Protected>
@@ -55,16 +35,19 @@ export const RoutePage = () => {
             <Icon name={"bi bi-bag-plus"} /> Crear Ruta
           </Button>
         </Col>
-        <InputDateSelector label="Rango de faechas Rutas"/>
-        <TableRoot
+        <TableServer<RouteResponse>
           columns={RouteResponseColumns}
-          data={data?.data ?? []}
           hasFilters={true}
-          pending={isLoading || isFetching}
           text="de las rutas"
           styles={compactGrid}
           title={"Rutas"}
           width={false}
+          filters={routeFilters}
+          setFilters={setRouteFilters}
+          queryFn={getRoutes}
+          queryKey={QueryKeys.Routes}
+          hasRangeOfDates={true}
+          fieldRangeOfDates="CreatedAt"          
         />
         {render && (
           <Drawer

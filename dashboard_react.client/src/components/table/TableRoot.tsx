@@ -6,10 +6,10 @@ import { useToggle } from "../../hooks/useToggle";
 import { customStyles } from "../../theme/tableTheme";
 import { hasJsonOrOtherToString } from "../../util/converted";
 import { SubHeaderTableButton } from "../button/SubHeaderTableButton";
-import { TableSearch } from "../forms/TableSearch";
 import { MesajeNoData } from "../messages/MesajeNoData";
 import { ModalTable } from "../modals/ModalTable";
 import { LoadingComponent } from "../spinner/LoadingComponent";
+import { TableRootSearch } from "../forms/TableRootSearch";
 
 interface TableRootProps {
   data: any[];
@@ -67,7 +67,6 @@ export const TableRoot = ({
 
   const selectedField = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      console.log(e.target.value);
       setField(columns[e.target.value as any]);
       console.log(columns[e.target.value as any]);
     },
@@ -80,7 +79,7 @@ export const TableRoot = ({
   return (
     <div className="w-full">
       {hasFilters && (
-        <TableSearch
+        <TableRootSearch
           columns={columns}
           searchField={searchField}
           selectedField={selectedField}
