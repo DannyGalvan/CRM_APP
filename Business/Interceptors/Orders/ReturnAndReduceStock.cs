@@ -1,4 +1,5 @@
 ﻿using Business.Interfaces.Interceptors;
+using Business.Services;
 using Business.Util;
 using Entities.Interfaces;
 using Entities.Models;
@@ -7,6 +8,7 @@ using Entities.Response;
 using FluentValidation.Results;
 using Humanizer;
 using Lombok.NET;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Business.Interceptors.Orders
@@ -16,16 +18,27 @@ namespace Business.Interceptors.Orders
     public partial class ReturnAndReduceStock : IEntityAfterUpdateInterceptor<Order, OrderRequest>
     {
         private readonly IMongoContext _context;
+        private readonly ILogger<OrderService> _logger;
 
         public Response<Order, List<ValidationFailure>> Execute(Response<Order, List<ValidationFailure>> response,
             OrderRequest request, Order prevState)
         {
 
-            ReturnStock(prevState.OrderDetails);
+            try
+            {
+                ReturnStock(prevState.OrderDetails);
 
-            ReduceStock(response.Data!.OrderDetails);
+                ReduceStock(response.Data!.OrderDetails);
 
-            response.Message = "Order create and stock updated successful";
+                response.Message = "update order and updated stock successful";
+            }
+            catch(Exception e)
+            {
+                response.Success = false;
+                response.Message = "Error al actualizar stock luego de actualizar la orden";
+
+                _logger.LogError(e, "Error al actualizar stock luego de crear la orden {order}, Usuario: {user} Error: {error}", response.Data!.Id, response.Data.UpdatedBy, e.Message);
+            }
 
             return response;
         }

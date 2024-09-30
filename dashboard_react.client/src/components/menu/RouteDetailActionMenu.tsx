@@ -13,7 +13,7 @@ import { Icon } from "../Icons/Icon";
 import { RouteDetailsResponse } from "../../types/RouteDetailsResponse";
 import { updateRouteDetail } from "../../services/routeDetailService";
 import { partialUpdateOrder } from "../../services/orderService";
-import { OrderStates } from "../../config/contants";
+import { OrderStates, QueryKeys } from "../../config/contants";
 import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
 import { useErrorsStore } from "../../store/useErrorsStore";
 import { ValidationFailure } from "../../types/ValidationFailure";
@@ -63,13 +63,13 @@ export const RouteDetailActionMenu = ({ data }: RouteDetailActionMenuProps) => {
     getRouteDetailsByRouteId(data.routeId, setError);
 
     client.refetchQueries({
-      queryKey: ["ordersFiltered"],
+      queryKey: [QueryKeys.OrdersFiltered],
       type: "active",
       exact: true,
     });
 
     client.invalidateQueries({
-      queryKey: ["orders"],
+      queryKey: [QueryKeys.Orders],
       type: "active",
       exact: false,
     });

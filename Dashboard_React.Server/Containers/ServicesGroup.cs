@@ -1,4 +1,5 @@
 ﻿using Business.Interceptors.Orders;
+using Business.Interceptors.Routes;
 using Business.Interfaces;
 using Business.Interfaces.Interceptors;
 using Business.Services;
@@ -40,6 +41,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEntityAfterCreateInterceptor<Order,OrderRequest>,ReduceStock>();
             services.AddScoped<IEntityAfterUpdateInterceptor<Order, OrderRequest>, ReturnAndReduceStock>();
             services.AddScoped<IEntityAfterPartialUpdateInterceptor<Order, OrderRequest>, ReturnStock>();
+            //Route
+            services.AddScoped<IChangeOrderStatus, ChangeOrderStatus>();
+            services.AddScoped<IEntityAfterCreateInterceptor<Route, RouteRequest>, CreateRouteDetails>();
+            services.AddScoped<IEntityAfterUpdateInterceptor<Route, RouteRequest>, UpdateRouteDetails>();
+            services.AddScoped<IEntityAfterPartialUpdateInterceptor<Route, RouteRequest>, DeleteRouteDetails>();
 
             return services;
         }

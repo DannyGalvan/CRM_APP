@@ -42,7 +42,7 @@ namespace Business.Services
             return _serviceProvider.GetServices<IEntityAfterUpdateInterceptor<TEntity, TRequest>>().OrderBy(i => i.GetType().GetCustomAttribute<OrderAttribute>()?.Priority ?? int.MaxValue);
         }
 
-        private IEnumerable<IEntityAfterPartialUpdateInterceptor<TEntity, TRequest>> GetPartialUpdateInterceptors()
+        private IEnumerable<IEntityAfterPartialUpdateInterceptor<TEntity, TRequest>> GetAfterPartialUpdateInterceptors()
         {
             return _serviceProvider.GetServices<IEntityAfterPartialUpdateInterceptor<TEntity, TRequest>>().OrderBy(i => i.GetType().GetCustomAttribute<OrderAttribute>()?.Priority ?? int.MaxValue);
         }
@@ -352,7 +352,7 @@ namespace Business.Services
 
                 if (!response.Success) return response;
 
-                foreach (var interceptor in GetPartialUpdateInterceptors())
+                foreach (var interceptor in GetAfterPartialUpdateInterceptors())
                 {
                     if (!response.Success) return response;
 

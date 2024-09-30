@@ -1,4 +1,5 @@
 ﻿using Business.Interfaces;
+using Business.Validations.RouteDetail;
 using Entities.Request;
 using FluentValidation;
 using MongoDB.Bson;
@@ -19,11 +20,13 @@ namespace Business.Validations.Route
             RuleFor(x => x.PilotId).
                 NotEmpty().WithMessage("El piloto es requerido para armar una ruta")
                 .Must(HasValidId).WithMessage("El piloto no tiene un id valido");
+            RuleForEach(x => x.RouteDetails)
+                .SetValidator(new CreateRouteDetailValidator());
             RuleFor(x => x.CreatedBy)
                 .Null().WithMessage("El Usuario creador no puede ser modificado");
             RuleFor(x => x.UpdatedBy)
-                .NotEmpty().WithMessage("El Usuario creador es requerido")
-                .Must(HasValidId).WithMessage("El Usuario creador no es valido");
+                .NotEmpty().WithMessage("El Usuario actualizador es requerido")
+                .Must(HasValidId).WithMessage("El Usuario actualizador no es valido");
         }
 
         private bool HasValidId(string? id)

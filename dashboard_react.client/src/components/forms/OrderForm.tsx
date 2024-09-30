@@ -218,7 +218,7 @@ export const OrderForm = ({
               title={"Detalles del Pedido"}
               width={false}
             />
-            <p className="bg-black text-end text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-white bg-black text-end">
               Total: Q {total().toFixed(2)}
             </p>
           </div>

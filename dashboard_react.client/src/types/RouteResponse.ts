@@ -1,4 +1,5 @@
 import { PilotResponse } from "./PilotResponse";
+import { RouteDetailsResponse } from "./RouteDetailsResponse";
 
 export interface RouteResponse {
   id: string;
@@ -10,4 +11,5 @@ export interface RouteResponse {
   createdBy: string | null;
   updatedBy: string | null;
   pilot: PilotResponse;
+  routeDetails: RouteDetailsResponse[];
 }

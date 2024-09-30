@@ -15,13 +15,12 @@ import {
   routeDetailsWithRouteShemaArray,
 } from "../util/validations/routeDetailsValidations";
 import { handleOneLevelZodError } from "../util/converted";
-import { bulkCreateRouteDetail } from "../services/routeDetailService";
-import { bulkPartialUpdateOrder } from "../services/orderService";
-import { RouteDetailsResponse } from "../types/RouteDetailsResponse";
 import { useErrorsStore } from "../store/useErrorsStore";
-import { OrderStates, QueryKeys } from "../config/contants";
+import { QueryKeys } from "../config/contants";
 import { ApiError } from "../util/errors";
 import { updateSearch } from "../obsevables/searchObservable";
+import { RouteResponse } from "../types/RouteResponse";
+import { rebootScroll } from "../util/viewTransition";
 
 export const useRoutes = () => {
   const { route, getRouteDetailsByRouteId } = useRouteDetailStore();
@@ -53,7 +52,7 @@ export const useRoutes = () => {
       exact: true,
     });
 
-    updateSearch(QueryKeys.Pilots, "");
+    rebootScroll();
   };
 
   const create = async (
@@ -78,96 +77,13 @@ export const useRoutes = () => {
       };
     }
 
-    const routeResponse = await createRoute(form);
+    form.routeDetails = parseDetailsWithOutRoute.data;
 
-    if (!routeResponse.success) {
-      const errors = routeResponse.data as
-        | ValidationFailure[]
-        | RouteDtoResponse;
-      return {
-        data: errors,
-        success: routeResponse.success,
-        message: routeResponse.message,
-        totalResults: 1,
-      };
-    }
-
-    const routeSuccess = routeResponse.data as RouteDtoResponse;
-
-    route.forEach((detail) => (detail.routeId = routeSuccess.id));
-
-    const parseDetails = routeDetailsShemaArray.safeParse(route);
-
-    if (!parseDetails.success) {
-      const detailsError = handleOneLevelZodError(parseDetails.error);
-      Object.entries(detailsError).forEach(([_, value]) => {
-        toast.error(value);
-      });
-
-      return {
-        data: [],
-        success: false,
-        message: "Error validando detalles de ruta",
-        totalResults: 1,
-      };
-    }
-
-    const bulkResponse = await bulkCreateRouteDetail({
-      routeDetails: parseDetails.data,
-      createdBy: "",
-    });
-
-    if (!bulkResponse.success) {
-      const errors = bulkResponse.data as
-        | ValidationFailure[]
-        | RouteDtoResponse;
-      return {
-        data: errors,
-        success: bulkResponse.success,
-        message: bulkResponse.message,
-        totalResults: 1,
-      };
-    }
-
-    const bulkOrderResponse = await bulkPartialUpdateOrder({
-      orders: parseDetails.data.map((detail) => ({
-        id: detail.orderId,
-        orderStateId: OrderStates.hasRoute,
-      })),
-      createdBy: "",
-    });
-
-    if (!bulkOrderResponse.success) {
-      const errors = bulkOrderResponse.data as
-        | ValidationFailure[]
-        | RouteDtoResponse;
-      return {
-        data: errors,
-        success: bulkOrderResponse.success,
-        message: bulkOrderResponse.message,
-        totalResults: 1,
-      };
-    }
+    const response = await createRoute(form);
 
     await updateData();
 
-    const response: ApiResponse<RouteDtoResponse | ValidationFailure[]> = {
-      data: {
-        id: routeSuccess.id,
-        observations: routeSuccess.observations,
-        pilotId: routeSuccess.pilotId,
-        state: routeSuccess.state,
-        createdAt: routeSuccess.createdAt,
-        createdBy: routeSuccess.createdBy,
-        updatedAt: routeSuccess.updatedAt,
-        pilot: routeSuccess.pilot,
-        updatedBy: routeSuccess.updatedBy,
-        details: bulkResponse.data as RouteDetailsResponse[],
-      },
-      success: true,
-      message: "Ruta creada con éxito",
-      totalResults: 1,
-    };
+    updateSearch(QueryKeys.Pilots, "");
 
     return response;
   };
@@ -175,38 +91,23 @@ export const useRoutes = () => {
   const update = async (
     form: RouteDtoRequest,
   ): Promise<ApiResponse<RouteDtoResponse | ValidationFailure[]>> => {
-    const routeResponse = await updateRoute(form);
-
-    if (!routeResponse.success) {
-      const errors = routeResponse.data as
-        | ValidationFailure[]
-        | RouteDtoResponse;
-      return {
-        data: errors,
-        success: routeResponse.success,
-        message: routeResponse.message,
-        totalResults: 1,
-      };
-    }
+    let routeResponse;
 
     if (route.length === 0) {
+      routeResponse = await updateRoute(form);
+
       await client.invalidateQueries({
-        queryKey: ["routes"],
-        type: "active",
-        exact: true,
+        queryKey: [QueryKeys.Routes],
+        type: "all",
+        exact: false,
       });
 
-      return {
-        data: [] as RouteDtoResponse | ValidationFailure[],
-        success: true,
-        message: "Ruta actualizada con éxito",
-        totalResults: 1,
-      };
+      rebootScroll();
+
+      return routeResponse;
     }
 
-    const routeSuccess = routeResponse.data as RouteDtoResponse;
-
-    route.forEach((detail) => (detail.routeId = routeSuccess.id));
+    route.forEach((detail) => (detail.routeId = form.id));
 
     const parseDetails = routeDetailsShemaArray.safeParse(route);
 
@@ -224,66 +125,17 @@ export const useRoutes = () => {
       };
     }
 
-    const bulkResponse = await bulkCreateRouteDetail({
-      routeDetails: parseDetails.data,
-      createdBy: "",
-    });
+    form.routeDetails = parseDetails.data;
 
-    if (!bulkResponse.success) {
-      const errors = bulkResponse.data as
-        | ValidationFailure[]
-        | RouteDtoResponse;
-      return {
-        data: errors,
-        success: bulkResponse.success,
-        message: bulkResponse.message,
-        totalResults: 1,
-      };
-    }
-
-    const bulkOrderResponse = await bulkPartialUpdateOrder({
-      orders: parseDetails.data.map((detail) => ({
-        id: detail.orderId,
-        orderStateId: OrderStates.hasRoute,
-      })),
-      createdBy: "",
-    });
-
-    if (!bulkOrderResponse.success) {
-      const errors = bulkOrderResponse.data as
-        | ValidationFailure[]
-        | RouteDtoResponse;
-      return {
-        data: errors,
-        success: bulkOrderResponse.success,
-        message: bulkOrderResponse.message,
-        totalResults: 1,
-      };
-    }
+    routeResponse = await updateRoute(form);
 
     await updateData();
 
-    await getRouteDetailsByRouteId(routeSuccess.id, setError);
+    const response = routeResponse.data as RouteResponse;
 
-    const response: ApiResponse<RouteDtoResponse | ValidationFailure[]> = {
-      data: {
-        id: routeSuccess.id,
-        observations: routeSuccess.observations,
-        pilotId: routeSuccess.pilotId,
-        state: routeSuccess.state,
-        createdAt: routeSuccess.createdAt,
-        createdBy: routeSuccess.createdBy,
-        updatedAt: routeSuccess.updatedAt,
-        pilot: routeSuccess.pilot,
-        updatedBy: routeSuccess.updatedBy,
-        details: bulkResponse.data as RouteDetailsResponse[],
-      },
-      success: true,
-      message: "Ruta creada con éxito",
-      totalResults: 1,
-    };
+    await getRouteDetailsByRouteId(response.id, setError);
 
-    return response;
+    return routeResponse;
   };
 
   const deleteRoute = async (id: string) => {
@@ -291,6 +143,7 @@ export const useRoutes = () => {
       const response = await partialUpdateRoute({
         id: id,
         state: 0,
+        routeDetails: route,
       });
 
       if (!response.success) {
@@ -305,27 +158,9 @@ export const useRoutes = () => {
         return response;
       }
 
-      const ordersToDisengage = await getRouteDetailsByRouteId(id, setError);
+      await updateData();
 
-      const bulkOrderResponse = await bulkPartialUpdateOrder({
-        orders: ordersToDisengage.map((detail) => ({
-          id: detail.orderId,
-          orderStateId: OrderStates.create,
-        })),
-        createdBy: "",
-      });
-
-      if (!bulkOrderResponse.success) {
-        toast.error(
-          `Error al desligar las ordenes de la ruta ${bulkOrderResponse.message}`,
-        );
-
-        return;
-      } else {
-        toast.success("Ruta eliminada con éxito");
-
-        await updateData();
-      }
+      toast.success("Ruta eliminada correctamente");
     } catch (error) {
       if (error instanceof ApiError) {
         setError(error);

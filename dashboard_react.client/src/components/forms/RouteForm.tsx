@@ -68,7 +68,8 @@ export const RouteForm = ({
     ApiError | undefined
   >({
     queryKey: [QueryKeys.OrdersFiltered],
-    queryFn: () => getFilteredOrders(`OrderStateId:eq:${OrderStates.create}`),
+    queryFn: () =>
+      getFilteredOrders(`OrderStateId:eq:${OrderStates.create}`, 1, 500),
   });
 
   const {
@@ -154,7 +155,7 @@ export const RouteForm = ({
           />
           <Button
             fullWidth
-            className="py-4 mt-4 font-bold"
+            className="mt-4 py-4 font-bold"
             color="primary"
             isLoading={loading}
             radius="md"

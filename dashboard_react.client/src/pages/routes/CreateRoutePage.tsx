@@ -12,7 +12,7 @@ export const initialRoute: RouteDtoRequest = {
   observations: "",
   pilotId: "",
   state: 1,
-  details: [
+  routeDetails: [
     {
       id: "",
       orderId: "",
