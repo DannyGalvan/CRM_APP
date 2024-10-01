@@ -1,22 +1,22 @@
+import { Button } from "@nextui-org/button";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
-import { Button } from "@nextui-org/button";
-import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
+import { OrderStates, QueryKeys } from "../../config/contants";
+import { partialUpdateOrder } from "../../services/orderService";
+import { updateRouteDetail } from "../../services/routeDetailService";
+import { useErrorsStore } from "../../store/useErrorsStore";
+import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
+import { RouteDetailsResponse } from "../../types/RouteDetailsResponse";
+import { ValidationFailure } from "../../types/ValidationFailure";
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
-import { RouteDetailsResponse } from "../../types/RouteDetailsResponse";
-import { updateRouteDetail } from "../../services/routeDetailService";
-import { partialUpdateOrder } from "../../services/orderService";
-import { OrderStates, QueryKeys } from "../../config/contants";
-import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
-import { useErrorsStore } from "../../store/useErrorsStore";
-import { ValidationFailure } from "../../types/ValidationFailure";
 
 interface RouteDetailActionMenuProps {
   data: RouteDetailsResponse;
@@ -86,7 +86,7 @@ export const RouteDetailActionMenu = ({ data }: RouteDetailActionMenuProps) => {
         <DropdownItem
           key="copy"
           startContent={<Icon name="bi bi-clipboard-check" />}
-          onClick={() => copyToClipboard(data.id!)}
+          onClick={() => copyToClipboard(data.id)}
         >
           Copiar
         </DropdownItem>

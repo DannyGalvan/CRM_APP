@@ -1,19 +1,19 @@
 import { Input } from "@nextui-org/input";
 import React, { FormEvent, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
 
 import { ContainerSearch } from "../../containers/ContainerSearch";
-import { LoadingComponent } from "../spinner/LoadingComponent";
+import { SearchCatalogue } from "../../types/Catalogue";
+import { SearchResults } from "../layout/SearchResults";
 
-interface InputSearchProps {
+interface InputSearchProps<T> {
   handleSearchSubmit: (e: FormEvent) => void;
-  handleSelect: (item: any) => void;
+  handleSelect: (item: T) => void;
   handleUnSelect?: () => void;
   setSearchInput: (value: string) => void;
   inputSearch: string;
   isLoading: boolean;
-  data: any[];
+  data: T[];
   isForm?: boolean;
   required?: boolean;
   disabled?: boolean;
@@ -27,58 +27,7 @@ interface InputSearchProps {
   entity: string;
 }
 
-const SearchResults = React.memo(
-  ({
-    data,
-    isLoading,
-    handleSelect,
-    keyname,
-    keyid,
-    inputSearch,
-    setOpen,
-    createItemFn,
-    entity,
-    keyAdd,
-  }: any) => (
-    <article className="absolute top-[4rem] z-50 flex w-full flex-col rounded-xl border border-gray-400 bg-white p-5 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
-      <IoClose
-        className="absolute top-2 right-3 text-red-600 cursor-pointer"
-        size={25}
-        onClick={() => setOpen(false)}
-      />
-      <p className="whitespace-pre-line break-words font-bold">
-        resultados de {inputSearch}...
-      </p>
-      {isLoading ? (
-        <LoadingComponent />
-      ) : (
-        <ul className="max-h-[200px] min-h-[150px] overflow-y-auto">
-          {data.map((item: any) => (
-            <li
-              key={item[keyid]}
-              className="flex cursor-pointer justify-between py-2 hover:text-sky-800"
-              onClick={() => {
-                handleSelect(item);
-                setOpen(false);
-              }}
-            >
-              <p className="text-sm">{item[keyname]}</p>
-              {keyAdd && <p className="text-sm">{item[keyAdd]}</p>}
-            </li>
-          ))}
-        </ul>
-      )}
-      <p
-        className="cursor-pointer text-center font-bold text-cyan-500 hover:text-cyan-900"
-        onClick={createItemFn}
-      >
-        ➕ Crear nuevo {entity}
-      </p>
-    </article>
-  ),
-);
-
-export const InputSearch = ({
+export const InputSearch = <T extends SearchCatalogue>({
   handleSearchSubmit,
   handleSelect,
   handleUnSelect,
@@ -97,7 +46,7 @@ export const InputSearch = ({
   createItemFn,
   entity,
   keyAdd,
-}: InputSearchProps) => {
+}: InputSearchProps<T>) => {
   const [open, setOpen] = useState(false);
 
   const handleFocus = () => setOpen(true);
@@ -132,10 +81,9 @@ export const InputSearch = ({
       isForm={isForm}
       submitFn={handleSubmit}
     >
-      <div className="relative flex w-full px-2">
+      <div className="flex relative px-2 w-full">
         <Input
           autoComplete="off"
-          autoFocus={false}
           defaultValue={defaultValue}
           disabled={disabled}
           endContent={

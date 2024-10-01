@@ -1,28 +1,28 @@
+import { Button } from "@nextui-org/button";
+import { Input, Textarea } from "@nextui-org/input";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Input, Textarea } from "@nextui-org/input";
-import { Button } from "@nextui-org/button";
 
+import { OrderStates, QueryKeys } from "../../config/contants";
 import { ErrorObject, useForm } from "../../hooks/useForm";
+import { initialCashReport } from "../../pages/cashReport/CreateCashReportPage";
+import { getFilteredOrders } from "../../services/orderService";
 import { useCashReportStore } from "../../store/useCashReportStore";
 import { useErrorsStore } from "../../store/useErrorsStore";
+import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
 import { CashReportRequest } from "../../types/CashReportRequest";
 import { CashReportResponse } from "../../types/CashReportResponse";
+import { OrderResponse } from "../../types/OrderResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
 import { handleOneLevelZodError } from "../../util/converted";
-import { cashReportShema } from "../../util/validations/cashReportValidations";
-import { OrderResponse } from "../../types/OrderResponse";
 import { ApiError } from "../../util/errors";
-import { getFilteredOrders } from "../../services/orderService";
-import { OrderStates, QueryKeys } from "../../config/contants";
-import { initialCashReport } from "../../pages/cashReport/CreateCashReportPage";
+import { cashReportShema } from "../../util/validations/cashReportValidations";
+import { CashReportDetailResponseColumns } from "../columns/CashReportDetailResponseColumns";
+import { OrderResponseColumns } from "../columns/OrderResponseColumns";
 import { Col } from "../grid/Col";
 import { Response } from "../messages/Response";
 import { TableRoot } from "../table/TableRoot";
-import { OrderResponseColumns } from "../columns/OrderResponseColumns";
-import { compactGrid } from "../../theme/tableTheme";
-import { CashReportDetailResponseColumns } from "../columns/CashReportDetailResponseColumns";
 
 interface CashReportFormProps {
   initialForm: CashReportRequest | CashReportResponse;
@@ -86,9 +86,9 @@ export const CashReportForm = ({
 
   return (
     <Col md={12}>
-      <h1 className="text-center text-2xl font-bold">{text} Reporte de Caja</h1>
+      <h1 className="text-2xl font-bold text-center">{text} Reporte de Caja</h1>
       <div>
-        {success != null && <Response message={message} type={success!} />}
+        {success != null && <Response message={message} type={success} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <Input
             errorMessage={errors?.cashierName}
@@ -122,7 +122,7 @@ export const CashReportForm = ({
               width={false}
             />
           )}
-          <span className="text-right font-bold text-cyan-700">
+          <span className="font-bold text-right text-cyan-700">
             Total del Corte: {getTotalOrders()}
           </span>
           <TableRoot

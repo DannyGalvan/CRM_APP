@@ -11,11 +11,11 @@ export const getCustomerAddress = async (
   let response: ApiResponse<CustomerAddressResponse[]>;
 
   if (!filter) {
-    response = await api.get<any, ApiResponse<CustomerAddressResponse[]>, any>(
+    response = await api.get<object, ApiResponse<CustomerAddressResponse[]>>(
       `/customerDirection?page=${page}&pageSize=${pageSize}`,
     );
   } else {
-    response = await api.get<any, ApiResponse<CustomerAddressResponse[]>, any>(
+    response = await api.get<object, ApiResponse<CustomerAddressResponse[]>>(
       `/customerDirection?filters=${filter}&page=${page}&pageSize=${pageSize}`,
     );
   }

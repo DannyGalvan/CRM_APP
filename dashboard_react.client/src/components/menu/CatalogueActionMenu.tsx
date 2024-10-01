@@ -1,14 +1,14 @@
+import { Button } from "@nextui-org/button";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
-import { Button } from "@nextui-org/button";
 
+import { useDrawer } from "../../hooks/useDrawer";
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
-import { useDrawer } from "../../hooks/useDrawer";
 
 interface CatalogueActionMenuProps {
   data: any;
@@ -56,16 +56,6 @@ export const CatalogueActionMenu = ({
         >
           Editar
         </DropdownItem>
-        {/* <DropdownItem
-          key="delete"
-          startContent={<Icon name="bi bi-trash3" />}
-          className="text-danger"
-          color="danger"
-          onClick={deleteAction}
-          content="Eliminar"
-        >
-          Eliminar
-        </DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );

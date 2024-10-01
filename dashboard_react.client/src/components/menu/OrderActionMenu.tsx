@@ -1,22 +1,22 @@
+import { Button } from "@nextui-org/button";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
-import { Button } from "@nextui-org/button";
-import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
+import { OrderStates, QueryKeys } from "../../config/contants";
+import { useDrawer } from "../../hooks/useDrawer";
+import { partialUpdateOrder } from "../../services/orderService";
 import { useOrderDetailStore } from "../../store/useOrderDetailStore";
 import { useOrderStore } from "../../store/useOrderStore";
 import { OrderResponse } from "../../types/OrderResponse";
+import { ValidationFailure } from "../../types/ValidationFailure";
 import { copyToClipboard } from "../../util/converted";
 import { Icon } from "../Icons/Icon";
-import { partialUpdateOrder } from "../../services/orderService";
-import { ValidationFailure } from "../../types/ValidationFailure";
-import { useDrawer } from "../../hooks/useDrawer";
-import { OrderStates, QueryKeys } from "../../config/contants";
 
 interface CatalogueActionMenuProps {
   data: OrderResponse;
@@ -40,7 +40,7 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
 
   const handleDelete = async () => {
     const response = await partialUpdateOrder({
-      id: data.id!,
+      id: data.id,
       orderStateId: OrderStates.deleted,
     });
 
@@ -77,7 +77,7 @@ export const OrderActionMenu = ({ data }: CatalogueActionMenuProps) => {
         <DropdownItem
           key="copy"
           startContent={<Icon name="bi bi-clipboard-check" />}
-          onClick={() => copyToClipboard(data.id!)}
+          onClick={() => copyToClipboard(data.id)}
         >
           Copiar
         </DropdownItem>

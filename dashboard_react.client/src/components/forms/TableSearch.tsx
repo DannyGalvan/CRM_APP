@@ -1,25 +1,26 @@
-import { Select, SelectItem } from "@nextui-org/select";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
+import { Select, SelectItem } from "@nextui-org/select";
 import { Ref } from "react";
 
+import { TableColumnWithFilters } from "../../types/TableColumnWithFilters";
 import { Icon } from "../Icons/Icon";
 import { Col } from "../grid/Col";
 import { Row } from "../grid/Row";
 
-interface TableSearchProps {
-  selectedField: any;
-  columns: any[];
+interface TableSearchProps<T> {
+  selectedField: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  columns: TableColumnWithFilters<T>[];
   searchField: Ref<HTMLInputElement>;
-  filterData: any;
+  filterData: () => void;
 }
 
-export const TableSearch = ({
+export const TableSearch = <T extends object>({
   selectedField,
   columns,
   searchField,
   filterData,
-}: TableSearchProps) => {
+}: TableSearchProps<T>) => {
   return (
     <Row className={"mt-4"}>
       <Col md={6} sm={12}>
@@ -34,7 +35,7 @@ export const TableSearch = ({
           {columns
             .filter((x) => x.hasFilter)
             .map((item, _) => (
-              <SelectItem key={item.id}>{item.name}</SelectItem>
+              <SelectItem key={item.id ?? ""}>{item.name}</SelectItem>
             ))}
         </Select>
       </Col>
@@ -56,7 +57,7 @@ export const TableSearch = ({
             }}
           />
           <Button
-            className="mt-[1.1rem] py-[1.5rem]"
+            className="mt-1.1rem py-1.5rem"
             color="primary"
             radius="sm"
             size={"sm"}

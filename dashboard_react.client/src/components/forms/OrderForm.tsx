@@ -1,10 +1,17 @@
-import { Button } from "@nextui-org/button";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { useEffect, useState } from "react";
 
+import { QueryKeys, nameRoutes } from "../../config/contants";
 import { ErrorObject, useForm } from "../../hooks/useForm";
+import { ModalType } from "../../hooks/useModalStrategies";
+import {
+  onSearchUpdate,
+  updateSearch,
+} from "../../obsevables/searchObservable";
 import { initialOrder } from "../../pages/orders/CreateOrderPage";
+import { getCustomerAddress } from "../../services/customerAddressService";
 import { getCustomers } from "../../services/customerService";
 import { getProducts } from "../../services/productService";
 import { useOrderDetailStore } from "../../store/useOrderDetailStore";
@@ -12,25 +19,19 @@ import { useOrderStore } from "../../store/useOrderStore";
 import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
 import { OrderRequest } from "../../types/OrderRequest";
+import { OrderResponse } from "../../types/OrderResponse";
+import { ProductResponse } from "../../types/ProductResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
 import { handleOneLevelZodError } from "../../util/converted";
 import { orderSchema } from "../../util/validations/orderValidations";
+import { Icon } from "../Icons/Icon";
+import { OrderDetailLineColumns } from "../columns/OrderDetailLineColumns";
 import { Col } from "../grid/Col";
+import { Row } from "../grid/Row";
 import { CatalogueSearch } from "../input/CatalogueSearch";
+import { ButtonAnimatedLink } from "../links/ButtonAnimatedLink";
 import { Response } from "../messages/Response";
 import { TableRoot } from "../table/TableRoot";
-import { Row } from "../grid/Row";
-import { getCustomerAddress } from "../../services/customerAddressService";
-import { OrderDetailLineColumns } from "../columns/OrderDetailLineColumns";
-import { OrderResponse } from "../../types/OrderResponse";
-import { nameRoutes, QueryKeys } from "../../config/contants";
-import { ModalType } from "../../hooks/useModalStrategies";
-import { Icon } from "../Icons/Icon";
-import {
-  onSearchUpdate,
-  updateSearch,
-} from "../../obsevables/searchObservable";
-import { ButtonAnimatedLink } from "../links/ButtonAnimatedLink";
 
 interface OrderFormProps {
   initialForm: OrderRequest | OrderResponse;
@@ -85,7 +86,7 @@ export const OrderForm = ({
     };
   }, []);
 
-  const handleAddOrderDetail = (selected: any) => {
+  const handleAddOrderDetail = (selected: ProductResponse) => {
     if (selected.name?.toLowerCase().includes("envio")) {
       add({
         productId: selected.id,
@@ -113,11 +114,11 @@ export const OrderForm = ({
 
   return (
     <Col md={12}>
-      <h1 className="text-center text-2xl font-bold">{action} Orden</h1>
+      <h1 className="text-2xl font-bold text-center">{action} Orden</h1>
       <div>
-        {success != null && <Response message={message} type={success!} />}
+        {success != null && <Response message={message} type={success} />}
         <form
-          className="flex flex-col gap-4 pb-10 pt-5"
+          className="flex flex-col gap-4 pt-5 pb-10"
           onSubmit={handleSubmit}
         >
           <Row className="justify-end">
@@ -131,7 +132,7 @@ export const OrderForm = ({
             </Col>
             <Col md={6}>
               <Input
-                className="max-w"
+                className="w-max"
                 errorMessage={errors?.deliveryDate}
                 isInvalid={!!errors?.deliveryDate}
                 label="Fecha de Entrega"
@@ -162,7 +163,7 @@ export const OrderForm = ({
             queryFn={getCustomers}
             querykey={QueryKeys.Customers as ModalType}
             selector={(selected) => {
-              setReminder(selected.shippingFee.toFixed(2));
+              setReminder(selected.shippingFee?.toFixed(2));
             }}
             setFormValue={handleChange}
             unSelector={() => {
@@ -190,11 +191,11 @@ export const OrderForm = ({
             querykey={QueryKeys.PaymentTypes as ModalType}
             setFormValue={handleChange}
           />
-          <span className="text-md text-right font-bold text-cyan-500">
+          <span className="font-bold text-right text-medium text-cyan-500">
             Recordatorio Envio: Q {reminder}
           </span>
           <p className="font-bold text-red-600">{errors?.orderDetails ?? ""}</p>
-          <h2 className="text-center text-xl font-bold">Detalle del pedido</h2>
+          <h2 className="text-xl font-bold text-center">Detalle del pedido</h2>
           <div>
             <CatalogueSearch
               entity="Agregar Producto"
@@ -206,7 +207,7 @@ export const OrderForm = ({
               queryFn={getProducts}
               querykey={QueryKeys.Products as ModalType}
               required={false}
-              setFormValue={handleAddOrderDetail}
+              setValue={handleAddOrderDetail}
             />
             <TableRoot
               columns={OrderDetailLineColumns}

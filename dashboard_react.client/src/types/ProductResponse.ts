@@ -1,6 +1,7 @@
+import { SearchCatalogue } from "./Catalogue";
 import { CatalogueResponse } from "./CatalogueResponse";
 
-export interface ProductResponse {
+export interface ProductResponse extends SearchCatalogue {
   id: string;
   name: string;
   description: string;

@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/button";
 import {
   Dropdown,
   DropdownItem,
@@ -5,17 +6,16 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Spinner } from "@nextui-org/spinner";
-import { Button } from "@nextui-org/button";
 import { useState } from "react";
 
-import { copyToClipboard } from "../../util/converted";
-import { Icon } from "../Icons/Icon";
+import { useCashReport } from "../../hooks/useCashReport";
 import { useDrawer } from "../../hooks/useDrawer";
+import { downloadFile } from "../../services/reportService";
+import { useCashReportStore } from "../../store/useCashReportStore";
 import { useErrorsStore } from "../../store/useErrorsStore";
 import { CashReportResponse } from "../../types/CashReportResponse";
-import { useCashReportStore } from "../../store/useCashReportStore";
-import { useCashReport } from "../../hooks/useCashReport";
-import { downloadFile } from "../../services/reportService";
+import { copyToClipboard } from "../../util/converted";
+import { Icon } from "../Icons/Icon";
 
 interface CashReportActionMenuProps {
   data: CashReportResponse;
@@ -37,11 +37,11 @@ export const CashReportActionMenu = ({ data }: CashReportActionMenuProps) => {
 
     addCashReport(data);
 
-    await getDetailsByCashReportId(data.id!, setError);
+    await getDetailsByCashReportId(data.id, setError);
   };
 
   const handleDelete = async () => {
-    await deleteCashReport(data.id!);
+    await deleteCashReport(data.id);
   };
 
   const handlePrint = async () => {
@@ -61,7 +61,7 @@ export const CashReportActionMenu = ({ data }: CashReportActionMenuProps) => {
         <DropdownItem
           key="copy"
           startContent={<Icon name="bi bi-clipboard-check" />}
-          onClick={() => copyToClipboard(data.id!)}
+          onClick={() => copyToClipboard(data.id)}
         >
           Copiar
         </DropdownItem>

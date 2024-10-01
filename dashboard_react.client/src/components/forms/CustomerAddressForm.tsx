@@ -1,20 +1,20 @@
 import { Button } from "@nextui-org/button";
 import { Input, Textarea } from "@nextui-org/input";
 
-import { Response } from "../messages/Response";
-import { CustomerAddressResponse } from "../../types/CustomerAddressResponse";
-import { ApiResponse } from "../../types/ApiResponse";
-import { ValidationFailure } from "../../types/ValidationFailure";
-import { Col } from "../grid/Col";
-import { ErrorObject, useForm } from "../../hooks/useForm";
-import { initialCustomerAddress } from "../../pages/customer/address/AddressCreatePage";
-import { customerAddressShema } from "../../util/validations/customerAddressValidations";
-import { handleOneLevelZodError } from "../../util/converted";
-import { CatalogueSearch } from "../input/CatalogueSearch";
-import { useCustomerAddressStore } from "../../store/useCustomerAddressStore";
-import { getCustomers } from "../../services/customerService";
 import { QueryKeys } from "../../config/contants";
+import { ErrorObject, useForm } from "../../hooks/useForm";
 import { ModalType } from "../../hooks/useModalStrategies";
+import { initialCustomerAddress } from "../../pages/customer/address/AddressCreatePage";
+import { getCustomers } from "../../services/customerService";
+import { useCustomerAddressStore } from "../../store/useCustomerAddressStore";
+import { ApiResponse } from "../../types/ApiResponse";
+import { CustomerAddressResponse } from "../../types/CustomerAddressResponse";
+import { ValidationFailure } from "../../types/ValidationFailure";
+import { handleOneLevelZodError } from "../../util/converted";
+import { customerAddressShema } from "../../util/validations/customerAddressValidations";
+import { Col } from "../grid/Col";
+import { CatalogueSearch } from "../input/CatalogueSearch";
+import { Response } from "../messages/Response";
 
 interface CustomerAddressFormProps {
   initialForm: CustomerAddressRequest | CustomerAddressResponse;
@@ -59,11 +59,11 @@ export const CustomerAddressForm = ({
 
   return (
     <Col md={12}>
-      <h1 className="text-center text-2xl font-bold">
+      <h1 className="text-2xl font-bold text-center">
         {text} Dirección Cliente
       </h1>
       <div>
-        {success != null && <Response message={message} type={success!} />}
+        {success != null && <Response message={message} type={success} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <CatalogueSearch
             defaultValue={customerAddress?.customer?.fullName}

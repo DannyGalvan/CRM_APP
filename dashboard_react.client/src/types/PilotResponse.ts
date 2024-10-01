@@ -1,4 +1,6 @@
-export interface PilotResponse {
+import { SearchCatalogue } from "./Catalogue";
+
+export interface PilotResponse extends SearchCatalogue {
   id?: string;
   name: string;
   lastName: string;

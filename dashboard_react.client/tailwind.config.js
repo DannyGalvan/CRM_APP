@@ -7,12 +7,23 @@ module.exports = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@nextui-org/theme/dist/components/(button|card|date-picker|dropdown|input|modal|scroll-shadow|select|toggle|popover|ripple|spinner|calendar|date-input|menu|divider|listbox).js"
+    "./node_modules/@nextui-org/theme/dist/components/(button|card|date-picker|dropdown|input|modal|scroll-shadow|select|toggle|popover|ripple|spinner|calendar|date-input|menu|divider|listbox).js",
   ],
   theme: {
     extend: {
       fontFamily: {
         Montserrat: "Montserrat",
+      },
+      margin: {
+        "1.1rem": "1.1rem",
+        "1.5rem": "1.5rem",
+      },
+      padding: {
+        "1.1rem": "1.1rem",
+        "1.5rem": "1.5rem",
+      },
+      spacing: {
+        "80vh": "80vh",
       },
       colors: {
         content: "rgb(15 23 42/var(--tw-bg-opacity))",
@@ -101,6 +112,7 @@ module.exports = {
         "tremor-default": ["0.875rem", { lineHeight: "1.25rem" }],
         "tremor-title": ["1.125rem", { lineHeight: "1.75rem" }],
         "tremor-metric": ["1.875rem", { lineHeight: "2.25rem" }],
+        "0.8rem": "0.8rem",
       },
     },
   },

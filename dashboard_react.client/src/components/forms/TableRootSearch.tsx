@@ -1,25 +1,26 @@
-import { Select, SelectItem } from "@nextui-org/select";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
+import { Select, SelectItem } from "@nextui-org/select";
 import { Ref } from "react";
+import { TableColumn } from "react-data-table-component";
 
 import { Icon } from "../Icons/Icon";
 import { Col } from "../grid/Col";
 import { Row } from "../grid/Row";
 
-interface TableRootSearchProps {
-  selectedField: any;
-  columns: any[];
+interface TableRootSearchProps<T> {
+  selectedField: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  columns: TableColumn<T>[];
   searchField: Ref<HTMLInputElement>;
-  filterData: any;
+  filterData: () => void;
 }
 
-export const TableRootSearch = ({
+export const TableRootSearch = <T extends object>({
   selectedField,
   columns,
   searchField,
   filterData,
-}: TableRootSearchProps) => {
+}: TableRootSearchProps<T>) => {
   return (
     <Row className={"mt-4"}>
       <Col md={6} sm={12}>
@@ -54,7 +55,7 @@ export const TableRootSearch = ({
             }}
           />
           <Button
-            className="mt-[1.1rem] py-[1.5rem]"
+            className="mt-1.1rem py-1.5rem"
             color="primary"
             radius="sm"
             size={"sm"}

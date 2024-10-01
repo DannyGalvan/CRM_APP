@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/button";
 import {
   Modal,
   ModalBody,
@@ -5,7 +6,6 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import { Button } from "@nextui-org/button";
 
 import { useModalStrategies } from "../../hooks/useModalStrategies";
 import { useModalCreateStore } from "../../store/useModalCreateStore";
@@ -18,7 +18,7 @@ export const ModalCreateItem = () => {
     <Modal isOpen={modal.isOpen} size="3xl" onClose={close}>
       <ModalContent>
         <ModalHeader>{modal.title}</ModalHeader>
-        <ModalBody className="max-h-[80vh] overflow-y-auto">
+        <ModalBody className="overflow-y-auto max-h-80vh">
           {openCreate()}
         </ModalBody>
         <ModalFooter>

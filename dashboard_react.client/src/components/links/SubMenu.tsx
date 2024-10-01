@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -25,7 +27,7 @@ export const SubMenu = ({ data }: subMenuProps) => {
         onClick={() => setSubMenuOpen(!subMenuOpen)}
       >
         <Icon color={iconColor} name={data.module.image} size={23} />
-        <p className="flex-1 text-wrap capitalize">{data.module.name}</p>
+        <p className="flex-1 capitalize text-wrap">{data.module.name}</p>
         <motion.i
           animate={
             subMenuOpen
@@ -52,7 +54,7 @@ export const SubMenu = ({ data }: subMenuProps) => {
                 height: 0,
               }
         }
-        className="flex h-0 flex-col overflow-hidden pl-8 text-[0.8rem] font-normal"
+        className="flex overflow-hidden flex-col pl-8 h-0 font-normal text-0.8rem"
       >
         {data.operations?.map(
           (menu) =>

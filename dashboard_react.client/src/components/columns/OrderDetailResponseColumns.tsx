@@ -7,7 +7,7 @@ export const OrderDetailResponseColumns: TableColumn<RouteDetailsResponse>[] = [
   {
     id: "id",
     name: "Id",
-    selector: (data) => data.id,
+    selector: (data) => data.id ?? "",
     sortable: true,
     maxWidth: "150px",
     omit: true,

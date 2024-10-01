@@ -1,22 +1,22 @@
-import DataTable from "react-data-table-component";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import DataTable from "react-data-table-component";
 
+import { PAGINATION_OPTIONS, SELECTED_MESSAGE } from "../../config/contants";
+import { useToggle } from "../../hooks/useToggle";
+import { useErrorsStore } from "../../store/useErrorsStore";
+import { useRangeOfDatesStore } from "../../store/useRangeOfDatesStore";
 import { customStyles } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
+import { ListFilter } from "../../types/LIstFilter";
 import { TableColumnWithFilters } from "../../types/TableColumnWithFilters";
-import { PAGINATION_OPTIONS, SELECTED_MESSAGE } from "../../config/contants";
+import { ApiError } from "../../util/errors";
 import { SubHeaderTableButton } from "../button/SubHeaderTableButton";
-import { useToggle } from "../../hooks/useToggle";
-import { LoadingComponent } from "../spinner/LoadingComponent";
+import { TableSearch } from "../forms/TableSearch";
+import { InputDateSelector } from "../input/InputDateSelector";
 import { MesajeNoData } from "../messages/MesajeNoData";
 import { ModalTable } from "../modals/ModalTable";
-import { ApiError } from "../../util/errors";
-import { TableSearch } from "../forms/TableSearch";
-import { useErrorsStore } from "../../store/useErrorsStore";
-import { InputDateSelector } from "../input/InputDateSelector";
-import { useRangeOfDatesStore } from "../../store/useRangeOfDatesStore";
-import { ListFilter } from "../../types/LIstFilter";
+import { LoadingComponent } from "../spinner/LoadingComponent";
 
 export interface TableServerProps<T> {
   columns: TableColumnWithFilters<T>[];
@@ -30,16 +30,16 @@ export interface TableServerProps<T> {
   ) => Promise<ApiResponse<T[]>>;
   title: string;
   text: string;
-  styles: any;
+  styles: object;
   hasFilters?: boolean;
   hasRangeOfDates?: boolean;
   fieldRangeOfDates?: string;
   width?: boolean;
   selectedRows?: boolean;
-  onSelectedRowsChange?: (state: any) => void;
+  onSelectedRowsChange?: (state: unknown) => void;
 }
 
-export const TableServer = <T extends {}>({
+export const TableServer = <T extends object>({
   queryKey,
   queryFn,
   columns,
@@ -76,11 +76,13 @@ export const TableServer = <T extends {}>({
       hasRangeOfDates ? start : "",
       filters.page,
       filters.pageSize,
+      hasRangeOfDates,
+      fieldRangeOfDates,
     ],
     queryFn: () =>
       queryFn(
         hasRangeOfDates
-          ? `${getDateFilters(fieldRangeOfDates!)}${filters.filter ? ` AND ${filters.filter}` : ""}`
+          ? `${fieldRangeOfDates ? getDateFilters(fieldRangeOfDates) : ""}${filters.filter ? ` AND ${filters.filter}` : ""}`
           : `${filters.filter ? `${filters.filter}` : ""}`,
         filters.page,
         filters.pageSize,
@@ -182,7 +184,7 @@ export const TableServer = <T extends {}>({
         onSelectedRowsChange={onSelectedRowsChange}
       />
       <ModalTable
-        changeVisibilitiColumn={changeVisibilitiColumn as any}
+        changeVisibilitiColumn={changeVisibilitiColumn}
         columns={columns}
         open={open}
         toggle={toggle}

@@ -54,9 +54,9 @@ export const CustomerForm = ({
 
   return (
     <Col md={12}>
-      <h1 className="text-center text-2xl font-bold">{text} Cliente</h1>
+      <h1 className="text-2xl font-bold text-center">{text} Cliente</h1>
       <div>
-        {success != null && <Response message={message} type={success!} />}
+        {success != null && <Response message={message} type={success} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <Row>
             <Col md={6} sm={12}>

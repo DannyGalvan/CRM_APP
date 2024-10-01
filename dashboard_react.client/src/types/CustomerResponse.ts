@@ -1,6 +1,7 @@
+import { SearchCatalogue } from "./Catalogue";
 import { CatalogueResponse } from "./CatalogueResponse";
 
-export interface CustomerResponse {
+export interface CustomerResponse extends SearchCatalogue {
   id: string;
   firstName: string;
   secondName: string;
@@ -9,7 +10,7 @@ export interface CustomerResponse {
   fullName: string;
   firstPhone: string;
   secondPhone: string;
-  shippingFee: string;
+  shippingFee: number;
   socialNetworks: string;
   state: number;
   createdAt?: string | null;

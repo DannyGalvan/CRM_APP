@@ -64,9 +64,9 @@ export const ProductForm = ({
 
   return (
     <Col md={12}>
-      <h1 className="text-center text-2xl font-bold">{text} Producto</h1>
+      <h1 className="text-2xl font-bold text-center">{text} Producto</h1>
       <div>
-        {success != null && <Response message={message} type={success!} />}
+        {success != null && <Response message={message} type={success} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <Input
             isRequired

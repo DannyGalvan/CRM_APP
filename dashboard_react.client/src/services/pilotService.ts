@@ -5,14 +5,14 @@ import { PilotResponse } from "../types/PilotResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 
 export const getPilots = async (filter?: string, page = 1, pageSize = 10) => {
-  let response;
+  let response: ApiResponse<PilotResponse[]>;
 
   if (filter) {
-    response = await api.get<any, ApiResponse<PilotResponse[]>, any>(
+    response = await api.get<object, ApiResponse<PilotResponse[]>>(
       `pilot?filters=${filter}&page=${page}&pageSize=${pageSize}`,
     );
   } else {
-    response = await api.get<any, ApiResponse<PilotResponse[]>, any>(
+    response = await api.get<object, ApiResponse<PilotResponse[]>>(
       `pilot?page=${page}&pageSize=${pageSize}`,
     );
   }
@@ -23,8 +23,7 @@ export const getPilots = async (filter?: string, page = 1, pageSize = 10) => {
 export const createPilot = async (product: PilotRequest) => {
   const response = await api.post<
     CustomerRequest,
-    ApiResponse<PilotResponse | ValidationFailure[]>,
-    any
+    ApiResponse<PilotResponse | ValidationFailure[]>
   >("/pilot", product);
 
   return response;
@@ -33,8 +32,7 @@ export const createPilot = async (product: PilotRequest) => {
 export const updatePilot = async (product: PilotRequest) => {
   const response = await api.put<
     CustomerRequest,
-    ApiResponse<PilotResponse | ValidationFailure[]>,
-    any
+    ApiResponse<PilotResponse | ValidationFailure[]>
   >(`/pilot`, product);
 
   return response;

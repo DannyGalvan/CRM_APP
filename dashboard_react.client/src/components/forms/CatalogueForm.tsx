@@ -1,10 +1,11 @@
-import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
 import { useCallback, useEffect } from "react";
 
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { SelectedCatalogue } from "../../hooks/useListCollections";
 import { initialCatalogue } from "../../pages/catalogue/CreateCataloguePage";
+import { useErrorsStore } from "../../store/useErrorsStore";
 import { ApiResponse } from "../../types/ApiResponse";
 import { CatalogueResponse } from "../../types/CatalogueResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
@@ -13,7 +14,6 @@ import { ApiError } from "../../util/errors";
 import { catalogueShema } from "../../util/validations/catalogueValidations";
 import { Col } from "../grid/Col";
 import { Response } from "../messages/Response";
-import { useErrorsStore } from "../../store/useErrorsStore";
 
 interface CatalogueFormProps {
   selectedCatalogue: SelectedCatalogue;
@@ -76,11 +76,11 @@ export const CatalogueForm = ({
   return (
     <>
       <Col className="mt-3" md={12}>
-        <h1 className="text-center text-2xl font-bold">
+        <h1 className="text-2xl font-bold text-center">
           {text} {selectedCatalogue.name}
         </h1>
         <div>
-          {success != null && <Response message={message} type={success!} />}
+          {success != null && <Response message={message} type={success} />}
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Input
               isRequired

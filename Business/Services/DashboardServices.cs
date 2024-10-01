@@ -1,4 +1,5 @@
-﻿using Business.Interfaces;
+﻿using AutoMapper;
+using Business.Interfaces;
 using Entities.Enums;
 using Entities.Interfaces;
 using Entities.Models;
@@ -13,12 +14,13 @@ namespace Business.Services
     public partial class DashboardServices : IDashboardServices
     {
         private readonly IMongoContext _crmContext;
+        private readonly IMapper _mapper;
 
         public async Task<List<DailyOrders>> GetOrdersByDay(int month)
         {
             var filter = Builders<Order>.Filter.And(
                 Builders<Order>.Filter.Gte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, 1)),
-                Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, DateTime.DaysInMonth(DateTime.Now.Year, month))),
+                Builders<Order>.Filter.Lte(o => o.OrderDate, new DateTime(DateTime.Now.Year, month, DateTime.DaysInMonth(DateTime.Now.Year, month)).AddDays(1)),
                 Builders<Order>.Filter.Ne(o => o.OrderStateId, OrderStatuses.Deleted));
 
             var orders = _crmContext.Database.GetCollection<Order>(nameof(Order).Pluralize());
@@ -26,6 +28,8 @@ namespace Business.Services
             var result = await orders
                 .Find(filter)
                 .ToListAsync();
+
+            result = _mapper.Map<List<Order>, List<Order>>(result);
 
             var ordersAgroupedByDay = result.GroupBy(o => o.OrderDate.Day).ToList();
 
@@ -78,6 +82,8 @@ namespace Business.Services
             var orders = _crmContext.Database.GetCollection<Order>(nameof(Order).Pluralize());
 
             var result = await orders.Find(filter).ToListAsync();
+
+            result = _mapper.Map<List<Order>, List<Order>>(result);
 
             var ordersAgroupedByMonth = result.GroupBy(o => o.OrderDate.Month).ToList();
 

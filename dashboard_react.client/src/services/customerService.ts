@@ -11,11 +11,11 @@ export const getCustomers = async (
   let response: ApiResponse<CustomerResponse[]>;
 
   if (!filter) {
-    response = await api.get<any, ApiResponse<CustomerResponse[]>, any>(
+    response = await api.get<object, ApiResponse<CustomerResponse[]>>(
       `/customer?page=${page}&pageSize=${pageSize}`,
     );
   } else {
-    response = await api.get<any, ApiResponse<CustomerResponse[]>, any>(
+    response = await api.get<object, ApiResponse<CustomerResponse[]>>(
       `/customer?filters=${filter}&page=${page}&pageSize=${pageSize}`,
     );
   }
@@ -26,8 +26,7 @@ export const getCustomers = async (
 export const createCustomer = async (customer: CustomerRequest) => {
   const response = await api.post<
     CustomerRequest,
-    ApiResponse<CustomerResponse | ValidationFailure[]>,
-    any
+    ApiResponse<CustomerResponse | ValidationFailure[]>
   >("/customer", customer);
 
   return response;
@@ -36,8 +35,7 @@ export const createCustomer = async (customer: CustomerRequest) => {
 export const updateCustomer = async (customer: CustomerRequest) => {
   const response = await api.put<
     CustomerRequest,
-    ApiResponse<CustomerResponse | ValidationFailure[]>,
-    any
+    ApiResponse<CustomerResponse | ValidationFailure[]>
   >(`/customer`, customer);
 
   return response;

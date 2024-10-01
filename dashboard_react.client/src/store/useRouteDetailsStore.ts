@@ -1,15 +1,15 @@
 import { create } from "zustand";
 
-import { RouteDetailsRequest } from "../types/RouteDetailsRequest";
 import { getRouteDetails } from "../services/routeDetailService";
-import { ApiError } from "../util/errors";
+import { RouteDetailsRequest } from "../types/RouteDetailsRequest";
 import { RouteDetailsResponse } from "../types/RouteDetailsResponse";
+import { ApiError } from "../util/errors";
 
 import { logger } from "./logger";
 
 interface RouteDetailState {
   route: RouteDetailsRequest[];
-  savedRoutes: RouteDetailsRequest[];
+  savedRoutes: RouteDetailsResponse[];
   loading: boolean;
   add: (detail: RouteDetailsRequest[]) => void;
   getRouteDetailsByRouteId: (
@@ -31,12 +31,11 @@ export const useRouteDetailStore = create<RouteDetailState>(
           const details = await getRouteDetails(
             `RouteId:eq:${routeId} AND State:eq:1`,
           );
-          set({ savedRoutes: details.data! });
+          set({ savedRoutes: details.data ?? [] });
           set({ loading: false });
-          return details.data!;
+          return details.data ?? [];
         } catch (error) {
           setError(error as ApiError);
-          console.error(error);
           set({ savedRoutes: [] });
           set({ loading: false });
           return [];

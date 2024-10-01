@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/button";
 import {
   Dropdown,
   DropdownItem,
@@ -5,18 +6,17 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Spinner } from "@nextui-org/spinner";
-import { Button } from "@nextui-org/button";
 import { useState } from "react";
 
-import { copyToClipboard } from "../../util/converted";
-import { Icon } from "../Icons/Icon";
-import { RouteResponse } from "../../types/RouteResponse";
-import { useRouteStore } from "../../store/useRouteStore";
-import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
 import { useDrawer } from "../../hooks/useDrawer";
-import { useErrorsStore } from "../../store/useErrorsStore";
 import { useRoutes } from "../../hooks/useRoutes";
 import { downloadFile } from "../../services/reportService";
+import { useErrorsStore } from "../../store/useErrorsStore";
+import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
+import { useRouteStore } from "../../store/useRouteStore";
+import { RouteResponse } from "../../types/RouteResponse";
+import { copyToClipboard } from "../../util/converted";
+import { Icon } from "../Icons/Icon";
 
 interface CatalogueActionMenuProps {
   data: RouteResponse;
@@ -39,14 +39,14 @@ export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
 
     addRoute({
       ...data,
-      details: [],
+      routeDetails: [],
     });
 
-    await getRouteDetailsByRouteId(data.id!, setError);
+    await getRouteDetailsByRouteId(data.id, setError);
   };
 
   const handleDelete = async () => {
-    await deleteRoute(data.id!);
+    await deleteRoute(data.id);
   };
 
   const handlePrint = async () => {
@@ -66,7 +66,7 @@ export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
         <DropdownItem
           key="copy"
           startContent={<Icon name="bi bi-clipboard-check" />}
-          onClick={() => copyToClipboard(data.id!)}
+          onClick={() => copyToClipboard(data.id)}
         >
           Copiar
         </DropdownItem>

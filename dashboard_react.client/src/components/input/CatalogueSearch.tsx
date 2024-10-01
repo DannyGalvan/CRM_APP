@@ -2,37 +2,45 @@ import { useQuery } from "@tanstack/react-query";
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 import { ModalType } from "../../hooks/useModalStrategies";
+import { onSearchUpdate } from "../../obsevables/searchObservable";
 import { getAllCatalogues } from "../../services/catalogueService";
+import { useErrorsStore } from "../../store/useErrorsStore";
 import { useModalCreateStore } from "../../store/useModalCreateStore";
+import { ApiResponse } from "../../types/ApiResponse";
+import { SearchCatalogue } from "../../types/Catalogue";
 import { toCamelCase } from "../../util/converted";
 import { ApiError } from "../../util/errors";
-import { useErrorsStore } from "../../store/useErrorsStore";
-import { onSearchUpdate } from "../../obsevables/searchObservable";
 
 import { InputSearch } from "./InputSearch";
-interface CatalogueSearchProps {
+interface CatalogueSearchProps<T> {
   querykey: ModalType;
   entity: string;
   errorMessage?: string;
-  setFormValue: (id: ChangeEvent<HTMLInputElement>) => void;
+  setFormValue?: (e: ChangeEvent<HTMLInputElement>) => void;
+  setValue?: (selected: T) => void;
   name: string;
   defaultValue?: string;
-  queryFn?: (filter?: string) => Promise<any>;
+  queryFn?: (
+    filter: string,
+    page?: number,
+    pageSize?: number,
+  ) => Promise<ApiResponse<T[]>>;
   keyName?: string;
   keyAdd?: string;
   aditionalFilter?: string;
   isForm?: boolean;
   required?: boolean;
   disabled?: boolean;
-  selector?: (state: any) => any;
+  selector?: (state: T) => void;
   unSelector?: () => void;
 }
 
-export const CatalogueSearch = ({
+export const CatalogueSearch = <T extends SearchCatalogue>({
   querykey,
   entity,
   errorMessage,
   setFormValue,
+  setValue,
   name,
   defaultValue,
   queryFn,
@@ -44,13 +52,13 @@ export const CatalogueSearch = ({
   selector,
   unSelector,
   keyAdd,
-}: CatalogueSearchProps) => {
+}: CatalogueSearchProps<T>) => {
   const { setError } = useErrorsStore();
   const [search, setSearch] = useState<string>("");
   const { open } = useModalCreateStore();
 
-  const { data, isPending, error } = useQuery<any, ApiError>({
-    queryKey: [querykey, "search", search, aditionalFilter],
+  const { data, isPending, error } = useQuery<ApiResponse<T[]>, ApiError>({
+    queryKey: [querykey, "search", search, aditionalFilter, queryFn, keyName],
     queryFn: () =>
       queryFn
         ? queryFn(`${keyName}:like:${search}${aditionalFilter}`)
@@ -64,28 +72,33 @@ export const CatalogueSearch = ({
     e.preventDefault();
   };
 
-  const handleSelect = (selected: any) => {
-    setSearch(selected[toCamelCase(keyName)]);
-    isForm
-      ? setFormValue({
+  const handleSelect = (selected: T) => {
+    setSearch(selected[toCamelCase(keyName)] as string);
+    if (isForm) {
+      // Si es un formulario, maneja el ChangeEvent
+      setFormValue &&
+        setFormValue({
           target: {
             name: name,
             value: selected.id,
           },
-        } as any)
-      : setFormValue(selected);
-
+        } as any); // Aquí utilizas un ChangeEvent simulado
+    } else {
+      // Si no es un formulario, pasa directamente el objeto seleccionado
+      setValue && setValue(selected);
+    }
     selector && selector(selected);
   };
 
   const handleUnselect = () => {
     setSearch("");
-    setFormValue({
-      target: {
-        name: name,
-        value: "",
-      },
-    } as any);
+    setFormValue &&
+      setFormValue({
+        target: {
+          name: name,
+          value: "",
+        },
+      } as any);
     unSelector && unSelector();
   };
 

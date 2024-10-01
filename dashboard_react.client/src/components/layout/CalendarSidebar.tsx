@@ -1,6 +1,6 @@
 import { EventApi } from "@fullcalendar/core/index.js";
-import { Switch } from "@nextui-org/switch";
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import { Switch } from "@nextui-org/switch";
 
 import { Icon } from "../Icons/Icon";
 import { EventSidebar } from "../calendar/EventSidebar";
@@ -17,18 +17,18 @@ export const CalendarSidebar = ({
   currentEvents,
 }: CalendarSidebarProps) => {
   return (
-    <ScrollShadow className="h-[92vh] w-[300px]">
+    <ScrollShadow className="main-content">
       <div className="demo-app-sidebar">
         <div className="demo-app-sidebar-section">
           <h2 className="m-0 text-xl">Funcionamiento</h2>
           <ul className="m-0 ps-6">
-            <li className="mx-0 my-6 p-0">
+            <li className="p-0 my-6 mx-0">
               Seleccione fechas y se le pedirá que cree un nuevo evento.
             </li>
-            <li className="mx-0 my-6 p-0">
+            <li className="p-0 my-6 mx-0">
               Arrastrar, soltar, cambiar tamaño a los eventos
             </li>
-            <li className="mx-0 my-6 p-0">
+            <li className="p-0 my-6 mx-0">
               Click a un evento para modificarlo
             </li>
           </ul>

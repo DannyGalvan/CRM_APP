@@ -1,5 +1,5 @@
-import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
 
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialPilot } from "../../pages/pilots/CreatePilotPage";
@@ -10,8 +10,8 @@ import { ValidationFailure } from "../../types/ValidationFailure";
 import { handleOneLevelZodError } from "../../util/converted";
 import { pilotSchema } from "../../util/validations/pilotValidations";
 import { Col } from "../grid/Col";
-import { Response } from "../messages/Response";
 import { Row } from "../grid/Row";
+import { Response } from "../messages/Response";
 
 interface PilotFormProps {
   initialForm: PilotRequest | PilotResponse;
@@ -57,9 +57,9 @@ export const PilotForm = ({
 
   return (
     <Col md={12}>
-      <h1 className="text-center text-2xl font-bold">{text} Piloto</h1>
+      <h1 className="text-2xl font-bold text-center">{text} Piloto</h1>
       <div>
-        {success != null && <Response message={message} type={success!} />}
+        {success != null && <Response message={message} type={success} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <Row>
             <Col md={6} sm={12}>

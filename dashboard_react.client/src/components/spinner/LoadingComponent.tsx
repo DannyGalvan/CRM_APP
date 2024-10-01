@@ -12,7 +12,7 @@ export const LoadingComponent = () => {
           <div />
           <div />
         </div>
-        <h3 className="text-center font-bold">Cargando...</h3>
+        <h3 className="font-bold text-center">Cargando...</h3>
       </div>
     </div>
   );

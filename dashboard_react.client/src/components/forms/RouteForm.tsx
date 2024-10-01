@@ -3,30 +3,30 @@ import { Textarea } from "@nextui-org/input";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
+import { OrderStates, QueryKeys } from "../../config/contants";
 import { ErrorObject, useForm } from "../../hooks/useForm";
+import { ModalType } from "../../hooks/useModalStrategies";
+import { initialRoute } from "../../pages/routes/CreateRoutePage";
+import { getFilteredOrders } from "../../services/orderService";
+import { getPilots } from "../../services/pilotService";
+import { useErrorsStore } from "../../store/useErrorsStore";
+import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
+import { useRouteStore } from "../../store/useRouteStore";
+import { compactGrid } from "../../theme/tableTheme";
 import { ApiResponse } from "../../types/ApiResponse";
+import { OrderResponse } from "../../types/OrderResponse";
+import { RouteDetailsRequest } from "../../types/RouteDetailsRequest";
 import { RouteDtoRequest, RouteDtoResponse } from "../../types/RouteDto";
 import { ValidationFailure } from "../../types/ValidationFailure";
 import { handleOneLevelZodError } from "../../util/converted";
-import { routeShema } from "../../util/validations/routeValidations";
-import { useRouteStore } from "../../store/useRouteStore";
-import { initialRoute } from "../../pages/routes/CreateRoutePage";
-import { Col } from "../grid/Col";
-import { Response } from "../messages/Response";
-import { CatalogueSearch } from "../input/CatalogueSearch";
-import { getPilots } from "../../services/pilotService";
-import { OrderResponse } from "../../types/OrderResponse";
 import { ApiError } from "../../util/errors";
-import { getFilteredOrders } from "../../services/orderService";
-import { TableRoot } from "../table/TableRoot";
-import { compactGrid } from "../../theme/tableTheme";
-import { useRouteDetailStore } from "../../store/useRouteDetailsStore";
-import { RouteDetailsRequest } from "../../types/RouteDetailsRequest";
-import { useErrorsStore } from "../../store/useErrorsStore";
-import { OrderResponseColumns } from "../columns/OrderResponseColumns";
+import { routeShema } from "../../util/validations/routeValidations";
 import { OrderDetailResponseColumns } from "../columns/OrderDetailResponseColumns";
-import { OrderStates, QueryKeys } from "../../config/contants";
-import { ModalType } from "../../hooks/useModalStrategies";
+import { OrderResponseColumns } from "../columns/OrderResponseColumns";
+import { Col } from "../grid/Col";
+import { CatalogueSearch } from "../input/CatalogueSearch";
+import { Response } from "../messages/Response";
+import { TableRoot } from "../table/TableRoot";
 
 interface RouteFormProps {
   initialForm: RouteDtoRequest | RouteDtoResponse;
@@ -95,9 +95,9 @@ export const RouteForm = ({
 
   return (
     <Col md={12}>
-      <h1 className="text-center text-2xl font-bold">{text} Ruta</h1>
+      <h1 className="text-2xl font-bold text-center">{text} Ruta</h1>
       <div>
-        {success != null && <Response message={message} type={success!} />}
+        {success != null && <Response message={message} type={success} />}
         <form className="flex flex-col gap-4 pb-10" onSubmit={handleSubmit}>
           <CatalogueSearch
             defaultValue={route?.pilot?.fullName}
@@ -155,7 +155,7 @@ export const RouteForm = ({
           />
           <Button
             fullWidth
-            className="mt-4 py-4 font-bold"
+            className="py-4 mt-4 font-bold"
             color="primary"
             isLoading={loading}
             radius="md"

@@ -1,23 +1,23 @@
+import { Button } from "@nextui-org/button";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
-import { Button } from "@nextui-org/button";
-import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
-import { copyToClipboard } from "../../util/converted";
-import { Icon } from "../Icons/Icon";
-import { partialUpdateOrder } from "../../services/orderService";
 import { OrderStates } from "../../config/contants";
-import { useErrorsStore } from "../../store/useErrorsStore";
-import { CashReportDetailsResponse } from "../../types/CashReportDetailResponse";
-import { useCashReportStore } from "../../store/useCashReportStore";
 import { updateCashReportDetail } from "../../services/cashReportDetailService";
 import { updateCashReport } from "../../services/cashReportService";
+import { partialUpdateOrder } from "../../services/orderService";
+import { useCashReportStore } from "../../store/useCashReportStore";
+import { useErrorsStore } from "../../store/useErrorsStore";
+import { CashReportDetailsResponse } from "../../types/CashReportDetailResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
+import { copyToClipboard } from "../../util/converted";
+import { Icon } from "../Icons/Icon";
 
 interface CashReportDetailActionMenuProps {
   data: CashReportDetailsResponse;
@@ -37,7 +37,7 @@ export const CashReportDetailActionMenu = ({
       .map((order) => order.order);
 
     const updateResponse = await updateCashReport({
-      ...cashReport!,
+      ...cashReport,
       orders: details,
     });
 
@@ -109,7 +109,7 @@ export const CashReportDetailActionMenu = ({
         <DropdownItem
           key="copy"
           startContent={<Icon name="bi bi-clipboard-check" />}
-          onClick={() => copyToClipboard(data.id!)}
+          onClick={() => copyToClipboard(data.id)}
         >
           Copiar
         </DropdownItem>

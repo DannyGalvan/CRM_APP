@@ -25,6 +25,7 @@ export const OrderDetailsTable = ({
       highlightOnHover
       pagination
       responsive
+      striped
       columns={columns}
       contextMessage={SELECTED_MESSAGE}
       customStyles={styles ?? customStyles}
@@ -33,13 +34,11 @@ export const OrderDetailsTable = ({
       noDataComponent={
         <MesajeNoData mesaje={`No se encontraros datos ${text}`} />
       }
+      paginationComponentOptions={PAGINATION_OPTIONS}
       subHeader={true}
       subHeaderWrap={true}
       theme="individuality"
       title={title}
-      striped
-      // expandableRowsComponent={ExpandedComponent}
-      paginationComponentOptions={PAGINATION_OPTIONS}
     />
   );
 };

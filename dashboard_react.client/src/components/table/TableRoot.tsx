@@ -7,25 +7,29 @@ import { useToggle } from "../../hooks/useToggle";
 import { customStyles } from "../../theme/tableTheme";
 import { hasJsonOrOtherToString } from "../../util/converted";
 import { SubHeaderTableButton } from "../button/SubHeaderTableButton";
+import { TableRootSearch } from "../forms/TableRootSearch";
 import { MesajeNoData } from "../messages/MesajeNoData";
 import { ModalTable } from "../modals/ModalTable";
 import { LoadingComponent } from "../spinner/LoadingComponent";
-import { TableRootSearch } from "../forms/TableRootSearch";
 
-interface TableRootProps {
-  data: any[];
+interface TableRootProps<T> {
+  data: T[];
   pending: boolean;
   width: boolean | undefined;
   text: string;
-  columns: TableColumn<any>[];
+  columns: TableColumn<T>[];
   title: string;
-  styles: any;
+  styles: object;
   hasFilters: boolean;
   selectedRows?: boolean;
-  onSelectedRowsChange?: (state: any) => void;
+  onSelectedRowsChange?: (selected: {
+    allSelected: boolean;
+    selectedCount: number;
+    selectedRows: T[];
+  }) => void;
 }
 
-export const TableRoot = ({
+export const TableRoot = <T extends object>({
   data,
   pending,
   width,
@@ -36,9 +40,9 @@ export const TableRoot = ({
   hasFilters = true,
   selectedRows = false,
   onSelectedRowsChange,
-}: TableRootProps) => {
+}: TableRootProps<T>) => {
   const { open, toggle } = useToggle();
-  const [field, setField] = useState<TableColumn<any> | undefined>(undefined);
+  const [field, setField] = useState<TableColumn<T> | undefined>(undefined);
   const [filteredData, setFilteredData] = useState(data ?? []);
   const [cols, setCols] = useState(columns);
   const searchField = useRef<HTMLInputElement>(null);
@@ -47,10 +51,12 @@ export const TableRoot = ({
     const searchValue = searchField.current?.value;
     setFilteredData(
       field
-        ? data.filter((item) =>
-            hasJsonOrOtherToString(item, field.selector!)?.includes(
-              searchValue!,
-            ),
+        ? data.filter(
+            (item) =>
+              field?.selector &&
+              hasJsonOrOtherToString(item, field.selector)?.includes(
+                searchValue ?? "",
+              ),
           )
         : data,
     );
@@ -60,7 +66,7 @@ export const TableRoot = ({
     filterData();
   }, [data, filterData]);
 
-  const changeVisibilitiColumn = useCallback((column: TableColumn<any>) => {
+  const changeVisibilitiColumn = useCallback((column: TableColumn<T>) => {
     column.omit = !column.omit;
     const cols = columns.map((col) => (col.id === column.id ? column : col));
     setCols(cols);
@@ -68,8 +74,7 @@ export const TableRoot = ({
 
   const selectedField = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setField(columns[e.target.value as any]);
-      console.log(columns[e.target.value as any]);
+      setField(columns[e.target.value as unknown as number]);
     },
     [columns],
   );

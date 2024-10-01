@@ -5,7 +5,7 @@ interface MesajeNoDataProps {
 export const MesajeNoData = ({ mesaje }: MesajeNoDataProps) => {
   return (
     <div className="m-3">
-      <p className="text-center font-bold text-red-700">{mesaje}</p>
+      <p className="font-bold text-center text-red-700">{mesaje}</p>
     </div>
   );
 };

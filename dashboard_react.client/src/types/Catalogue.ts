@@ -8,3 +8,7 @@ export interface Catalogue {
   createdBy: string;
   updatedBy?: string;
 }
+
+export interface SearchCatalogue {
+  [key: string]: string | boolean | undefined | number | object | null;
+}
