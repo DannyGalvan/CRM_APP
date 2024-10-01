@@ -2,6 +2,7 @@ import { api } from "../config/axios/interceptors";
 import { ApiResponse } from "../types/ApiResponse";
 import { CashReportRequest } from "../types/CashReportRequest";
 import { CashReportResponse } from "../types/CashReportResponse";
+import { RouteRequest } from "../types/RouteRequest";
 import { ValidationFailure } from "../types/ValidationFailure";
 
 export const getCashReports = async (
@@ -9,14 +10,14 @@ export const getCashReports = async (
   page = 1,
   pageSize = 10,
 ) => {
-  let response;
+  let response: ApiResponse<CashReportResponse[]>;
 
   if (filter) {
-    response = await api.get<any, ApiResponse<CashReportResponse[]>, any>(
+    response = await api.get<object, ApiResponse<CashReportResponse[]>>(
       `/cashReport?filters=${filter}&page=${page}&pageSize=${pageSize}`,
     );
   } else {
-    response = await api.get<any, ApiResponse<CashReportResponse[]>, any>(
+    response = await api.get<object, ApiResponse<CashReportResponse[]>>(
       `/cashReport?page=${page}&pageSize=${pageSize}`,
     );
   }
@@ -27,8 +28,7 @@ export const getCashReports = async (
 export const createCashReport = async (route: CashReportRequest) => {
   const response = await api.post<
     RouteRequest,
-    ApiResponse<CashReportResponse | ValidationFailure[]>,
-    any
+    ApiResponse<CashReportResponse | ValidationFailure[]>
   >("/cashReport", route);
 
   return response;
@@ -37,8 +37,7 @@ export const createCashReport = async (route: CashReportRequest) => {
 export const updateCashReport = async (route: CashReportRequest) => {
   const response = await api.put<
     CashReportRequest,
-    ApiResponse<CashReportResponse | ValidationFailure[]>,
-    any
+    ApiResponse<CashReportResponse | ValidationFailure[]>
   >(`/cashReport`, route);
 
   return response;
@@ -47,8 +46,7 @@ export const updateCashReport = async (route: CashReportRequest) => {
 export const partialUpdateCashReport = async (route: CashReportRequest) => {
   const response = await api.patch<
     CashReportRequest,
-    ApiResponse<CashReportResponse | ValidationFailure[]>,
-    any
+    ApiResponse<CashReportResponse | ValidationFailure[]>
   >(`/cashReport`, route);
 
   return response;

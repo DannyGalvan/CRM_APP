@@ -2,11 +2,11 @@ import { Suspense } from "react";
 
 import { RouteForm } from "../../components/forms/RouteForm";
 import { Col } from "../../components/grid/Col";
-import Protected from "../../routes/middlewares/Protected";
-import { RouteDtoRequest } from "../../types/RouteDto";
+import { ModalCreateItemAsync } from "../../components/modals/ModalCreateItemAsync";
 import { LoadingComponent } from "../../components/spinner/LoadingComponent";
 import { useRoutes } from "../../hooks/useRoutes";
-import { ModalCreateItemAsync } from "../../components/modals/ModalCreateItemAsync";
+import Protected from "../../routes/middlewares/Protected";
+import { RouteDtoRequest } from "../../types/RouteDto";
 
 export const initialRoute: RouteDtoRequest = {
   observations: "",
@@ -27,7 +27,7 @@ export const CreateRoutePage = () => {
 
   return (
     <Protected>
-      <div className="page-view flex flex-col flex-wrap items-center justify-center">
+      <div className="flex flex-col flex-wrap justify-center items-center page-view">
         <Col md={12}>
           <RouteForm
             reboot

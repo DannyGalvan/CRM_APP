@@ -8,7 +8,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-import { OrderStates } from "../../config/contants";
+import { OrderStates, QueryKeys } from "../../config/contants";
 import { updateCashReportDetail } from "../../services/cashReportDetailService";
 import { updateCashReport } from "../../services/cashReportService";
 import { partialUpdateOrder } from "../../services/orderService";
@@ -80,19 +80,19 @@ export const CashReportDetailActionMenu = ({
     await getDetailsByCashReportId(data.cashReportId, setError);
 
     await client.refetchQueries({
-      queryKey: ["cashReports"],
+      queryKey: [QueryKeys.CashReports],
       type: "active",
       exact: true,
     });
 
     await client.refetchQueries({
-      queryKey: ["ordersHasRoute"],
+      queryKey: [QueryKeys.OrdersHasRoute],
       type: "active",
       exact: true,
     });
 
     await client.invalidateQueries({
-      queryKey: ["orders"],
+      queryKey: [QueryKeys.Orders],
       type: "all",
       exact: false,
     });

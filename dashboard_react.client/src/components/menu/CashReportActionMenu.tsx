@@ -46,7 +46,7 @@ export const CashReportActionMenu = ({ data }: CashReportActionMenuProps) => {
 
   const handlePrint = async () => {
     setLoad(true);
-    await downloadFile(`/CashReport?id=${data.id}`, `reporte_${data.id}.pdf`);
+    await downloadFile(`/CashReport?id=${data.id}`);
     setLoad(false);
   };
 

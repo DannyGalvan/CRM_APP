@@ -51,7 +51,7 @@ export const RouteActionMenu = ({ data }: CatalogueActionMenuProps) => {
 
   const handlePrint = async () => {
     setLoad(true);
-    await downloadFile(`/Route?id=${data.id}`, `reporte_${data.id}.pdf`);
+    await downloadFile(`/Route?id=${data.id}`);
     setLoad(false);
   };
 
