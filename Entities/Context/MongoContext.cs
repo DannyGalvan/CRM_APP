@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
 using System.Security.Claims;
 using Humanizer;
+using Microsoft.Extensions.Hosting;
 
 namespace Entities.Context
 {
@@ -19,7 +20,7 @@ namespace Entities.Context
         private readonly IMemoryCache _cache;
         private readonly ILogger<MongoContext> _logger;
         public IMongoDatabase Database { get; private set; }
-        public MongoContext(IHttpContextAccessor httpContextAccessor, ICrmContext crmContext, IMemoryCache memoryCache, ILogger<MongoContext> logger) {
+        public MongoContext(IHttpContextAccessor httpContextAccessor, ICrmContext crmContext, IMemoryCache memoryCache, IHostEnvironment env, ILogger<MongoContext> logger) {
             _crmContext = crmContext;
             _httpContextAccessor = httpContextAccessor;
             _cache = memoryCache;
@@ -29,13 +30,16 @@ namespace Entities.Context
 
             var mongoClientSettings = MongoClientSettings.FromConnectionString($"{conn.ConnectionString}/{conn.Database}");
 
-            mongoClientSettings.ClusterConfigurator = cb =>
+            if (env.IsDevelopment())
             {
-                cb.Subscribe<CommandStartedEvent>(e =>
+                mongoClientSettings.ClusterConfigurator = cb =>
                 {
-                    Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
-                });
-            };
+                    cb.Subscribe<CommandStartedEvent>(e =>
+                    {
+                        Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
+                    });
+                };
+            }
 
             MongoClient client = new(mongoClientSettings);
             Database = client.GetDatabase(conn.Database);

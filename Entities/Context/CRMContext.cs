@@ -1,5 +1,6 @@
 ﻿using Entities.Configurations;
 using Entities.Interfaces;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -11,7 +12,7 @@ namespace Entities.Context
     {
         public IMongoDatabase Database { get; private set; }
 
-        public CrmContext(IOptions<MongoConnection> options)
+        public CrmContext(IOptions<MongoConnection> options, IHostEnvironment env)
         {
             MongoConnection mongoConnection = options.Value;
 
@@ -23,13 +24,16 @@ namespace Entities.Context
 
             var mongoClientSettings = MongoClientSettings.FromConnectionString($"{conn.ConnectionString}/{conn.Database}");
 
-            mongoClientSettings.ClusterConfigurator = cb =>
+            if (env.IsDevelopment())
             {
-                cb.Subscribe<CommandStartedEvent>(e =>
+                mongoClientSettings.ClusterConfigurator = cb =>
                 {
-                   Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
-                });
-            };
+                    cb.Subscribe<CommandStartedEvent>(e =>
+                    {
+                        Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
+                    });
+                };
+            }
 
             MongoClient client = new(mongoClientSettings);
             Database = client.GetDatabase(conn.Database);
