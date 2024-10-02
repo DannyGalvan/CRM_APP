@@ -25,7 +25,7 @@ namespace Entities.Context
             _cache = memoryCache;
             _logger = logger;
 
-            UserMongoConnection? conn = GetConnectionStringUser();
+            UserMongoConnection conn = GetConnectionStringUser();
 
             var mongoClientSettings = MongoClientSettings.FromConnectionString($"{conn.ConnectionString}/{conn.Database}");
 
@@ -43,7 +43,7 @@ namespace Entities.Context
 
         public void GetConnection()
         {
-            UserMongoConnection? conn = GetConnectionStringUser();
+            UserMongoConnection conn = GetConnectionStringUser();
 
             var mongoClientSettings = MongoClientSettings.FromConnectionString($"{conn.ConnectionString}/{conn.Database}");
 
@@ -89,11 +89,11 @@ namespace Entities.Context
                         Database = user.Database
                     };
 
-                    // Configurar las opciones de la cache
+                    // Configure the options of the cache
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         .SetSlidingExpiration(TimeSpan.FromDays(8)); // Mantener la cache durante 8 días
 
-                    // Guardar la conexión en la cache
+                    // Save the connection y cache
                     _cache.Set(userId, userMongoConnection, cacheEntryOptions);
                 }
 

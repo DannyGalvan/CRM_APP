@@ -16,7 +16,7 @@ export const CreateCashReportPage = () => {
 
   return (
     <Protected>
-      <div className="page-view flex flex-col flex-wrap items-center justify-center">
+      <div className="flex flex-col flex-wrap justify-center items-center page-view">
         <Col md={12}>
           <CashReportForm
             reboot

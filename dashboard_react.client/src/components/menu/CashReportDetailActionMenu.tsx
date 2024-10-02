@@ -81,13 +81,13 @@ export const CashReportDetailActionMenu = ({
 
     await client.refetchQueries({
       queryKey: [QueryKeys.CashReports],
-      type: "active",
+      type: "all",
       exact: true,
     });
 
     await client.refetchQueries({
       queryKey: [QueryKeys.OrdersHasRoute],
-      type: "active",
+      type: "all",
       exact: true,
     });
 

@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-import { OrderResponse } from "../types/OrderResponse";
-import { CashReportRequest } from "../types/CashReportRequest";
-import { ApiError } from "../util/errors";
-import { CashReportDetailsResponse } from "../types/CashReportDetailResponse";
 import { getCashReportDetails } from "../services/cashReportDetailService";
+import { CashReportDetailsResponse } from "../types/CashReportDetailResponse";
+import { CashReportRequest } from "../types/CashReportRequest";
 import { ListFilter } from "../types/LIstFilter";
+import { OrderResponse } from "../types/OrderResponse";
+import { ApiError } from "../util/errors";
 
 interface CashReportState {
   cashFilters: ListFilter;
@@ -41,12 +41,11 @@ export const useCashReportStore = create<CashReportState>()((set, get) => ({
       const details = await getCashReportDetails(
         `CashReportId:eq:${cashReportId} AND State:eq:1`,
       );
-      set({ savedOrders: details.data! });
+      set({ savedOrders: details.data ?? [] });
       set({ loadingSavedRoutes: false });
-      return details.data!;
+      return details.data ?? [];
     } catch (error) {
       setError(error as ApiError);
-      console.error(error);
       set({ savedOrders: [] });
       set({ loadingSavedRoutes: false });
       return [];

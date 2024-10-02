@@ -121,6 +121,17 @@ namespace Business.Mappers
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt));
 
+            CreateMap<OrderResponse, CashReportDetail>()
+                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => ObjectId.Parse(src.Id)))
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => 1))
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.Order, opt => opt.Ignore())
+                .ForMember(dest => dest.CashReport, opt => opt.Ignore());
+
         }
 
         private IMongoContext GetContextOfProvider()

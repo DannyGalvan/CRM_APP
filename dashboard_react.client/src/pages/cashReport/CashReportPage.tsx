@@ -1,21 +1,22 @@
-import { useEffect } from "react";
 import { Button } from "@nextui-org/button";
+import { useEffect } from "react";
 
+import { Icon } from "../../components/Icons/Icon";
+import { CashReportResponseColumns } from "../../components/columns/CashReportResponseColumns";
+import { CashReportForm } from "../../components/forms/CashReportForm";
+import { Col } from "../../components/grid/Col";
+import { TableServer } from "../../components/table/TableServer";
+import { QueryKeys } from "../../config/contants";
+import { Drawer } from "../../containers/Drawer";
 import { useCashReport } from "../../hooks/useCashReport";
 import { useDrawer } from "../../hooks/useDrawer";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
-import { CashReportResponse } from "../../types/CashReportResponse";
-import { getCashReports } from "../../services/cashReportService";
 import Protected from "../../routes/middlewares/Protected";
-import { Col } from "../../components/grid/Col";
-import { Icon } from "../../components/Icons/Icon";
-import { compactGrid } from "../../theme/tableTheme";
-import { CashReportResponseColumns } from "../../components/columns/CashReportResponseColumns";
-import { Drawer } from "../../containers/Drawer";
-import { CashReportForm } from "../../components/forms/CashReportForm";
-import { QueryKeys } from "../../config/contants";
-import { TableServer } from "../../components/table/TableServer";
+import { getCashReports } from "../../services/cashReportService";
 import { useCashReportStore } from "../../store/useCashReportStore";
+import { compactGrid } from "../../theme/tableTheme";
+import { CashReportRequest } from "../../types/CashReportRequest";
+import { CashReportResponse } from "../../types/CashReportResponse";
 
 import { initialCashReport } from "./CreateCashReportPage";
 
@@ -33,7 +34,7 @@ export const CashReportPage = () => {
   return (
     <Protected>
       <div className="mt-20 md:mt-0">
-        <Col className="mt-5 flex justify-end">
+        <Col className="flex justify-end mt-5">
           <Button color={"secondary"} onClick={setOpenCreate}>
             <Icon name={"bi bi-bag-plus"} /> Crear Corte de Caja
           </Button>
@@ -83,7 +84,7 @@ export const CashReportPage = () => {
           >
             <div className="p-5">
               <CashReportForm
-                initialForm={cashReport!}
+                initialForm={cashReport as CashReportRequest}
                 sendForm={update}
                 text="Editar"
               />

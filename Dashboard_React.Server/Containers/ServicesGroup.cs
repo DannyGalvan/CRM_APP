@@ -1,4 +1,5 @@
-﻿using Business.Interceptors.Orders;
+﻿using Business.Interceptors.CashReport;
+using Business.Interceptors.Orders;
 using Business.Interceptors.Routes;
 using Business.Interfaces;
 using Business.Interfaces.Interceptors;
@@ -36,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEntityService<Route, RouteRequest, ObjectId>, EntityService<Route, RouteRequest, ObjectId>>();
             services.AddScoped<IEntityService<CustomerDirection, CustomerDirectionRequest, ObjectId>, EntityService<CustomerDirection, CustomerDirectionRequest, ObjectId>>();
             services.AddScoped<IEntityService<CashReport, CashReportRequest, ObjectId>, EntityService<CashReport, CashReportRequest, ObjectId>>();
-            //inject EntityService with Interceptors//
+            //inject EntityService with Interceptors
             //Order
             services.AddScoped<IEntityAfterCreateInterceptor<Order,OrderRequest>,ReduceStock>();
             services.AddScoped<IEntityAfterUpdateInterceptor<Order, OrderRequest>, ReturnAndReduceStock>();
@@ -46,6 +47,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEntityAfterCreateInterceptor<Route, RouteRequest>, CreateRouteDetails>();
             services.AddScoped<IEntityAfterUpdateInterceptor<Route, RouteRequest>, UpdateRouteDetails>();
             services.AddScoped<IEntityAfterPartialUpdateInterceptor<Route, RouteRequest>, DeleteRouteDetails>();
+            //Cash Report
+            services.AddScoped<IEntityAfterCreateInterceptor<CashReport, CashReportRequest>, CreateCashReportDetails>();
+            services.AddScoped<IEntityAfterUpdateInterceptor<CashReport, CashReportRequest>, UpdateCashReportDetails>();
+            services.AddScoped<IEntityAfterPartialUpdateInterceptor<CashReport, CashReportRequest>, DeleteCashReportDetails>();
 
             return services;
         }

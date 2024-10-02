@@ -14,18 +14,16 @@ export interface DateFilters {
 export const getOrders = async ({ start, end }: DateFilters) => {
   if (start && end) {
     const response: ApiResponse<OrderResponse[]> = await api.get<
-      any,
-      ApiResponse<OrderResponse[]>,
-      any
+      object,
+      ApiResponse<OrderResponse[]>
     >(
       `/order?filters=OrderDate:gt:${end}T00 AND OrderDate:lt:${start}T23 AND OrderStateId:ne:${OrderStates.deleted}`,
     );
     return response;
   } else {
     const response: ApiResponse<OrderResponse[]> = await api.get<
-      any,
-      ApiResponse<OrderResponse[]>,
-      any
+      object,
+      ApiResponse<OrderResponse[]>
     >(`/order`);
     return response;
   }
@@ -34,16 +32,16 @@ export const getOrders = async ({ start, end }: DateFilters) => {
 export const getFilteredOrders = async (
   filters: string,
   page = 1,
-  pageSize = 10,
+  pageSize = 500,
 ) => {
   let response: ApiResponse<OrderResponse[]>;
 
   if (filters) {
-    response = await api.get<any, ApiResponse<OrderResponse[]>, any>(
+    response = await api.get<object, ApiResponse<OrderResponse[]>>(
       `/order?filters=${filters}&page=${page}&pageSize=${pageSize}`,
     );
   } else {
-    response = await api.get<any, ApiResponse<OrderResponse[]>, any>(
+    response = await api.get<object, ApiResponse<OrderResponse[]>>(
       `/order?page=${page}&pageSize=${pageSize}`,
     );
   }
@@ -53,9 +51,8 @@ export const getFilteredOrders = async (
 
 export const getOrder = async (id: string) => {
   const response: ApiResponse<OrderResponse> = await api.get<
-    any,
-    ApiResponse<OrderResponse>,
-    any
+    object,
+    ApiResponse<OrderResponse>
   >(`/order/${id}`);
 
   return response;
@@ -63,7 +60,7 @@ export const getOrder = async (id: string) => {
 
 export const createOrder = async (data: OrderRequest) => {
   const response: ApiResponse<OrderResponse> = await api.post<
-    any,
+    object,
     ApiResponse<OrderResponse>,
     OrderRequest
   >("/order", data);
@@ -73,7 +70,7 @@ export const createOrder = async (data: OrderRequest) => {
 
 export const updateOrder = async (data: OrderRequest) => {
   const response: ApiResponse<OrderResponse> = await api.put<
-    any,
+    object,
     ApiResponse<OrderResponse>,
     OrderRequest
   >(`/order`, data);
@@ -83,7 +80,7 @@ export const updateOrder = async (data: OrderRequest) => {
 
 export const partialUpdateOrder = async (data: OrderRequest) => {
   const response: ApiResponse<OrderResponse | ValidationFailure[]> =
-    await api.patch<any, ApiResponse<OrderResponse>, OrderRequest>(
+    await api.patch<object, ApiResponse<OrderResponse>, OrderRequest>(
       `/order`,
       data,
     );
@@ -93,7 +90,7 @@ export const partialUpdateOrder = async (data: OrderRequest) => {
 
 export const bulkPartialUpdateOrder = async (data: BulkOrderRequest) => {
   const response: ApiResponse<OrderResponse[] | ValidationFailure[]> =
-    await api.patch<any, ApiResponse<OrderResponse[]>, BulkOrderRequest>(
+    await api.patch<object, ApiResponse<OrderResponse[]>, BulkOrderRequest>(
       `/order/bulk`,
       data,
     );
