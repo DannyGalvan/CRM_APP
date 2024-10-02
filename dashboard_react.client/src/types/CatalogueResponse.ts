@@ -1,4 +1,6 @@
-export interface CatalogueResponse {
+import { SearchCatalogue } from "./Catalogue";
+
+export interface CatalogueResponse extends SearchCatalogue {
   id: string;
   name: string;
   description: string;

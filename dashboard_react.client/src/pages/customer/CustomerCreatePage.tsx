@@ -2,6 +2,7 @@ import { CustomerForm } from "../../components/forms/CustomerForm";
 import { Col } from "../../components/grid/Col";
 import { useCustomer } from "../../hooks/useCustomer";
 import Protected from "../../routes/middlewares/Protected";
+import { CustomerRequest } from "../../types/CustomerRequest";
 
 export const initialCustomer: CustomerRequest = {
   firstName: "",
@@ -20,7 +21,7 @@ export const CustomerCreatePage = () => {
 
   return (
     <Protected>
-      <div className="page-view flex flex-col flex-wrap items-center justify-center">
+      <div className="flex flex-col flex-wrap justify-center items-center page-view">
         <Col md={8}>
           <CustomerForm
             reboot

@@ -1,5 +1,6 @@
 import { api } from "../config/axios/interceptors";
 import { ApiResponse } from "../types/ApiResponse";
+import { CustomerRequest } from "../types/CustomerRequest";
 import { CustomerResponse } from "../types/CustomerResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 

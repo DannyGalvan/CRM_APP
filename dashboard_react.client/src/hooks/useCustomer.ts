@@ -1,8 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 
+import { QueryKeys } from "../config/contants";
 import { createCustomer, updateCustomer } from "../services/customerService";
 import { useCustomerStore } from "../store/useCustomerStore";
-import { QueryKeys } from "../config/contants";
+import { CustomerRequest } from "../types/CustomerRequest";
 
 export const useCustomer = () => {
   const client = useQueryClient();

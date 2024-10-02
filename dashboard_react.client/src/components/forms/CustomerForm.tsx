@@ -4,6 +4,7 @@ import { Input, Textarea } from "@nextui-org/input";
 import { ErrorObject, useForm } from "../../hooks/useForm";
 import { initialCustomer } from "../../pages/customer/CustomerCreatePage";
 import { ApiResponse } from "../../types/ApiResponse";
+import { CustomerRequest } from "../../types/CustomerRequest";
 import { CustomerResponse } from "../../types/CustomerResponse";
 import { ValidationFailure } from "../../types/ValidationFailure";
 import { handleOneLevelZodError } from "../../util/converted";

@@ -18,7 +18,7 @@ import { Response } from "../messages/Response";
 interface CatalogueFormProps {
   selectedCatalogue: SelectedCatalogue;
   collectionError: ApiError | null;
-  initialForm?: CatalogueRequest;
+  initialForm?: CatalogueRequest | null;
   sendForm: (
     catalogue: CatalogueRequest,
   ) => Promise<ApiResponse<CatalogueResponse | ValidationFailure[]>>;

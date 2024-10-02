@@ -22,7 +22,7 @@ export const getPilots = async (filter?: string, page = 1, pageSize = 10) => {
 
 export const createPilot = async (product: PilotRequest) => {
   const response = await api.post<
-    CustomerRequest,
+    PilotRequest,
     ApiResponse<PilotResponse | ValidationFailure[]>
   >("/pilot", product);
 
@@ -31,7 +31,7 @@ export const createPilot = async (product: PilotRequest) => {
 
 export const updatePilot = async (product: PilotRequest) => {
   const response = await api.put<
-    CustomerRequest,
+    PilotRequest,
     ApiResponse<PilotResponse | ValidationFailure[]>
   >(`/pilot`, product);
 

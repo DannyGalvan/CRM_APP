@@ -12,6 +12,7 @@ import { TableRoot } from "../../components/table/TableRoot";
 import { DEFAULT_CATALOGUE, QueryKeys } from "../../config/contants";
 import { Drawer } from "../../containers/Drawer";
 import { useCatalogues } from "../../hooks/useCatalogues";
+import { useDrawer } from "../../hooks/useDrawer";
 import { useRetraseRender } from "../../hooks/useRetraseRender";
 import Protected from "../../routes/middlewares/Protected";
 import { getAllCatalogues } from "../../services/catalogueService";
@@ -21,11 +22,10 @@ import { ApiResponse } from "../../types/ApiResponse";
 import { CatalogueResponse } from "../../types/CatalogueResponse";
 import { ApiError } from "../../util/errors";
 import { NotFound } from "../error/NotFound";
-import { useDrawer } from "../../hooks/useDrawer";
 
 import { initialCatalogue } from "./CreateCataloguePage";
 
-const columns: TableColumn<any>[] = [
+const columns: TableColumn<CatalogueResponse>[] = [
   {
     id: "id",
     name: "Id",
@@ -65,7 +65,7 @@ const columns: TableColumn<any>[] = [
   {
     id: "updatedAt",
     name: "Actualizado",
-    selector: (data) => data.updatedAt,
+    selector: (data) => data.updatedAt ?? "N/A",
     sortable: true,
     maxWidth: "160px",
     omit: false,
@@ -81,7 +81,7 @@ const columns: TableColumn<any>[] = [
   {
     id: "updatedBy",
     name: "Actualizado por",
-    selector: (data) => data.updatedBy,
+    selector: (data) => data.updatedBy ?? "N/A",
     sortable: true,
     maxWidth: "155px",
     omit: true,
@@ -162,7 +162,7 @@ export const CataloguePage = () => {
           pending={isLoading || isFetching}
           styles={compactGrid}
           text="de los catalogos"
-          title={selectedCatalogue.name!}
+          title={selectedCatalogue.name ?? ""}
           width={false}
         />
         {render && (
@@ -197,7 +197,7 @@ export const CataloguePage = () => {
             <div className="p-5">
               <CatalogueForm
                 collectionError={collectionError}
-                initialForm={catalogue!}
+                initialForm={catalogue}
                 selectedCatalogue={selectedCatalogue}
                 sendForm={updateCatalog}
                 text="Editar"

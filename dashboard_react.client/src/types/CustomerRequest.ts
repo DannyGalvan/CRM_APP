@@ -1,4 +1,4 @@
-interface CustomerRequest {
+export interface CustomerRequest {
   id?: string;
   firstName: string;
   secondName: string;

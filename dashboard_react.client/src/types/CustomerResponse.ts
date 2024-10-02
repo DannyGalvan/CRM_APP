@@ -10,7 +10,7 @@ export interface CustomerResponse extends SearchCatalogue {
   fullName: string;
   firstPhone: string;
   secondPhone: string;
-  shippingFee: number;
+  shippingFee: string;
   socialNetworks: string;
   state: number;
   createdAt?: string | null;

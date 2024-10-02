@@ -1,9 +1,9 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
+import { useErrorsStore } from "../store/useErrorsStore";
 import { ApiResponse } from "../types/ApiResponse";
 import { ValidationFailure } from "../types/ValidationFailure";
 import { ApiError } from "../util/errors";
-import { useErrorsStore } from "../store/useErrorsStore";
 
 import { useResponse } from "./useResponse";
 
@@ -41,14 +41,25 @@ export const useForm = <T, U>(
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
 
-    const newForm = {
-      ...form,
-      [name]: files![0],
-    };
+    if (files != null) {
+      const newForm = {
+        ...form,
+        [name]: files[0],
+      };
 
-    setForm(newForm);
+      setForm(newForm);
 
-    setU(validateForm(newForm));
+      setU(validateForm(newForm));
+    } else {
+      const newForm = {
+        ...form,
+        [name]: null,
+      };
+
+      setForm(newForm);
+
+      setU(validateForm(newForm));
+    }
   };
 
   const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +74,7 @@ export const useForm = <T, U>(
       success: null,
       data: null,
       message: null,
+      totalResults: 0,
     });
 
     const valErr = validateForm(form);
@@ -92,6 +104,7 @@ export const useForm = <T, U>(
               success: false,
               data: null,
               message: `${error?.name} ${error?.stack}`,
+              totalResults: 0,
             });
       }
     } else {
@@ -99,6 +112,7 @@ export const useForm = <T, U>(
         success: false,
         data: null,
         message: "Error en la validación del formulario",
+        totalResults: 0,
       });
     }
     setLoading(false);

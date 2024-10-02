@@ -163,7 +163,7 @@ export const OrderForm = ({
             queryFn={getCustomers}
             querykey={QueryKeys.Customers as ModalType}
             selector={(selected) => {
-              setReminder(selected.shippingFee?.toFixed(2));
+              setReminder(parseFloat(selected.shippingFee).toFixed(2));
             }}
             setFormValue={handleChange}
             unSelector={() => {
